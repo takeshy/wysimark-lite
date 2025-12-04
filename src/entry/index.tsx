@@ -55,6 +55,13 @@ export function Editable({
   const prevValueRef = useRef<Descendant[] | undefined>(undefined)
 
   /**
+   * Track the last value emitted via onChange. This is used to prevent
+   * unnecessary reparsing when the parent component sets value to what
+   * we just emitted.
+   */
+  const lastEmittedValueRef = useRef<string | undefined>(undefined)
+
+  /**
    * Throttled version of `onChange` for the `Slate` component. This method gets
    * called on every change to the editor except for:
    *
@@ -80,6 +87,7 @@ export function Editable({
           markdown,
           children: editor.children,
         }
+        lastEmittedValueRef.current = markdown
         onChange(markdown)
       },
       throttleInMs,
@@ -127,6 +135,7 @@ export function Editable({
       markdown: value, // Store the original unescaped value
       children,
     }
+    lastEmittedValueRef.current = value
   } else {
     /**
      * Handle the case where the `value` differs from the last `markdown` value
@@ -136,15 +145,35 @@ export function Editable({
      * Apart from setting `editor.children` we also need to set the selection
      * to the start of the document. This is because the selection may be set
      * to an invalid value based on the new document value.
+     *
+     * We also check against `lastEmittedValueRef.current` to prevent race
+     * conditions during throttle delays. When throttled onChange fires, the
+     * parent component receives the new value and passes it back as a prop.
+     * However, `editor.wysimark.prevValue.markdown` may not be updated yet
+     * due to the trailing throttle behavior. By also checking against the
+     * last emitted value, we avoid unnecessary reparsing.
      */
-    if (value !== editor.wysimark.prevValue.markdown) {
-      ignoreNextChangeRef.current = true
-      // Only escape URL slashes when not in raw mode
-      const valueToProcess = isRawMode ? value : escapeUrlSlashes(value);
-      const documentValue = parse(valueToProcess)
-      editor.children = documentValue
-      editor.selection = null
-      Transforms.select(editor, Editor.start(editor, [0]))
+    /**
+     * In Raw Mode, synchronize prevValue.markdown with the current value prop.
+     * This prevents unnecessary reparsing when the user edits in raw mode.
+     * Without this, each keystroke in raw mode would trigger a reparse because
+     * the value prop (updated via onChange) differs from prevValue.markdown.
+     */
+    if (isRawMode) {
+      editor.wysimark.prevValue.markdown = value
+      lastEmittedValueRef.current = value
+    } else {
+      const diffFromPrevValue = value !== editor.wysimark.prevValue.markdown
+      const diffFromLastEmitted = value !== lastEmittedValueRef.current
+      if (diffFromPrevValue && diffFromLastEmitted) {
+        ignoreNextChangeRef.current = true
+        // Only escape URL slashes when not in raw mode
+        const valueToProcess = escapeUrlSlashes(value);
+        const documentValue = parse(valueToProcess)
+        editor.children = documentValue
+        editor.selection = null
+        Transforms.select(editor, Editor.start(editor, [0]))
+      }
     }
   }
 
@@ -182,11 +211,24 @@ export function Editable({
     }
   }, [editor, rawText]);
 
-  // When switching from visual mode to raw mode
+  /**
+   * When switching from visual mode to raw mode, populate the textarea
+   * with the value prop instead of serializing from the editor.
+   *
+   * This is important because the parse->serialize round-trip can lose
+   * formatting that exists in the original markdown but cannot be
+   * represented in the Slate document structure. For example, if the
+   * original markdown had an image followed by a heading without proper
+   * newlines, the editor would parse them into the same paragraph.
+   * Serializing from the editor would output broken markdown.
+   *
+   * By using the value prop directly, we preserve the exact markdown
+   * that the parent component has, allowing users to fix formatting
+   * issues in raw mode.
+   */
   const updateRawTextFromEditor = useCallback(() => {
-    const currentMarkdown = editor.getMarkdown();
-    setRawText(currentMarkdown);
-  }, [editor]);
+    setRawText(value);
+  }, [value]);
 
   // Handle mode toggle
   const handleRawModeToggle = useCallback(() => {
