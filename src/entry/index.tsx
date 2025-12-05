@@ -313,9 +313,8 @@ export function Editable({
       <div style={{ display: isRawMode ? 'none' : 'block' }}>
         <Slate
           editor={editor}
-          /* NOTE: This is the initial value even though it is named value */
-          value={initialValueRef.current}
-          onChange={onSlateChange}
+          initialValue={initialValueRef.current}
+          onValueChange={onSlateChange}
         >
           <SinkEditable
             renderLeaf={renderLeaf}
