@@ -1,4 +1,4 @@
-import { useState, useRef, CSSProperties } from "react"
+import { useState, useRef, CSSProperties, useEffect } from "react"
 import { useSlateStatic } from "slate-react"
 
 import { CloseMask } from "~/src/shared-overlays"
@@ -19,13 +19,31 @@ export function ImageUrlDialog({
     const editor = useSlateStatic()
     const ref = useRef<HTMLDivElement>(undefined) as unknown as HTMLDivElement
     const fileInputRef = useRef<HTMLInputElement>(null)
-    const [url, setUrl] = useState("")
-    const [alt, setAlt] = useState("")
-    const [title, setTitle] = useState("")
+
+    // Persist dialog values in editor.wysimark so they survive dialog close/reopen
+    const savedState = editor.wysimark?.imageDialogState
     const hasOnImageChange = !!editor.wysimark?.onImageChange
-    const [imageSource, setImageSource] = useState<ImageSource>(hasOnImageChange ? "file" : "url")
+
+    const [url, setUrl] = useState(savedState?.url ?? "")
+    const [alt, setAlt] = useState(savedState?.alt ?? "")
+    const [title, setTitle] = useState(savedState?.title ?? "")
+    const [imageSource, setImageSource] = useState<ImageSource>(savedState?.imageSource ?? (hasOnImageChange ? "file" : "url"))
     const [isUploading, setIsUploading] = useState(false)
-    const [uploadedUrl, setUploadedUrl] = useState("")
+    const [uploadedUrl, setUploadedUrl] = useState(savedState?.uploadedUrl ?? "")
+
+    // Save state to editor when values change
+    useEffect(() => {
+        if (editor.wysimark) {
+            editor.wysimark.imageDialogState = { url, alt, title, imageSource, uploadedUrl }
+        }
+    }, [url, alt, title, imageSource, uploadedUrl])
+
+    // Clear state on successful submit or cancel
+    const clearState = () => {
+        if (editor.wysimark) {
+            editor.wysimark.imageDialogState = undefined
+        }
+    }
 
     const style = useAbsoluteReposition(
         { src: ref, dest },
@@ -48,11 +66,13 @@ export function ImageUrlDialog({
         if (finalUrl.trim() === "") return
 
         editor.image.insertImageFromUrl(finalUrl, alt, title)
-        // Reset form for next image
-        setUrl("")
-        setAlt("")
-        setTitle("")
-        setUploadedUrl("")
+        clearState()
+        close()
+    }
+
+    function handleCancel() {
+        clearState()
+        close()
     }
 
     async function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
@@ -235,7 +255,7 @@ export function ImageUrlDialog({
                         </button>
                         <button
                             type="button"
-                            onClick={close}
+                            onClick={handleCancel}
                             style={{
                                 padding: "8px 16px",
                                 backgroundColor: "#f0f0f0",

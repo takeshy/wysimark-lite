@@ -2,6 +2,14 @@ import { Descendant } from "slate"
 
 export type OnImageChangeHandler = (file: File) => Promise<string>
 
+export type ImageDialogState = {
+  url: string
+  alt: string
+  title: string
+  imageSource: "url" | "file"
+  uploadedUrl: string
+}
+
 export type WysimarkEditor = {
   /**
    * Private state for the wysimark editor.
@@ -28,6 +36,11 @@ export type WysimarkEditor = {
      * Handler for image file upload
      */
     onImageChange?: OnImageChangeHandler
+
+    /**
+     * Persisted state for the image dialog
+     */
+    imageDialogState?: ImageDialogState
   }
   /**
    * Public methods for the wysimark editor.

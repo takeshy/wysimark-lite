@@ -1,5 +1,14 @@
 # wysimark-lite
 
+## 0.21.1
+
+### Patch Changes
+
+- Prevent image dialog from closing unexpectedly
+  - Don't close when clicking outside while file picker is open or uploading
+  - Don't close when URL or uploaded file URL is entered
+  - Close properly when Register or Cancel button is clicked
+
 ## 0.21.0
 
 ### Minor Changes
