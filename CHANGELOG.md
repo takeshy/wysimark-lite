@@ -1,5 +1,14 @@
 # wysimark-lite
 
+## 0.21.0
+
+### Minor Changes
+
+- Add drag and drop support for image files
+  - Drop image files directly into the editor to insert them at the cursor position
+  - Uses `onImageChange` callback for uploading if provided
+  - Falls back to Data URL if no `onImageChange` callback is set
+
 ## 0.20.0
 
 ### Minor Changes

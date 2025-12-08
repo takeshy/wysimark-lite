@@ -69,7 +69,9 @@ const Editor: React.FC = () => {
 };
 ```
 
-When `onImageChange` is provided, the image dialog shows a radio button to switch between URL input and file upload.
+When `onImageChange` is provided:
+- The image dialog shows a radio button to switch between URL input and file upload
+- **Drag and drop** image files directly into the editor to insert them at the cursor position
 
 ### Direct Initialization
 
@@ -99,7 +101,7 @@ pin "wysimark-lite", to: "https://cdn.jsdelivr.net/npm/wysimark-lite@latest/dist
 
 - **Modern Design**: Clean and contemporary interface that integrates seamlessly with React applications
 - **Raw Markdown Mode**: Switch between WYSIWYG and raw Markdown editing modes
-- **Image Upload Support**: Upload images via file picker when `onImageChange` callback is provided
+- **Image Upload Support**: Upload images via file picker or drag and drop when `onImageChange` callback is provided
 - **User-Friendly Interface**:
   - Simplified toolbar with toggle buttons (click to activate/deactivate formatting)
   - Markdown shortcuts (e.g., `**` for **bold**, `#` for heading)

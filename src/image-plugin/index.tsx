@@ -6,13 +6,66 @@ import { createPlugin, curryOne, TypedPlugin } from "~/src/sink"
 import { createImageMethods } from "./methods"
 import { normalizeNode } from "./normalize-node"
 import { renderElement } from "./render-element"
-import {
-  ImageBlockElement,
-  ImageInlineElement,
-  ImagePluginConfig,
-  ImagePluginCustomTypes,
-} from "./types"
-import { resizeInBounds } from "./utils"
+import { ImagePluginConfig, ImagePluginCustomTypes } from "./types"
+
+/**
+ * Handle drop events for image files
+ */
+function createOnDrop(editor: Editor) {
+  return (event: React.DragEvent<HTMLDivElement>): boolean => {
+    const { dataTransfer } = event
+
+    // Check if there are files being dropped
+    if (!dataTransfer.files || dataTransfer.files.length === 0) {
+      return false
+    }
+
+    // Check if any of the files are images
+    const imageFiles = Array.from(dataTransfer.files).filter((file) =>
+      file.type.startsWith("image/")
+    )
+
+    if (imageFiles.length === 0) {
+      return false
+    }
+
+    event.preventDefault()
+    event.stopPropagation()
+
+    // Get the drop position and move cursor there
+    const range = ReactEditor.findEventRange(editor, event)
+    if (range) {
+      Transforms.select(editor, range)
+    }
+
+    // Get the onImageChange handler from the editor
+    const onImageChange = (editor as any).wysimark?.onImageChange
+
+    // Process each image file
+    imageFiles.forEach(async (file) => {
+      if (onImageChange) {
+        try {
+          const url = await onImageChange(file)
+          if (url) {
+            editor.image.insertImageFromUrl(url, file.name, "")
+          }
+        } catch (error) {
+          console.error("Failed to upload image:", error)
+        }
+      } else {
+        // If no onImageChange handler, create a data URL
+        const reader = new FileReader()
+        reader.onload = () => {
+          const dataUrl = reader.result as string
+          editor.image.insertImageFromUrl(dataUrl, file.name, "")
+        }
+        reader.readAsDataURL(file)
+      }
+    })
+
+    return true
+  }
+}
 
 const DEFAULT_OPTIONS: ImagePluginConfig = {
   maxInitialInlineImageSize: { width: 64, height: 64 },
@@ -97,6 +150,7 @@ export const ImagePlugin = //({
         },
         editableProps: {
           renderElement,
+          onDrop: createOnDrop(editor),
         },
       })
     }
