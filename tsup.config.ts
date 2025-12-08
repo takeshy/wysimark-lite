@@ -12,7 +12,7 @@ export default defineConfig([{
   platform: "browser",
   outDir: "dist/",
   outExtension: () => ({ js: '.js' }),
-  noExternal: [/.*/],
+  external: ["react", "react-dom"],
   esbuildOptions(options) {
     options.bundle = true
     options.minify = true

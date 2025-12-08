@@ -30,7 +30,9 @@ export const dialogItems: MenuItemData[] = [
 
 export const expandedDialogItems: MenuItemData[] = dialogItems
 
-export const compactDialogItems: MenuItemData[] = [
+export const compactDialogItems: MenuItemData[] = dialogItems
+
+export const smallDialogItems: MenuItemData[] = [
   {
     icon: Icon.Plus,
     title: t("insert"),

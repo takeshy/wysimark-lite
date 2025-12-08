@@ -17,6 +17,8 @@ function renderLeaf({ children, attributes }: RenderLeafProps) {
   return <span {...attributes}>{children}</span>
 }
 
+export type OnImageChangeHandler = (file: File) => Promise<string>
+
 export type EditableProps = {
   // editor: BaseEditor & ReactEditor & HistoryEditor & SinkEditor & WysimarkEditor
   editor: Editor
@@ -26,6 +28,7 @@ export type EditableProps = {
   placeholder?: string
   className?: string
   style?: React.CSSProperties
+  onImageChange?: OnImageChangeHandler
 } // & Omit<React.TextareaHTMLAttributes<HTMLDivElement>, "onChange">
 
 export function Editable({
@@ -36,6 +39,7 @@ export function Editable({
   placeholder,
   className,
   style,
+  onImageChange,
 }: EditableProps) {
   const [isRawMode, setIsRawMode] = useState(false)
   const [rawText, setRawText] = useState(value)
@@ -104,13 +108,21 @@ export function Editable({
    *
    * If it's neither, then it passes the call to the throttled `onChange` method.
    */
-  const onSlateChange = useCallback(() => {
-    if (prevValueRef.current === editor.children) {
-      return
-    }
-    prevValueRef.current = editor.children
-    onThrottledSlateChange()
-  }, [onThrottledSlateChange])
+  const onSlateChange = useCallback(
+    (nextValue: Descendant[]) => {
+      if (ignoreNextChangeRef.current) {
+        ignoreNextChangeRef.current = false
+        prevValueRef.current = nextValue
+        return
+      }
+      if (prevValueRef.current === nextValue) {
+        return
+      }
+      prevValueRef.current = nextValue
+      onThrottledSlateChange()
+    },
+    [onThrottledSlateChange]
+  )
 
   /**
    * Handle the initial mounting of the component. This is where we set the
@@ -130,6 +142,7 @@ export function Editable({
     // Only escape URL slashes when not in raw mode
     const valueToProcess = isRawMode ? value : escapeUrlSlashes(value);
     const children = parse(valueToProcess)
+    editor.children = children
     prevValueRef.current = initialValueRef.current = children
     editor.wysimark.prevValue = {
       markdown: value, // Store the original unescaped value
@@ -246,6 +259,7 @@ export function Editable({
   // This allows the toolbar to access these properties
   editor.wysimark.isRawMode = isRawMode;
   editor.wysimark.toggleRawMode = handleRawModeToggle;
+  editor.wysimark.onImageChange = onImageChange;
 
   return (
     <div style={{ position: 'relative' }}>
@@ -313,8 +327,9 @@ export function Editable({
       <div style={{ display: isRawMode ? 'none' : 'block' }}>
         <Slate
           editor={editor}
-          initialValue={initialValueRef.current}
-          onValueChange={onSlateChange}
+          initialValue={(initialValueRef.current ??
+            editor.children) as Descendant[]}
+          onChange={onSlateChange}
         >
           <SinkEditable
             renderLeaf={renderLeaf}

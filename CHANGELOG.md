@@ -1,3 +1,24 @@
+# wysimark-lite
+
+## 0.20.0
+
+### Minor Changes
+
+- Add `onImageChange` prop to Editable component for image file upload support
+  - When provided, shows radio buttons to switch between URL input and file upload
+  - File upload mode displays upload button and shows returned URL as disabled input
+  - Modal includes "登録" (Register) and "キャンセル" (Cancel) buttons
+- Smart block splitting for heading/paragraph conversion
+  - When cursor is on a specific line within a multi-line block, only that line is converted
+  - Example: In a heading with "Welcome to\nWysimark", placing cursor on "Wysimark" and clicking "標準" splits the block and converts only "Wysimark" to paragraph
+- Improved toolbar layout
+  - Insert items (link, table, image) now displayed directly in toolbar header
+  - Hierarchical menus only shown on narrow screens
+- Fix keyboard shortcut display to show Ctrl instead of Command on non-Mac systems
+- Fix toolbar not adapting to narrow screen width on initial load
+
+---
+
 # @wysimark/react
 
 ## 3.0.20

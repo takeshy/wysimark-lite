@@ -1,7 +1,7 @@
 import { MenuItemData } from "~/src/shared-overlays"
 
 import { expandedBlockItems, compactBlockItems } from "./block-items"
-import { compactDialogItems, expandedDialogItems } from "./dialogItems"
+import { compactDialogItems, expandedDialogItems, smallDialogItems } from "./dialogItems"
 import { compactMarkItems, expandedMarkItems } from "./mark-items"
 import { expandedListItems, compactListItems } from "./list-items"
 import { expandedQuoteItems, compactQuoteItems } from "./quote-items"
@@ -24,9 +24,9 @@ export const largeItems: MenuItemData[] = [
   "divider",
   ...expandedMarkItems,
   "divider",
-  ...expandedQuoteItems,
-  "divider",
   ...expandedDialogItems,
+  "divider",
+  ...expandedQuoteItems,
   "divider",
   rawModeItem,
   visualModeItem,
@@ -39,9 +39,9 @@ export const mediumItems: MenuItemData[] = [
   "divider",
   ...expandedMarkItems,
   "divider",
-  ...expandedQuoteItems,
-  "divider",
   ...compactDialogItems,
+  "divider",
+  ...expandedQuoteItems,
   "divider",
   rawModeItem,
   visualModeItem,
@@ -54,15 +54,15 @@ export const smallItems: MenuItemData[] = [
   "divider",
   ...compactMarkItems,
   "divider",
-  ...compactQuoteItems,
+  ...smallDialogItems,
   "divider",
-  ...compactDialogItems,
+  ...compactQuoteItems,
   "divider",
   rawModeItem,
   visualModeItem,
 ]
 
-export const initialItems: MenuItemData[] = [...expandedBlockItems, "divider"]
+export const initialItems: MenuItemData[] = smallItems
 
 export const items = mediumItems
 

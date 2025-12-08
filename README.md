@@ -35,6 +35,42 @@ const Editor: React.FC = () => {
 };
 ```
 
+### With Image Upload
+
+You can enable image file upload by providing the `onImageChange` callback:
+
+```tsx
+import { Editable, useEditor } from "wysimark-lite";
+import React from "react";
+
+const Editor: React.FC = () => {
+  const [value, setValue] = React.useState("");
+  const editor = useEditor({});
+
+  const handleImageUpload = async (file: File): Promise<string> => {
+    // Upload file to your server and return the URL
+    const formData = new FormData();
+    formData.append("image", file);
+    const response = await fetch("/api/upload", { method: "POST", body: formData });
+    const { url } = await response.json();
+    return url;
+  };
+
+  return (
+    <div style={{ width: "800px" }}>
+      <Editable
+        editor={editor}
+        value={value}
+        onChange={setValue}
+        onImageChange={handleImageUpload}
+      />
+    </div>
+  );
+};
+```
+
+When `onImageChange` is provided, the image dialog shows a radio button to switch between URL input and file upload.
+
 ### Direct Initialization
 
 You can also initialize the editor directly on an HTML element:
@@ -63,6 +99,7 @@ pin "wysimark-lite", to: "https://cdn.jsdelivr.net/npm/wysimark-lite@latest/dist
 
 - **Modern Design**: Clean and contemporary interface that integrates seamlessly with React applications
 - **Raw Markdown Mode**: Switch between WYSIWYG and raw Markdown editing modes
+- **Image Upload Support**: Upload images via file picker when `onImageChange` callback is provided
 - **User-Friendly Interface**:
   - Simplified toolbar with toggle buttons (click to activate/deactivate formatting)
   - Markdown shortcuts (e.g., `**` for **bold**, `#` for heading)
@@ -71,6 +108,7 @@ pin "wysimark-lite", to: "https://cdn.jsdelivr.net/npm/wysimark-lite@latest/dist
 - **Enhanced List Support**:
   - Nested lists support (create hierarchical lists with multiple levels)
   - Mix different list types in the hierarchy
+- **Smart Block Splitting**: When applying heading/paragraph styles to multi-line blocks, only the selected lines are converted
 
 ## Browser Support
 

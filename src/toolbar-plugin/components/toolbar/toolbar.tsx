@@ -64,6 +64,10 @@ function measureItemSetWidth(
   return width
 }
 
+// Allow a little slack so we don't collapse the toolbar while there is still
+// plenty of visible space. This helps avoid early wrapping on wide screens.
+const WIDTH_BUFFER_PX = 48
+
 export function Toolbar() {
   const ref = useRef<HTMLDivElement>(null)
   const [items, setItems] = useState<MenuItemData[]>(initialItems)
@@ -83,7 +87,7 @@ export function Toolbar() {
             widths.button,
             widths.divider
           )
-          if (itemSetWidth < widths.toolbar) {
+          if (itemSetWidth < widths.toolbar - WIDTH_BUFFER_PX) {
             setItems(itemSets[i])
             return
           }
@@ -93,9 +97,11 @@ export function Toolbar() {
       100,
       { trailing: true }
     )
-    refresh()
+    // Delay initial refresh to ensure DOM is fully rendered
+    const timeoutId = setTimeout(refresh, 0)
     window.addEventListener("resize", refresh)
     return () => {
+      clearTimeout(timeoutId)
       window.removeEventListener("resize", refresh)
     }
   }, [])

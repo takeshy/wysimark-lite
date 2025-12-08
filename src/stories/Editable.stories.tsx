@@ -6,7 +6,7 @@ const meta: Meta<typeof Editable> = {
     title: 'Components/Editable',
     component: Editable,
     parameters: {
-        layout: 'centered',
+        layout: 'fullscreen',
     },
     args: {},
     argTypes: {
@@ -30,7 +30,7 @@ const EditorWrapper: React.FC<{
     }
 
     return (
-        <div style={{ width: '800px' }}>
+        <div style={{ width: '100%', padding: '16px', boxSizing: 'border-box' }}>
             <Editable
                 editor={editor}
                 value={value}
@@ -90,7 +90,7 @@ const DebugEditorWrapper: React.FC<{
     }
 
     return (
-        <div style={{ width: '800px' }}>
+        <div style={{ width: '100%', padding: '16px', boxSizing: 'border-box' }}>
             <Editable
                 editor={editor}
                 value={value}
@@ -113,5 +113,84 @@ export const DebugRawMode: Story = {
         initialValue={`![alt text](https://example.com/image.png)# Heading Without Newline
 
 This is broken data. Try switching to raw mode and adding newlines.`}
+    />
+}
+
+// Wrapper with onImageChange callback for file upload
+const ImageUploadEditorWrapper: React.FC<{
+    initialValue?: string;
+    onChange?: (value: string) => void;
+}> = ({ initialValue = '', onChange }) => {
+    const [value, setValue] = React.useState(initialValue)
+    const [uploadLog, setUploadLog] = React.useState<string[]>([])
+    const editor = useEditor({})
+
+    const handleChange = (newValue: string) => {
+        setValue(newValue)
+        onChange?.(newValue)
+    }
+
+    const handleImageChange = async (file: File): Promise<string> => {
+        // Simulate upload delay
+        const log = `Uploading: ${file.name} (${file.size} bytes, ${file.type})`
+        console.log('[ImageUpload]', log)
+        setUploadLog(prev => [...prev, log])
+
+        await new Promise(resolve => setTimeout(resolve, 1500))
+
+        // Create a fake URL (in real app, this would be the uploaded URL from server)
+        const fakeUrl = `https://example.com/uploads/${Date.now()}-${file.name}`
+        const successLog = `Uploaded: ${fakeUrl}`
+        console.log('[ImageUpload]', successLog)
+        setUploadLog(prev => [...prev, successLog])
+
+        return fakeUrl
+    }
+
+    return (
+        <div style={{ width: '100%', padding: '16px', boxSizing: 'border-box' }}>
+            <Editable
+                editor={editor}
+                value={value}
+                onChange={handleChange}
+                onImageChange={handleImageChange}
+            />
+            <div style={{ marginTop: '20px', padding: '10px', background: '#e8f4e8', borderRadius: '4px' }}>
+                <h4>Image Upload Log:</h4>
+                {uploadLog.length === 0 ? (
+                    <p style={{ color: '#666', fontSize: '14px' }}>No uploads yet. Click the image button in the toolbar and select "ファイル" to upload.</p>
+                ) : (
+                    <ul style={{ fontSize: '12px', margin: 0, paddingLeft: '20px' }}>
+                        {uploadLog.map((log, i) => (
+                            <li key={i}>{log}</li>
+                        ))}
+                    </ul>
+                )}
+            </div>
+        </div>
+    )
+}
+
+// Story with onImageChange callback for file upload functionality
+export const WithImageUpload: Story = {
+    render: (args) => <ImageUploadEditorWrapper
+        onChange={args.onChange}
+        initialValue={`# Image Upload Example
+
+Click the image button in the toolbar to see the file upload option.
+
+When onImageChange prop is provided, a radio button appears to switch between URL and File upload modes.`}
+    />
+}
+
+// Test case: Multi-line heading - place cursor on second line and click "標準" to split
+export const MultiLineHeadingTest: Story = {
+    render: (args) => <DebugEditorWrapper
+        onChange={args.onChange}
+        initialValue={`# Welcome to
+Wysimark
+
+Place cursor on "Wysimark" line and click "標準" (Normal).
+Expected: "Welcome to" stays as Heading 1, "Wysimark" becomes normal paragraph.`}
     />
 }

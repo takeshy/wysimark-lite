@@ -1,4 +1,4 @@
-const IS_MAC_REGEX = /mac os x/i
+const IS_MAC_REGEX = /mac os x|macintosh/i
 
 let isMacValue: boolean | undefined = undefined
 
@@ -11,7 +11,11 @@ export function isMac() {
    * Memoized for performance
    */
   if (isMacValue !== undefined) return isMacValue
-  const { userAgent } = window.navigator
-  isMacValue = IS_MAC_REGEX.test(userAgent)
+  try {
+    const { userAgent } = window.navigator
+    isMacValue = IS_MAC_REGEX.test(userAgent)
+  } catch {
+    isMacValue = false
+  }
   return isMacValue
 }

@@ -1,3 +1,6 @@
+// Ensure this package is treated as a client component (e.g. in Next.js App Router)
+'use client'
+
 import {
   createRef,
   RefObject,
@@ -7,9 +10,10 @@ import {
   useState,
 } from "react"
 import { createRoot } from "react-dom/client"
-import { Editable, useEditor } from './entry/index'
+import { Editable, useEditor, OnImageChangeHandler } from './entry/index'
 
 export { Editable, useEditor }
+export type { OnImageChangeHandler }
 
 /**
  * The options passed into the standalone version of Wysimark.
