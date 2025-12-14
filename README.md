@@ -6,9 +6,11 @@ wysimark ( https://github.com/portive/wysimark ) is a modern and clean rich text
 
 Thanks to the original author of wysimark, portive m(_ _)m
 
+[日本語版 README はこちら](README_ja.md)
+
 ## Demo
 
-You can try out  the editor using storybook in the following link:
+You can try out the editor using storybook in the following link:
 https://takeshy.github.io/wysimark-lite
 
 ## Usage
@@ -107,10 +109,18 @@ pin "wysimark-lite", to: "https://cdn.jsdelivr.net/npm/wysimark-lite@latest/dist
   - Markdown shortcuts (e.g., `**` for **bold**, `#` for heading)
   - Keyboard shortcuts (e.g., `Ctrl/Cmd + B` for bold)
   - Japanese localized UI (toolbar and menu items in Japanese)
+- **Enhanced Link Editing**:
+  - Edit link text and tooltip directly in the link dialog
+  - Both insert and edit dialogs support text and tooltip fields
 - **Enhanced List Support**:
   - Nested lists support (create hierarchical lists with multiple levels)
   - Mix different list types in the hierarchy
+- **Enhanced Table Editing**:
+  - Press `Enter` in a table cell to insert a line break (soft break)
+  - Press `Shift+Enter` to move to the next cell
+  - Press `Tab` in the last cell to exit the table and create a new paragraph
 - **Smart Block Splitting**: When applying heading/paragraph styles to multi-line blocks, only the selected lines are converted
+- **Cursor Position Preservation**: Cursor position is maintained after element type conversion (e.g., paragraph to heading)
 
 ## Browser Support
 
