@@ -1,5 +1,6 @@
 import styled from "@emotion/styled"
 import { useCallback, useRef, useState } from "react"
+import { Node } from "slate"
 import { useSlateStatic } from "slate-react"
 
 import { $Panel } from "../../shared-overlays"
@@ -11,7 +12,6 @@ import {
   $FormHint,
   $Input,
   $PrimaryButton,
-  $Textarea,
 } from "../../shared-styles"
 import { useLayer } from "../../use-layer"
 import { useAbsoluteReposition } from "../../use-reposition"
@@ -47,15 +47,22 @@ export function AnchorEditDialog({
   const editor = useSlateStatic()
 
   const [href, setHref] = useState<string>(element.href)
+  const [text, setText] = useState<string>(Node.string(element))
   const [title, setTitle] = useState<string>(element.title || "")
 
-  const formRef = useRef({ href, title })
-  formRef.current = { href, title }
+  const formRef = useRef({ href, text, title })
+  formRef.current = { href, text, title }
 
   const handleHrefChange = useCallback<
     React.ChangeEventHandler<HTMLInputElement>
   >((e) => {
     setHref(e.target.value)
+  }, [])
+
+  const handleTextChange = useCallback<
+    React.ChangeEventHandler<HTMLInputElement>
+  >((e) => {
+    setText(e.target.value)
   }, [])
 
   const handleTitleChange = useCallback<
@@ -75,8 +82,8 @@ export function AnchorEditDialog({
   }, [destAnchor, destStartEdge, element])
 
   const handleSubmit = useCallback(() => {
-    const { href, title } = formRef.current
-    editor.anchor.editLink({ href, title }, { at: element })
+    const { href, text, title } = formRef.current
+    editor.anchor.editLink({ href, text, title }, { at: element })
     openAnchorDialog()
   }, [openAnchorDialog])
 
@@ -84,7 +91,12 @@ export function AnchorEditDialog({
     <$AnchorEditDialog contentEditable={false} style={style}>
       <$FormGroup>
         <$FormCaption>{t("linkUrl")}</$FormCaption>
-        <$Textarea as="textarea" value={href} onChange={handleHrefChange} />
+        <$Input type="text" value={href} onChange={handleHrefChange} />
+      </$FormGroup>
+      <$FormGroup>
+        <$FormCaption>{t("linkText")}</$FormCaption>
+        <$Input type="text" value={text} onChange={handleTextChange} />
+        <$FormHint>{t("linkTextHint")}</$FormHint>
       </$FormGroup>
       <$FormGroup>
         <$FormCaption>{t("tooltipText")}</$FormCaption>

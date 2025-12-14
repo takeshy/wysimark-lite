@@ -18,6 +18,8 @@ interface Translations {
     checkList: string;
     list: string;
     linkUrl: string;
+    linkText: string;
+    linkTextHint: string;
     tooltipText: string;
     tooltipHint: string;
     apply: string;
@@ -66,6 +68,8 @@ export const translations: Translations = {
     checkList: "チェックリスト",
     list: "リスト",
     linkUrl: "リンクのURL",
+    linkText: "リンクテキスト",
+    linkTextHint: "リンクとして表示されるテキスト",
     tooltipText: "ツールチップテキスト",
     tooltipHint: "マウスホバー時に表示されるツールチップ",
     apply: "適用",
@@ -111,6 +115,8 @@ export const translations: Translations = {
     checkList: "Check List",
     list: "List",
     linkUrl: "Link URL",
+    linkText: "Link Text",
+    linkTextHint: "Text displayed as the link",
     tooltipText: "Tooltip Text",
     tooltipHint: "Tooltip shown on mouse hover",
     apply: "Apply",
@@ -147,7 +153,7 @@ const getLanguage = (): string => {
     if (typeof window !== 'undefined' && window.navigator) {
       return window.navigator.language.split("-")[0];
     }
-  } catch (e) {
+  } catch {
     // Ignore any errors
   }
   // Default to 'en' in server environment
