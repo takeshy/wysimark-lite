@@ -5,6 +5,7 @@ interface Translations {
     strike: string;
     inlineCode: string;
     underline: string;
+    highlight: string;
     increaseDepth: string;
     decreaseDepth: string;
     heading1: string;
@@ -55,6 +56,7 @@ export const translations: Translations = {
     strike: "取り消し線",
     inlineCode: "インラインコード",
     underline: "下線",
+    highlight: "ハイライト",
     increaseDepth: "階層を深くする",
     decreaseDepth: "階層を浅くする",
     heading1: "見出し1",
@@ -102,6 +104,7 @@ export const translations: Translations = {
     strike: "Strikethrough",
     inlineCode: "Inline Code",
     underline: "Underline",
+    highlight: "Highlight",
     increaseDepth: "Increase Depth",
     decreaseDepth: "Decrease Depth",
     heading1: "Heading 1",

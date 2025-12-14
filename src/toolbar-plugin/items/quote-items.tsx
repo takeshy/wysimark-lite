@@ -58,7 +58,7 @@ const quoteItemsList: MenuItemData[] = [
         // Handle multi-paragraph selection
         // This is more complex and would require custom handling
         // For simplicity, we'll just create a code block with default behavior
-        editor.codeBlock.createCodeBlock({ language: "text" });
+        editor.codeBlock?.createCodeBlock({ language: "text" });
         return;
       }
 
@@ -88,9 +88,10 @@ const quoteItemsList: MenuItemData[] = [
       }
 
       // Case 3: Default case - create a new empty code block
-      editor.codeBlock.createCodeBlock({ language: "text" });
+      editor.codeBlock?.createCodeBlock({ language: "text" });
     },
     active: (editor) => !!findElementUp(editor, "code-block"),
+    show: (editor) => !!editor.codeBlock && !editor.wysimark?.disableCodeBlock,
   },
 ]
 

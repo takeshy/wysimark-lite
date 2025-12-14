@@ -95,6 +95,14 @@ export function serializeLine(
     substrings.push(convertMarksToSymbolsExceptCode(leadingDiff.add))
 
     /**
+     * Check if highlight mark is being added - if so, output <mark> tag
+     */
+    const hasHighlightOpen = leadingDiff.add.includes("highlight" as MarkKey)
+    if (hasHighlightOpen) {
+      substrings.push("<mark>")
+    }
+
+    /**
      * Then we add the Text or the Anchor for the segment
      */
     substrings.push(serializeSegment(segment))
@@ -108,6 +116,15 @@ export function serializeLine(
      */
     const nextMarks = getNextMarks(segments, i, trailingMarks)
     const trailingDiff = diffMarks(leadingDiff.nextOrderedMarks, nextMarks)
+
+    /**
+     * Check if highlight mark is being removed - if so, output </mark> tag
+     */
+    const hasHighlightClose = trailingDiff.remove.includes("highlight" as MarkKey)
+    if (hasHighlightClose) {
+      substrings.push("</mark>")
+    }
+
     substrings.push(convertMarksToSymbolsExceptCode(trailingDiff.remove))
 
     /**

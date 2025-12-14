@@ -12,6 +12,7 @@ function getMarks(editor: Editor) {
     strike: marks?.strike || false,
     code: marks?.code || false,
     underline: marks?.underline || false,
+    highlight: marks?.highlight || false,
   }
 }
 
@@ -50,6 +51,13 @@ const primaryMarkItems: MenuItemData[] = [
     hotkey: "mod+u",
     action: (editor) => editor.marksPlugin.toggleUnderline(),
     active: (editor) => getMarks(editor).underline,
+  },
+  {
+    icon: Icon.Highlight,
+    title: t("highlight"),
+    action: (editor) => editor.marksPlugin.toggleHighlight(),
+    active: (editor) => getMarks(editor).highlight,
+    show: (editor) => !editor.wysimark?.disableHighlight,
   },
 ]
 

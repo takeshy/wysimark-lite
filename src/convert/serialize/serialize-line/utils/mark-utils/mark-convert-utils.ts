@@ -17,16 +17,21 @@ export const MARK_KEY_TO_TOKEN = {
    * This is handled in the `serializeLine` code.
    */
   code: "",
+  /**
+   * Highlight is handled specially in `serializeLine` using <mark> tags.
+   */
+  highlight: "",
 } as Record<MarkKey, string>
 
 /**
- * Convert a single mark to a string
+ * Convert a single mark to a string.
+ * Unknown marks (e.g., custom plugin marks like "highlight") are ignored
+ * and return an empty string.
  */
 function convertMarkToSymbol(mark: MarkKey): string {
   if (mark in MARK_KEY_TO_TOKEN) return MARK_KEY_TO_TOKEN[mark]
-  throw new Error(
-    `Could not find mark ${JSON.stringify(mark)} in MARK_KEY_TO_TOKEN lookup`
-  )
+  // Ignore unknown marks (custom plugin marks)
+  return ""
 }
 
 /**

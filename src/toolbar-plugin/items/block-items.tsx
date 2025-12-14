@@ -8,15 +8,17 @@ const listDepthItems: MenuItemData[] = [
     icon: Icon.IncreaseDepth,
     title: t("increaseDepth"),
     hotkey: "tab",
-    action: (editor) => editor.list.increaseDepth(),
-    active: (editor) => editor.list.canIncreaseDepth(),
+    action: (editor) => editor.list?.increaseDepth(),
+    active: (editor) => editor.list?.canIncreaseDepth() ?? false,
+    show: (editor) => !!editor.list,
   },
   {
     icon: Icon.DecreaseDepth,
     title: t("decreaseDepth"),
     hotkey: "shift+tab",
-    action: (editor) => editor.list.decreaseDepth(),
-    active: (editor) => editor.list.canDecreaseDepth(),
+    action: (editor) => editor.list?.decreaseDepth(),
+    active: (editor) => editor.list?.canDecreaseDepth() ?? false,
+    show: (editor) => !!editor.list,
   },
 ]
 

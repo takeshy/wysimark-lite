@@ -24,7 +24,10 @@ import { PasteMarkdownPlugin } from "../paste-markdown-plugin"
 import { PlaceholderPlugin } from "../placeholder-plugin"
 import { WysimarkEditor } from "./types"
 
-export const plugins = [
+/**
+ * Default plugins array (all built-in plugins in correct order)
+ */
+export const defaultPlugins = [
   PasteMarkdownPlugin,
   ConvertElementPlugin,
   AnchorPlugin,
@@ -45,6 +48,11 @@ export const plugins = [
   ImagePlugin,
   PlaceholderPlugin,
 ]
+
+/**
+ * @deprecated Use defaultPlugins instead
+ */
+export const plugins = defaultPlugins
 
 export type PluginTypes = ExtractCustomTypes<typeof plugins>
 

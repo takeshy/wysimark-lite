@@ -19,8 +19,6 @@ export type WysimarkEditor = {
       markdown: string
       children: Descendant[]
     }
-    // prevMarkdown: string
-    // prevValue: Descendant[]
 
     /**
      * Whether the editor is in Raw mode
@@ -41,6 +39,26 @@ export type WysimarkEditor = {
      * Persisted state for the image dialog
      */
     imageDialogState?: ImageDialogState
+
+    /**
+     * Whether raw mode is disabled
+     */
+    disableRawMode?: boolean
+
+    /**
+     * Whether task list is disabled
+     */
+    disableTaskList?: boolean
+
+    /**
+     * Whether code block is disabled
+     */
+    disableCodeBlock?: boolean
+
+    /**
+     * Whether highlight mark is disabled
+     */
+    disableHighlight?: boolean
   }
   /**
    * Public methods for the wysimark editor.

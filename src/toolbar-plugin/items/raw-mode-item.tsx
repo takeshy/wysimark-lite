@@ -12,9 +12,9 @@ export const rawModeItem: MenuItemData = {
             editor.wysimark.toggleRawMode();
         }
     },
-    // Only show in the toolbar when not in Raw mode
+    // Only show in the toolbar when not in Raw mode and toggleRawMode is available
     show: (editor) => {
-        return editor.wysimark && !editor.wysimark.isRawMode;
+        return editor.wysimark && typeof editor.wysimark.toggleRawMode === 'function' && !editor.wysimark.isRawMode;
     },
     active: () => false, // Never show as active in the toolbar
 }

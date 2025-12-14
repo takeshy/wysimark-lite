@@ -107,15 +107,16 @@ export function Editable({
    * don't want to call the `onChange` callback.
    *
    * If it's neither, then it passes the call to the throttled `onChange` method.
+   *
+   * Note: We no longer do reference comparison here because mark changes
+   * (like custom highlight marks) may modify text nodes without changing
+   * the children array reference. The throttle function handles rate limiting.
    */
   const onSlateChange = useCallback(
     (nextValue: Descendant[]) => {
       if (ignoreNextChangeRef.current) {
         ignoreNextChangeRef.current = false
         prevValueRef.current = nextValue
-        return
-      }
-      if (prevValueRef.current === nextValue) {
         return
       }
       prevValueRef.current = nextValue
@@ -258,7 +259,10 @@ export function Editable({
   // Set the Raw mode state and toggle function on the editor
   // This allows the toolbar to access these properties
   editor.wysimark.isRawMode = isRawMode;
-  editor.wysimark.toggleRawMode = handleRawModeToggle;
+  // Only set toggleRawMode if raw mode is not disabled
+  if (!editor.wysimark.disableRawMode) {
+    editor.wysimark.toggleRawMode = handleRawModeToggle;
+  }
   editor.wysimark.onImageChange = onImageChange;
 
   return (

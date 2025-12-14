@@ -37,6 +37,33 @@ const Editor: React.FC = () => {
 };
 ```
 
+### エディタオプション
+
+`useEditor` フックは以下のオプションを受け付けます:
+
+```tsx
+const editor = useEditor({
+  // Rawマークダウン編集モードを有効化 (デフォルト: true = 無効)
+  disableRawMode: false,
+
+  // ハイライト機能を有効化 (デフォルト: true = 無効)
+  disableHighlight: false,
+
+  // タスクリスト/チェックリストを無効化 (デフォルト: false)
+  disableTaskList: true,
+
+  // コードブロックを無効化 (デフォルト: false)
+  disableCodeBlock: true,
+});
+```
+
+| オプション | デフォルト | 説明 |
+|--------|---------|-------------|
+| `disableRawMode` | `true` | `false`にすると、WYSIWYGとRawマークダウン編集を切り替えるボタンが表示される |
+| `disableHighlight` | `true` | `false`にすると、ツールバーにハイライトボタンが表示される。ハイライトはMarkdownで`<mark>text</mark>`として保存される |
+| `disableTaskList` | `false` | `true`にすると、タスクリスト（チェックリスト）ボタンがツールバーから非表示になる |
+| `disableCodeBlock` | `false` | `true`にすると、コードブロックボタンがツールバーから非表示になる |
+
 ### 画像アップロード機能付き
 
 `onImageChange` コールバックを指定することで、画像ファイルのアップロード機能を有効にできます:
@@ -102,8 +129,10 @@ pin "wysimark-lite", to: "https://cdn.jsdelivr.net/npm/wysimark-lite@latest/dist
 ## 機能
 
 - **モダンなデザイン**: Reactアプリケーションにシームレスに統合できる、クリーンでモダンなインターフェース
-- **Markdownモード**: WYSIWYGモードと生のMarkdown編集モードを切り替え可能
+- **Markdownモード**: WYSIWYGモードと生のMarkdown編集モードを切り替え可能（`disableRawMode: false`で有効化）
+- **ハイライト機能**: テキストを`<mark>`タグでハイライト（`disableHighlight: false`で有効化）
 - **画像アップロード対応**: `onImageChange` コールバックを指定すると、ファイル選択やドラッグ＆ドロップで画像をアップロード可能
+- **コードブロックの言語指定**: 言語ラベルをクリックして任意の言語名を入力可能
 - **使いやすいインターフェース**:
   - シンプルなツールバー（トグルボタンでクリックして書式を適用/解除）
   - Markdownショートカット（例: `**` で**太字**、`#` で見出し）

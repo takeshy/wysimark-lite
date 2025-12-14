@@ -35,8 +35,14 @@ function parsePhrasingContent(
       })
     case "footnoteReference":
       return [{ text: `[${phrasingContent.identifier}]` }]
-    case "html":
+    case "html": {
+      // Check for <mark>...</mark> pattern for highlight support
+      const markMatch = phrasingContent.value.match(/^<mark>(.*)<\/mark>$/s)
+      if (markMatch) {
+        return [{ text: markMatch[1], ...marks, highlight: true }]
+      }
       return [{ text: phrasingContent.value, code: true }]
+    }
     case "image":
       return parseInlineImage(phrasingContent)
     case "inlineCode": {

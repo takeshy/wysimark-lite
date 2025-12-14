@@ -17,7 +17,11 @@ const meta: Meta<typeof Editable> = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-const EditorWrapper: React.FC<{
+// ============================================================================
+// Basic Editor (Default Options)
+// ============================================================================
+
+const BasicEditorWrapper: React.FC<{
     initialValue?: string;
     onChange?: (value: string) => void;
 }> = ({ initialValue = '', onChange }) => {
@@ -31,6 +35,15 @@ const EditorWrapper: React.FC<{
 
     return (
         <div style={{ width: '100%', padding: '16px', boxSizing: 'border-box' }}>
+            <div style={{ marginBottom: '10px', padding: '10px', background: '#f5f5f5', borderRadius: '4px' }}>
+                <strong>Default Options:</strong>
+                <ul style={{ margin: '5px 0', paddingLeft: '20px', fontSize: '14px' }}>
+                    <li>Raw mode: disabled (default)</li>
+                    <li>Highlight: disabled (default)</li>
+                    <li>Task list: enabled</li>
+                    <li>Code block: enabled</li>
+                </ul>
+            </div>
             <Editable
                 editor={editor}
                 value={value}
@@ -41,82 +54,235 @@ const EditorWrapper: React.FC<{
 }
 
 export const Default: Story = {
-    render: (args) => <EditorWrapper onChange={args.onChange} />
-}
-
-export const WithInitialValue: Story = {
-    render: (args) => <EditorWrapper
+    render: (args) => <BasicEditorWrapper
         onChange={args.onChange}
         initialValue={`# Welcome to Wysimark
 
-This is a **rich text editor** with _markdown_ support.`}
+This is a **rich text editor** with _markdown_ support.
+
+- List item 1
+- List item 2
+
+Try the toolbar buttons above!`}
     />
 }
 
-// Test case: Image followed by heading (with proper newlines)
-export const ImageWithHeading: Story = {
-    render: (args) => <EditorWrapper
-        onChange={args.onChange}
-        initialValue={`![alt text](https://example.com/image.png)
+// ============================================================================
+// With Raw Mode Enabled
+// ============================================================================
 
-# Heading After Image
-
-This should render correctly with the heading.`}
-    />
-}
-
-// Test case: Broken data - Image directly followed by heading (no newlines)
-export const BrokenImageHeading: Story = {
-    render: (args) => <EditorWrapper
-        onChange={args.onChange}
-        initialValue={`![alt text](https://example.com/image.png)# Heading Without Newline
-
-This is broken data that was saved incorrectly.`}
-    />
-}
-
-// Debug wrapper that shows current value
-const DebugEditorWrapper: React.FC<{
+const RawModeEditorWrapper: React.FC<{
     initialValue?: string;
     onChange?: (value: string) => void;
 }> = ({ initialValue = '', onChange }) => {
     const [value, setValue] = React.useState(initialValue)
-    const editor = useEditor({})
+    const editor = useEditor({
+        disableRawMode: false,  // Enable raw mode
+    })
 
     const handleChange = (newValue: string) => {
-        console.log('[DEBUG] onChange called with:', JSON.stringify(newValue.substring(0, 200)))
         setValue(newValue)
         onChange?.(newValue)
     }
 
     return (
         <div style={{ width: '100%', padding: '16px', boxSizing: 'border-box' }}>
+            <div style={{ marginBottom: '10px', padding: '10px', background: '#e3f2fd', borderRadius: '4px' }}>
+                <strong>Raw Mode Enabled:</strong>
+                <p style={{ margin: '5px 0', fontSize: '14px' }}>
+                    Click the markdown icon in the toolbar to switch to raw markdown editing mode.
+                </p>
+            </div>
+            <Editable
+                editor={editor}
+                value={value}
+                onChange={handleChange}
+            />
+        </div>
+    )
+}
+
+export const WithRawMode: Story = {
+    render: (args) => <RawModeEditorWrapper
+        onChange={args.onChange}
+        initialValue={`# Raw Mode Example
+
+Click the **markdown icon** in the toolbar to switch to raw mode.
+
+You can edit the raw markdown directly and switch back to visual mode.`}
+    />
+}
+
+// ============================================================================
+// With Highlight Enabled
+// ============================================================================
+
+const HighlightEditorWrapper: React.FC<{
+    initialValue?: string;
+    onChange?: (value: string) => void;
+}> = ({ initialValue = '', onChange }) => {
+    const [value, setValue] = React.useState(initialValue)
+    const editor = useEditor({
+        disableHighlight: false,  // Enable highlight
+    })
+
+    const handleChange = (newValue: string) => {
+        setValue(newValue)
+        onChange?.(newValue)
+    }
+
+    return (
+        <div style={{ width: '100%', padding: '16px', boxSizing: 'border-box' }}>
+            <div style={{ marginBottom: '10px', padding: '10px', background: '#fff9c4', borderRadius: '4px' }}>
+                <strong>Highlight Enabled:</strong>
+                <p style={{ margin: '5px 0', fontSize: '14px' }}>
+                    Select text and click the highlighter icon to apply highlight.
+                    Highlight is saved as <code>&lt;mark&gt;text&lt;/mark&gt;</code> in markdown.
+                </p>
+            </div>
             <Editable
                 editor={editor}
                 value={value}
                 onChange={handleChange}
             />
             <div style={{ marginTop: '20px', padding: '10px', background: '#f0f0f0', borderRadius: '4px' }}>
-                <h4>Current Value (JSON escaped):</h4>
+                <h4>Current Markdown:</h4>
                 <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all', fontSize: '12px' }}>
-                    {JSON.stringify(value)}
+                    {value}
                 </pre>
             </div>
         </div>
     )
 }
 
-// Debug story to see raw value changes
-export const DebugRawMode: Story = {
-    render: (args) => <DebugEditorWrapper
+export const WithHighlight: Story = {
+    render: (args) => <HighlightEditorWrapper
         onChange={args.onChange}
-        initialValue={`![alt text](https://example.com/image.png)# Heading Without Newline
+        initialValue={`# Highlight Example
 
-This is broken data. Try switching to raw mode and adding newlines.`}
+Select some text and click the **highlighter icon** in the toolbar.
+
+The highlight will be saved as <mark>highlighted text</mark> in markdown.`}
     />
 }
 
-// Wrapper with onImageChange callback for file upload
+// ============================================================================
+// All Features Enabled
+// ============================================================================
+
+const AllFeaturesEditorWrapper: React.FC<{
+    initialValue?: string;
+    onChange?: (value: string) => void;
+}> = ({ initialValue = '', onChange }) => {
+    const [value, setValue] = React.useState(initialValue)
+    const editor = useEditor({
+        disableRawMode: false,
+        disableHighlight: false,
+    })
+
+    const handleChange = (newValue: string) => {
+        setValue(newValue)
+        onChange?.(newValue)
+    }
+
+    return (
+        <div style={{ width: '100%', padding: '16px', boxSizing: 'border-box' }}>
+            <div style={{ marginBottom: '10px', padding: '10px', background: '#e8f5e9', borderRadius: '4px' }}>
+                <strong>All Features Enabled:</strong>
+                <ul style={{ margin: '5px 0', paddingLeft: '20px', fontSize: '14px' }}>
+                    <li>Raw mode: enabled</li>
+                    <li>Highlight: enabled</li>
+                    <li>Task list: enabled</li>
+                    <li>Code block: enabled</li>
+                </ul>
+            </div>
+            <Editable
+                editor={editor}
+                value={value}
+                onChange={handleChange}
+            />
+        </div>
+    )
+}
+
+export const AllFeatures: Story = {
+    render: (args) => <AllFeaturesEditorWrapper
+        onChange={args.onChange}
+        initialValue={`# All Features Example
+
+All features are enabled:
+
+- [x] Task list works
+- [ ] Unchecked item
+
+\`\`\`javascript
+// Code block works
+console.log("Hello World")
+\`\`\`
+
+Try the **highlight** and **raw mode** buttons in the toolbar!`}
+    />
+}
+
+// ============================================================================
+// Disabled Features Example
+// ============================================================================
+
+const DisabledFeaturesEditorWrapper: React.FC<{
+    initialValue?: string;
+    onChange?: (value: string) => void;
+}> = ({ initialValue = '', onChange }) => {
+    const [value, setValue] = React.useState(initialValue)
+    const editor = useEditor({
+        disableTaskList: true,
+        disableCodeBlock: true,
+    })
+
+    const handleChange = (newValue: string) => {
+        setValue(newValue)
+        onChange?.(newValue)
+    }
+
+    return (
+        <div style={{ width: '100%', padding: '16px', boxSizing: 'border-box' }}>
+            <div style={{ marginBottom: '10px', padding: '10px', background: '#ffebee', borderRadius: '4px' }}>
+                <strong>Disabled Features:</strong>
+                <ul style={{ margin: '5px 0', paddingLeft: '20px', fontSize: '14px' }}>
+                    <li>Task list: <strong>disabled</strong></li>
+                    <li>Code block: <strong>disabled</strong></li>
+                    <li>Raw mode: disabled (default)</li>
+                    <li>Highlight: disabled (default)</li>
+                </ul>
+            </div>
+            <Editable
+                editor={editor}
+                value={value}
+                onChange={handleChange}
+            />
+        </div>
+    )
+}
+
+export const DisabledFeatures: Story = {
+    render: (args) => <DisabledFeaturesEditorWrapper
+        onChange={args.onChange}
+        initialValue={`# Disabled Features Example
+
+Task list and code block buttons are hidden from the toolbar.
+
+- Regular list still works
+- But task list button is hidden
+
+Normal lists work fine:
+1. Numbered item 1
+2. Numbered item 2`}
+    />
+}
+
+// ============================================================================
+// With Image Upload
+// ============================================================================
+
 const ImageUploadEditorWrapper: React.FC<{
     initialValue?: string;
     onChange?: (value: string) => void;
@@ -131,34 +297,36 @@ const ImageUploadEditorWrapper: React.FC<{
     }
 
     const handleImageChange = async (file: File): Promise<string> => {
-        // Simulate upload delay
-        const log = `Uploading: ${file.name} (${file.size} bytes, ${file.type})`
-        console.log('[ImageUpload]', log)
+        const log = `Uploading: ${file.name} (${file.size} bytes)`
         setUploadLog(prev => [...prev, log])
 
+        // Simulate upload delay
         await new Promise(resolve => setTimeout(resolve, 1500))
 
-        // Create a fake URL (in real app, this would be the uploaded URL from server)
         const fakeUrl = `https://example.com/uploads/${Date.now()}-${file.name}`
-        const successLog = `Uploaded: ${fakeUrl}`
-        console.log('[ImageUpload]', successLog)
-        setUploadLog(prev => [...prev, successLog])
+        setUploadLog(prev => [...prev, `Done: ${fakeUrl}`])
 
         return fakeUrl
     }
 
     return (
         <div style={{ width: '100%', padding: '16px', boxSizing: 'border-box' }}>
+            <div style={{ marginBottom: '10px', padding: '10px', background: '#e8f4e8', borderRadius: '4px' }}>
+                <strong>Image Upload:</strong>
+                <p style={{ margin: '5px 0', fontSize: '14px' }}>
+                    Click the image button and select "ファイル" to upload an image file.
+                </p>
+            </div>
             <Editable
                 editor={editor}
                 value={value}
                 onChange={handleChange}
                 onImageChange={handleImageChange}
             />
-            <div style={{ marginTop: '20px', padding: '10px', background: '#e8f4e8', borderRadius: '4px' }}>
-                <h4>Image Upload Log:</h4>
+            <div style={{ marginTop: '20px', padding: '10px', background: '#f0f0f0', borderRadius: '4px' }}>
+                <h4>Upload Log:</h4>
                 {uploadLog.length === 0 ? (
-                    <p style={{ color: '#666', fontSize: '14px' }}>No uploads yet. Click the image button in the toolbar and select "ファイル" to upload.</p>
+                    <p style={{ color: '#666', fontSize: '14px' }}>No uploads yet.</p>
                 ) : (
                     <ul style={{ fontSize: '12px', margin: 0, paddingLeft: '20px' }}>
                         {uploadLog.map((log, i) => (
@@ -171,26 +339,60 @@ const ImageUploadEditorWrapper: React.FC<{
     )
 }
 
-// Story with onImageChange callback for file upload functionality
 export const WithImageUpload: Story = {
     render: (args) => <ImageUploadEditorWrapper
         onChange={args.onChange}
         initialValue={`# Image Upload Example
 
-Click the image button in the toolbar to see the file upload option.
+Click the image button in the toolbar.
 
-When onImageChange prop is provided, a radio button appears to switch between URL and File upload modes.`}
+When onImageChange prop is provided, you can upload files directly.`}
     />
 }
 
-// Test case: Multi-line heading - place cursor on second line and click "標準" to split
-export const MultiLineHeadingTest: Story = {
+// ============================================================================
+// Debug Mode (shows markdown output)
+// ============================================================================
+
+const DebugEditorWrapper: React.FC<{
+    initialValue?: string;
+    onChange?: (value: string) => void;
+}> = ({ initialValue = '', onChange }) => {
+    const [value, setValue] = React.useState(initialValue)
+    const editor = useEditor({
+        disableRawMode: false,
+        disableHighlight: false,
+    })
+
+    const handleChange = (newValue: string) => {
+        setValue(newValue)
+        onChange?.(newValue)
+    }
+
+    return (
+        <div style={{ width: '100%', padding: '16px', boxSizing: 'border-box' }}>
+            <Editable
+                editor={editor}
+                value={value}
+                onChange={handleChange}
+            />
+            <div style={{ marginTop: '20px', padding: '10px', background: '#f0f0f0', borderRadius: '4px' }}>
+                <h4>Current Markdown:</h4>
+                <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all', fontSize: '12px', background: '#fff', padding: '10px', borderRadius: '4px' }}>
+                    {value}
+                </pre>
+            </div>
+        </div>
+    )
+}
+
+export const DebugMode: Story = {
     render: (args) => <DebugEditorWrapper
         onChange={args.onChange}
-        initialValue={`# Welcome to
-Wysimark
+        initialValue={`# Debug Mode
 
-Place cursor on "Wysimark" line and click "標準" (Normal).
-Expected: "Welcome to" stays as Heading 1, "Wysimark" becomes normal paragraph.`}
+Edit the content above and see the markdown output below.
+
+All features are enabled for testing.`}
     />
 }

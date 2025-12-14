@@ -37,6 +37,33 @@ const Editor: React.FC = () => {
 };
 ```
 
+### Editor Options
+
+The `useEditor` hook accepts the following options:
+
+```tsx
+const editor = useEditor({
+  // Enable raw markdown editing mode (default: true = disabled)
+  disableRawMode: false,
+
+  // Enable highlight mark feature (default: true = disabled)
+  disableHighlight: false,
+
+  // Disable task list / checklist (default: false)
+  disableTaskList: true,
+
+  // Disable code block (default: false)
+  disableCodeBlock: true,
+});
+```
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `disableRawMode` | `true` | When `false`, shows a toggle button to switch between WYSIWYG and raw Markdown editing |
+| `disableHighlight` | `true` | When `false`, shows a highlight button in the toolbar. Highlight is saved as `<mark>text</mark>` in Markdown |
+| `disableTaskList` | `false` | When `true`, hides the task list (checklist) button from the toolbar |
+| `disableCodeBlock` | `false` | When `true`, hides the code block button from the toolbar |
+
 ### With Image Upload
 
 You can enable image file upload by providing the `onImageChange` callback:
@@ -102,8 +129,10 @@ pin "wysimark-lite", to: "https://cdn.jsdelivr.net/npm/wysimark-lite@latest/dist
 ## Features
 
 - **Modern Design**: Clean and contemporary interface that integrates seamlessly with React applications
-- **Raw Markdown Mode**: Switch between WYSIWYG and raw Markdown editing modes
+- **Raw Markdown Mode**: Switch between WYSIWYG and raw Markdown editing modes (enable with `disableRawMode: false`)
+- **Highlight Support**: Highlight text with `<mark>` tags (enable with `disableHighlight: false`)
 - **Image Upload Support**: Upload images via file picker or drag and drop when `onImageChange` callback is provided
+- **Code Block with Custom Language**: Click on the language label to enter any language name
 - **User-Friendly Interface**:
   - Simplified toolbar with toggle buttons (click to activate/deactivate formatting)
   - Markdown shortcuts (e.g., `**` for **bold**, `#` for heading)
