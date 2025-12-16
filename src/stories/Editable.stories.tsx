@@ -396,3 +396,63 @@ Edit the content above and see the markdown output below.
 All features are enabled for testing.`}
     />
 }
+
+// ============================================================================
+// With HTML Block (iframe, video embed, etc.)
+// ============================================================================
+
+const HtmlBlockEditorWrapper: React.FC<{
+    initialValue?: string;
+    onChange?: (value: string) => void;
+}> = ({ initialValue = '', onChange }) => {
+    const [value, setValue] = React.useState(initialValue)
+    const editor = useEditor({
+        disableRawMode: false,
+    })
+
+    const handleChange = (newValue: string) => {
+        setValue(newValue)
+        onChange?.(newValue)
+    }
+
+    return (
+        <div style={{ width: '100%', padding: '16px', boxSizing: 'border-box' }}>
+            <div style={{ marginBottom: '10px', padding: '10px', background: '#f3e5f5', borderRadius: '4px' }}>
+                <strong>HTML Block Support:</strong>
+                <p style={{ margin: '5px 0', fontSize: '14px' }}>
+                    Raw HTML (iframe, video embeds, etc.) is preserved as read-only blocks.
+                    The HTML is output as-is when serializing to markdown.
+                </p>
+            </div>
+            <Editable
+                editor={editor}
+                value={value}
+                onChange={handleChange}
+            />
+            <div style={{ marginTop: '20px', padding: '10px', background: '#f0f0f0', borderRadius: '4px' }}>
+                <h4>Current Markdown:</h4>
+                <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all', fontSize: '12px', background: '#fff', padding: '10px', borderRadius: '4px' }}>
+                    {value}
+                </pre>
+            </div>
+        </div>
+    )
+}
+
+export const WithHtmlBlock: Story = {
+    render: (args) => <HtmlBlockEditorWrapper
+        onChange={args.onChange}
+        initialValue={`# HTML Block Example
+
+This editor preserves raw HTML blocks like video embeds:
+
+<div class="video-wrapper"><iframe src="https://player.vimeo.com/video/123456"></iframe></div>
+
+The HTML block above is displayed as a read-only block in the editor.
+
+Regular markdown formatting still works:
+
+- **Bold text**
+- *Italic text*`}
+    />
+}

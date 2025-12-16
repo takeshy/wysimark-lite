@@ -86,7 +86,7 @@ export function Editable({
   const onThrottledSlateChange = useCallback(
     throttle(
       () => {
-        const markdown = serialize(editor.children as Element[])
+        const markdown = unescapeUrlSlashes(serialize(editor.children as Element[]))
         editor.wysimark.prevValue = {
           markdown,
           children: editor.children,
