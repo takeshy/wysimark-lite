@@ -28,17 +28,16 @@ export function ImageUrlDialog({
 
     // Persist dialog values in editor.wysimark so they survive dialog close/reopen
     const savedState = editor.wysimark?.imageDialogState
-    const hasOnImageSave = !!editor.wysimark?.onImageSave
+    const hasOnImageChange = !!editor.wysimark?.onImageChange
 
     const [url, setUrl] = useState(savedState?.url ?? "")
     const [alt, setAlt] = useState(savedState?.alt ?? "")
     const [title, setTitle] = useState(savedState?.title ?? "")
     const [titleManuallyEdited, setTitleManuallyEdited] = useState(false)
-    const [imageSource, setImageSource] = useState<ImageSource>(savedState?.imageSource ?? (hasOnImageSave ? "file" : "url"))
-    const [vaultPath, setVaultPath] = useState(savedState?.vaultPath ?? "")
-    const [selectedFile, setSelectedFile] = useState<File | undefined>(savedState?.selectedFile)
-    const [isSaving, setIsSaving] = useState(false)
-    const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+    const [imageSource, setImageSource] = useState<ImageSource>(savedState?.imageSource ?? (hasOnImageChange ? "file" : "url"))
+    const [isUploading, setIsUploading] = useState(false)
+    const [uploadedUrl, setUploadedUrl] = useState(savedState?.uploadedUrl ?? "")
+    const [uploadedFileName, setUploadedFileName] = useState("")
 
     // Handlers for alt and title with sync
     const handleAltChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,23 +54,12 @@ export function ImageUrlDialog({
         setTitleManuallyEdited(true)
     }, [])
 
-    // Create preview URL when file is selected
-    useEffect(() => {
-        if (selectedFile) {
-            const url = URL.createObjectURL(selectedFile)
-            setPreviewUrl(url)
-            return () => URL.revokeObjectURL(url)
-        } else {
-            setPreviewUrl(null)
-        }
-    }, [selectedFile])
-
     // Save state to editor when values change
     useEffect(() => {
         if (editor.wysimark) {
-            editor.wysimark.imageDialogState = { url, alt, title, imageSource, vaultPath, selectedFile }
+            editor.wysimark.imageDialogState = { url, alt, title, imageSource, uploadedUrl }
         }
-    }, [url, alt, title, imageSource, vaultPath, selectedFile])
+    }, [url, alt, title, imageSource, uploadedUrl])
 
     // Clear state on successful submit or cancel
     const clearState = () => {
@@ -101,27 +89,14 @@ export function ImageUrlDialog({
         top: (baseStyle.top as number) + dragOffset.y,
     }
 
-    async function handleSubmit(e: React.FormEvent) {
+    function handleSubmit(e: React.FormEvent) {
         e.preventDefault()
+        const finalUrl = imageSource === "file" ? uploadedUrl : url
+        if (finalUrl.trim() === "") return
 
-        if (imageSource === "file" && selectedFile && editor.wysimark?.onImageSave) {
-            if (vaultPath.trim() === "") return
-
-            setIsSaving(true)
-            try {
-                const resultPath = await editor.wysimark.onImageSave(selectedFile, vaultPath)
-                editor.image.insertImageFromUrl(resultPath, alt, title)
-                clearState()
-                close()
-            } finally {
-                setIsSaving(false)
-            }
-        } else if (imageSource === "url") {
-            if (url.trim() === "") return
-            editor.image.insertImageFromUrl(url, alt, title)
-            clearState()
-            close()
-        }
+        editor.image.insertImageFromUrl(finalUrl, alt, title)
+        clearState()
+        close()
     }
 
     function handleCancel() {
@@ -129,14 +104,19 @@ export function ImageUrlDialog({
         close()
     }
 
-    function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    async function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
         const file = e.target.files?.[0]
-        if (!file) return
+        if (!file || !editor.wysimark?.onImageChange) return
 
-        setSelectedFile(file)
-        // Suggest a default path based on filename
-        if (!vaultPath) {
-            setVaultPath(`attachments/${file.name}`)
+        setUploadedFileName(file.name)
+        setIsUploading(true)
+        try {
+            const resultUrl = await editor.wysimark.onImageChange(file)
+            setUploadedUrl(resultUrl)
+        } catch (error) {
+            console.error("Failed to upload image:", error)
+        } finally {
+            setIsUploading(false)
         }
     }
 
@@ -145,7 +125,7 @@ export function ImageUrlDialog({
     }
 
     const isSubmitDisabled = imageSource === "file"
-        ? !selectedFile || vaultPath.trim() === "" || isSaving
+        ? uploadedUrl.trim() === "" || isUploading
         : url.trim() === ""
 
     return (
@@ -154,7 +134,7 @@ export function ImageUrlDialog({
             <$FileDialog ref={ref as unknown as React.RefObject<HTMLDivElement>} style={style}>
                 <DraggableHeader onDrag={handleDrag} />
                 <form onSubmit={(e) => void handleSubmit(e)} style={{ padding: "8px" }}>
-                    {hasOnImageSave && (
+                    {hasOnImageChange && (
                         <div style={{ marginBottom: "12px" }}>
                             <label style={{ display: "inline-flex", alignItems: "center", marginRight: "16px", cursor: "pointer" }}>
                                 <input
@@ -208,86 +188,33 @@ export function ImageUrlDialog({
                                 ref={fileInputRef}
                                 type="file"
                                 accept="image/*"
-                                onChange={handleFileSelect}
+                                onChange={(e) => void handleFileSelect(e)}
                                 style={{ display: "none" }}
                             />
                             <button
                                 type="button"
                                 onClick={handleSelectFileClick}
-                                disabled={isSaving}
+                                disabled={isUploading}
                                 style={{
                                     padding: "8px 16px",
-                                    backgroundColor: isSaving ? "#ccc" : "#0078d4",
-                                    color: isSaving ? "#666" : "white",
+                                    backgroundColor: isUploading ? "#ccc" : "#0078d4",
+                                    color: isUploading ? "#666" : "white",
                                     border: "none",
                                     borderRadius: "4px",
-                                    cursor: isSaving ? "not-allowed" : "pointer",
+                                    cursor: isUploading ? "not-allowed" : "pointer",
                                     marginBottom: "8px",
                                     fontWeight: "bold"
                                 }}
                             >
-                                {t("selectFile")}
+                                {isUploading ? t("uploading") : t("selectFile")}
                             </button>
 
-                            {selectedFile && (
-                                <div style={{ marginTop: "8px" }}>
-                                    <div style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        gap: "8px",
-                                        padding: "8px",
-                                        backgroundColor: "var(--shade-100)",
-                                        borderRadius: "4px",
-                                        marginBottom: "8px"
-                                    }}>
-                                        {previewUrl && (
-                                            <img
-                                                src={previewUrl}
-                                                alt="Preview"
-                                                style={{
-                                                    maxWidth: "60px",
-                                                    maxHeight: "60px",
-                                                    objectFit: "contain",
-                                                    borderRadius: "4px"
-                                                }}
-                                            />
-                                        )}
-                                        <div style={{ flex: 1, minWidth: 0 }}>
-                                            <div style={{
-                                                fontWeight: "bold",
-                                                overflow: "hidden",
-                                                textOverflow: "ellipsis",
-                                                whiteSpace: "nowrap"
-                                            }}>
-                                                {selectedFile.name}
-                                            </div>
-                                            <div style={{ fontSize: "12px", color: "var(--shade-500)" }}>
-                                                {(selectedFile.size / 1024).toFixed(1)} KB
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <label style={{ display: "block", marginBottom: "4px" }}>
-                                        {t("vaultPath")}
-                                    </label>
-                                    <input
-                                        type="text"
-                                        value={vaultPath}
-                                        onChange={(e) => setVaultPath(e.target.value)}
-                                        style={{
-                                            width: "100%",
-                                            padding: "6px",
-                                            boxSizing: "border-box",
-                                            border: "1px solid var(--shade-300)",
-                                            borderRadius: "4px",
-                                            backgroundColor: "var(--shade-50)",
-                                            color: "var(--shade-700)"
-                                        }}
-                                        placeholder="attachments/image.png"
-                                    />
-                                    <div style={{ fontSize: "12px", color: "var(--shade-500)", marginTop: "4px" }}>
-                                        {t("vaultPathHint")}
-                                    </div>
+                            {uploadedUrl && (
+                                <div style={{ marginTop: "8px", padding: "8px", backgroundColor: "var(--shade-100)", borderRadius: "4px" }}>
+                                    <div style={{ color: "green", marginBottom: "4px" }}>✓ {t("uploadComplete")}</div>
+                                    {uploadedFileName && (
+                                        <div style={{ fontSize: "12px", color: "var(--shade-500)" }}>{uploadedFileName}</div>
+                                    )}
                                 </div>
                             )}
                         </div>
@@ -351,7 +278,7 @@ export function ImageUrlDialog({
                                 fontWeight: "bold"
                             }}
                         >
-                            {isSaving ? t("saving") : t("register")}
+                            {t("register")}
                         </button>
                         <button
                             type="button"

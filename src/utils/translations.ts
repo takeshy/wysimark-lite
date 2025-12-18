@@ -47,6 +47,7 @@ interface Translations {
     selectFile: string;
     uploading: string;
     saving: string;
+    uploadComplete: string;
     vaultPath: string;
     vaultPathHint: string;
   };
@@ -101,6 +102,7 @@ export const translations: Translations = {
     selectFile: "ファイルを選択",
     uploading: "アップロード中...",
     saving: "保存中...",
+    uploadComplete: "アップロード完了",
     vaultPath: "保存先パス：",
     vaultPathHint: "vault内の保存先パスを入力してください",
   },
@@ -152,6 +154,7 @@ export const translations: Translations = {
     selectFile: "Select File",
     uploading: "Uploading...",
     saving: "Saving...",
+    uploadComplete: "Upload Complete",
     vaultPath: "Save Path:",
     vaultPathHint: "Enter the path within the vault to save the file",
   },

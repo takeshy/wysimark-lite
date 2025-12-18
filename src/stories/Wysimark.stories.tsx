@@ -13,6 +13,7 @@ function WysimarkEditor({
   disableHighlight,
   disableTaskList,
   disableCodeBlock,
+  enableImageUpload,
 }: {
   initialValue?: string;
   placeholder?: string;
@@ -23,6 +24,7 @@ function WysimarkEditor({
   disableHighlight?: boolean;
   disableTaskList?: boolean;
   disableCodeBlock?: boolean;
+  enableImageUpload?: boolean;
 }) {
   const [value, setValue] = useState(initialValue);
   const [showMarkdown, setShowMarkdown] = useState(false);
@@ -34,6 +36,21 @@ function WysimarkEditor({
 
   const toggleMarkdown = useCallback(() => {
     setShowMarkdown((prev) => !prev);
+  }, []);
+
+  // Mock image upload handler - converts file to data URL
+  const handleImageUpload = useCallback(async (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        // Simulate network delay
+        setTimeout(() => {
+          resolve(reader.result as string);
+        }, 1000);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
   }, []);
 
   return (
@@ -60,6 +77,7 @@ function WysimarkEditor({
           value={value}
           onChange={handleChange}
           placeholder={placeholder}
+          onImageChange={enableImageUpload ? handleImageUpload : undefined}
         />
       </div>
       {showMarkdown && (
@@ -139,6 +157,10 @@ const meta: Meta<typeof WysimarkEditor> = {
     disableCodeBlock: {
       control: 'boolean',
       description: 'Disable code block functionality',
+    },
+    enableImageUpload: {
+      control: 'boolean',
+      description: 'Enable image upload functionality with onImageChange callback',
     },
   },
 };
@@ -262,5 +284,22 @@ Try <mark>highlighted text</mark> here!
     disableHighlight: false,
     disableTaskList: false,
     disableCodeBlock: false,
+  },
+};
+
+export const WithImageUpload: Story = {
+  args: {
+    initialValue: `# Image Upload Example
+
+Click the **image icon** in the toolbar to upload an image.
+
+When \`onImageChange\` callback is provided:
+- A radio button appears to switch between URL input and file upload
+- You can also **drag and drop** image files directly into the editor
+
+Try uploading an image below!
+`,
+    placeholder: 'Start writing...',
+    enableImageUpload: true,
   },
 };

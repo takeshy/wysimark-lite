@@ -7,8 +7,7 @@ export type ImageDialogState = {
   alt: string
   title: string
   imageSource: "url" | "file"
-  vaultPath: string
-  selectedFile?: File
+  uploadedUrl?: string
 }
 
 export type WysimarkEditor = {
