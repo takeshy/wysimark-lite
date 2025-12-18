@@ -71,7 +71,6 @@ const WIDTH_BUFFER_PX = 48
 export function Toolbar() {
   const ref = useRef<HTMLDivElement>(null)
   const [items, setItems] = useState<MenuItemData[]>(initialItems)
-
   useEffect(() => {
     const refresh = throttle(
       () => {
@@ -106,7 +105,6 @@ export function Toolbar() {
       window.removeEventListener("resize", refresh)
     }
   }, [])
-
   return (
     <$ToolbarContainer ref={ref}>
       <$Toolbar>

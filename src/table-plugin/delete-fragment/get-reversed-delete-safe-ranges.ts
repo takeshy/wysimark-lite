@@ -1,6 +1,6 @@
 import { BasePoint, Editor, Path, Range } from "slate"
 
-import { findElementUpPath } from "~/src/sink"
+import { findElementUpPath } from "../../sink"
 
 export function getReversedDeleteSafeRanges(
   editor: Editor,

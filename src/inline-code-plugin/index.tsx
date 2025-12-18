@@ -1,4 +1,4 @@
-import { createHotkeyHandler, createPlugin, TypedPlugin } from "~/src/sink"
+import { createHotkeyHandler, createPlugin, TypedPlugin } from "../sink"
 
 import { $InlineCode, $InvisibleSpan } from "./styles"
 import { InlineCodePluginCustomTypes } from "./types"

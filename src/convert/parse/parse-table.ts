@@ -4,7 +4,7 @@ import {
   TableCellElement,
   TableElement,
   TableRowElement,
-} from "~/src/table-plugin"
+} from "../../table-plugin"
 
 import { parsePhrasingContents } from "./parse-phrasing-content/parse-phrasing-content"
 

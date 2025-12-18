@@ -1,7 +1,7 @@
 import { Editor, Transforms } from "slate"
 import { ReactEditor } from "slate-react"
 
-import { createPlugin, curryOne, TypedPlugin } from "~/src/sink"
+import { createPlugin, curryOne, TypedPlugin } from "../sink"
 
 import { createImageMethods } from "./methods"
 import { normalizeNode } from "./normalize-node"

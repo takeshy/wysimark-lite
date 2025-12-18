@@ -1,6 +1,6 @@
 import { MouseEvent, useCallback } from "react"
 
-import { useLayer } from "~/src/use-layer"
+import { useLayer } from "../use-layer"
 
 import { Tooltip } from "./tooltip"
 import { Triangle } from "./triangle"

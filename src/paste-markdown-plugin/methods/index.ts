@@ -1,6 +1,6 @@
 import { Editor, Transforms } from "slate"
 
-import { curryOne } from "~/src/sink"
+import { curryOne } from "../../sink"
 
 import { parse, escapeUrlSlashes } from "../../convert"
 

@@ -1,6 +1,6 @@
 import { Descendant } from "slate"
 
-import { createPlugin, curryOne } from "~/src/sink"
+import { createPlugin, curryOne } from "../sink"
 
 import { TypedPlugin } from "../sink/types/plugin/plugin"
 import { onPaste } from "./editable/on-paste"

@@ -1,6 +1,6 @@
 import { Editor, Element, NodeEntry, Path } from "slate"
 
-import { findElementUp } from "~/src/sink"
+import { findElementUp } from "../sink"
 
 export function isSafeDelete(
   editor: Editor,

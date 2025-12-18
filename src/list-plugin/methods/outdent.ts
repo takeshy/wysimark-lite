@@ -1,6 +1,6 @@
 import { Editor } from "slate"
 
-import { setNodesDynamic } from "~/src/sink"
+import { setNodesDynamic } from "../../sink"
 
 import { isListItem, ListItemElement } from ".."
 

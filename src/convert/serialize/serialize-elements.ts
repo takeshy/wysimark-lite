@@ -76,22 +76,23 @@ export function serializeElements(elements: Element[]): string {
 }
 
 /**
- * Replace two leading newlines with a non-breaking space to indicate a
+ * Replace two leading newlines with a backslash to indicate a
  * paragraph that won't be collapsed.
+ * Using backslash (Markdown hard line break) for Obsidian compatibility.
  */
 function replaceLeadingNewlines(input: string): string {
-  return input.replace(/^\n\n/g, "&nbsp;\n\n")
+  return input.replace(/^\n\n/g, "\\\n\n")
 }
 
 /**
  * In the rest of the Markdown, replace four or more consecutive newlines with
- * non-breaking spaces and newlines to indicate a paragraph that won't be
- * collapsed.
+ * backslashes and newlines to indicate a paragraph that won't be collapsed.
+ * Using backslash (Markdown hard line break) for Obsidian compatibility.
  */
 function replaceConsecutiveNewlines(input: string): string {
   return input.replace(/(\n{4,})/g, (match) => {
     const newlineCount = match.length
     const count = Math.floor((newlineCount - 2) / 2)
-    return "\n\n" + Array(count).fill("&nbsp;").join("\n\n") + "\n\n"
+    return "\n\n" + Array(count).fill("\\").join("\n\n") + "\n\n"
   })
 }

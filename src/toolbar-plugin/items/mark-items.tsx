@@ -1,8 +1,8 @@
 import { Editor } from "slate"
-import { MenuItemData } from "~/src/shared-overlays"
+import { MenuItemData } from "../../shared-overlays"
 
 import * as Icon from "../icons"
-import { t } from "~/src/utils/translations"
+import { t } from "../../utils/translations"
 
 function getMarks(editor: Editor) {
   const marks = Editor.marks(editor)
@@ -55,9 +55,10 @@ const primaryMarkItems: MenuItemData[] = [
   {
     icon: Icon.Highlight,
     title: t("highlight"),
+    hotkey: "mod+h",
     action: (editor) => editor.marksPlugin.toggleHighlight(),
     active: (editor) => getMarks(editor).highlight,
-    show: (editor) => !editor.wysimark?.disableHighlight,
+    show: (editor) => !editor.wysimark.disableHighlight,
   },
 ]
 

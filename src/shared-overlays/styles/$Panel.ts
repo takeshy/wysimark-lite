@@ -1,6 +1,6 @@
 import styled from "@emotion/styled"
 
-import { SinkReset } from "~/src/sink/editable"
+import { SinkReset } from "../../sink/editable"
 
 /**
  * $Panel is a nice box that goes around a Drop Down menu or a Dialog Box.

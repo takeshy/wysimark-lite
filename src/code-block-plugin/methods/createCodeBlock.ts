@@ -1,6 +1,6 @@
 import { Editor } from "slate"
 
-import { insertRootElement } from "~/src/sink"
+import { insertRootElement } from "../../sink"
 
 import { BuiltInLanguage } from "../types"
 

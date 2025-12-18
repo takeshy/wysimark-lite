@@ -1,6 +1,6 @@
 import { Editor, Element, Location, Path, Transforms } from "slate"
 
-import { findElementUp } from "~/src/sink"
+import { findElementUp } from "../.."
 
 /**
  * Inserts an Element into the document such that if it is in a `isMaster`

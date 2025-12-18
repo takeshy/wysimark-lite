@@ -1,6 +1,6 @@
 import { useSelected } from "slate-react"
 
-import { ConstrainedRenderElementProps } from "~/src/sink"
+import { ConstrainedRenderElementProps } from "../sink"
 
 import { HorizontalRuleElement } from "."
 import { $HorizontalRule } from "./styles"

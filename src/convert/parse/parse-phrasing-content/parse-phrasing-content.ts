@@ -6,6 +6,19 @@ import { normalizeSegments } from "./normalize-segments"
 import { parseInlineImage } from "./parse-inline-image"
 import { Descendant } from "slate"
 
+/**
+ * Parse inline HTML content, with special handling for <mark> tags
+ */
+function parseInlineHtml(htmlValue: string, marks: MarkProps): Segment[] {
+  // Check for <mark>...</mark> pattern
+  const markMatch = htmlValue.match(/^<mark>(.+?)<\/mark>$/s)
+  if (markMatch) {
+    return [{ text: markMatch[1], ...marks, highlight: true }]
+  }
+  // For other HTML, treat as code
+  return [{ text: htmlValue, code: true }]
+}
+
 export function parsePhrasingContents(
   phrasingContents: PhrasingContent[],
   marks: MarkProps = {}
@@ -35,14 +48,8 @@ function parsePhrasingContent(
       })
     case "footnoteReference":
       return [{ text: `[${phrasingContent.identifier}]` }]
-    case "html": {
-      // Check for <mark>...</mark> pattern for highlight support
-      const markMatch = phrasingContent.value.match(/^<mark>(.*)<\/mark>$/s)
-      if (markMatch) {
-        return [{ text: markMatch[1], ...marks, highlight: true }]
-      }
-      return [{ text: phrasingContent.value, code: true }]
-    }
+    case "html":
+      return parseInlineHtml(phrasingContent.value, marks)
     case "image":
       return parseInlineImage(phrasingContent)
     case "inlineCode": {

@@ -1,6 +1,6 @@
 import { Global } from "@emotion/react"
 
-import { createPlugin, TypedPlugin } from "~/src/sink"
+import { createPlugin, TypedPlugin } from "../sink"
 
 import { globalStyles } from "./global-styles"
 

@@ -1,7 +1,7 @@
 import { clsx } from "clsx"
 import { useSelected } from "slate-react"
 
-import { ConstrainedRenderElementProps } from "~/src/sink"
+import { ConstrainedRenderElementProps } from "../../sink"
 
 import { ParagraphElement } from ".."
 import { $Paragraph } from "./styles"

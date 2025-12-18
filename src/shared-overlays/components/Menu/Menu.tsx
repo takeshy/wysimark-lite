@@ -1,7 +1,7 @@
 import { useRef } from "react"
 import { useSlateStatic } from "slate-react"
 
-import { useAbsoluteReposition } from "~/src/use-reposition"
+import { useAbsoluteReposition } from "../../../use-reposition"
 
 import { $Menu, $MenuDivider } from "../../../toolbar-plugin/styles"
 import { MenuItemData } from "../../types"

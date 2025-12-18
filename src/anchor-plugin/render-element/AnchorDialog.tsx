@@ -1,5 +1,5 @@
 import styled from "@emotion/styled"
-import { useCallback } from "react"
+import { useCallback, useState } from "react"
 import { useSlateStatic } from "slate-react"
 
 import { $Panel } from "../../shared-overlays"
@@ -8,14 +8,15 @@ import { useAbsoluteReposition } from "../../use-reposition"
 import { useTooltip } from "../../use-tooltip"
 import { AnchorElement } from "../index"
 import { AnchorEditDialog } from "./AnchorEditDialog"
-import { ExternalLinkIcon, LinkOffIcon, PencilIcon } from "./icons"
+import { CloseIcon, ExternalLinkIcon, LinkOffIcon, PencilIcon } from "./icons"
+import { DraggableHeader } from "../../toolbar-plugin/components/dialog/DraggableHeader"
 
 const $AnchorDialog = styled($Panel)`
   position: absolute;
-  display: flex;
   width: 20em;
-  z-index: 10;
-  padding: 1em;
+  z-index: 1000;
+  padding: 0;
+  overflow: hidden;
   color: var(--shade-400);
 
   .--icons {
@@ -117,7 +118,13 @@ export function AnchorDialog({
   const dialog = useLayer("dialog")
   const editor = useSlateStatic()
   const url = parseUrl(element.href)
-  const style = useAbsoluteReposition(
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
+
+  const handleDrag = useCallback((deltaX: number, deltaY: number) => {
+    setDragOffset(prev => ({ x: prev.x + deltaX, y: prev.y + deltaY }))
+  }, [])
+
+  const baseStyle = useAbsoluteReposition(
     { destAnchor, destStartEdge },
     ({ destAnchor, destStartEdge }) => {
       return {
@@ -127,8 +134,19 @@ export function AnchorDialog({
     }
   )
 
+  const style = {
+    ...baseStyle,
+    left: (baseStyle.left as number) + dragOffset.x,
+    top: (baseStyle.top as number) + dragOffset.y,
+  }
+
   const removeTooltip = useTooltip({ title: "リンクを削除" })
   const editTooltip = useTooltip({ title: "リンクを編集" })
+  const closeTooltip = useTooltip({ title: "閉じる" })
+
+  const closeDialog = useCallback(() => {
+    dialog.close()
+  }, [dialog])
 
   const removeLink = useCallback(() => {
     editor.anchor.removeLink({ at: element })
@@ -156,41 +174,52 @@ export function AnchorDialog({
 
   return (
     <$AnchorDialog contentEditable={false} style={style}>
-      <a
-        className="--link"
-        href={element.href}
-        target="_blank"
-        rel="noreferrer"
-      >
-        <ExternalLinkIcon />
-        <div className="--url">
-          <div className="--hostname">{url.hostname}</div>
-          {url.pathname === "" || url.pathname === "/" ? null : (
-            <div className="--pathname">{url.pathname}</div>
-          )}
-          {element.title == null || element.title === "" ? null : (
-            <div className="--tooltip">{element.title}</div>
-          )}
-        </div>
-      </a>
-      <span className="--icons">
-        <span
-          className="--icon"
-          onClick={removeLink}
-          onMouseEnter={removeTooltip.onMouseEnter}
-          onMouseLeave={removeTooltip.onMouseLeave}
+      <DraggableHeader onDrag={handleDrag} />
+      <div style={{ display: "flex", padding: "1em" }}>
+        <a
+          className="--link"
+          href={element.href}
+          target="_blank"
+          rel="noreferrer"
         >
-          <LinkOffIcon />
+          <ExternalLinkIcon />
+          <div className="--url">
+            <div className="--hostname">{url.hostname}</div>
+            {url.pathname === "" || url.pathname === "/" ? null : (
+              <div className="--pathname">{url.pathname}</div>
+            )}
+            {element.title == null || element.title === "" ? null : (
+              <div className="--tooltip">{element.title}</div>
+            )}
+          </div>
+        </a>
+        <span className="--icons">
+          <span
+            className="--icon"
+            onClick={removeLink}
+            onMouseEnter={removeTooltip.onMouseEnter}
+            onMouseLeave={removeTooltip.onMouseLeave}
+          >
+            <LinkOffIcon />
+          </span>
+          <span
+            className="--icon"
+            onMouseEnter={editTooltip.onMouseEnter}
+            onMouseLeave={editTooltip.onMouseLeave}
+            onClick={openEditDialog}
+          >
+            <PencilIcon />
+          </span>
+          <span
+            className="--icon"
+            onClick={closeDialog}
+            onMouseEnter={closeTooltip.onMouseEnter}
+            onMouseLeave={closeTooltip.onMouseLeave}
+          >
+            <CloseIcon />
+          </span>
         </span>
-        <span
-          className="--icon"
-          onMouseEnter={editTooltip.onMouseEnter}
-          onMouseLeave={editTooltip.onMouseLeave}
-          onClick={openEditDialog}
-        >
-          <PencilIcon />
-        </span>
-      </span>
+      </div>
     </$AnchorDialog>
   )
 }

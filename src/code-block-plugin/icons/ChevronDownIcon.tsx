@@ -1,6 +1,6 @@
 import { SVGProps } from "react"
 
-import { TablerIcon } from "~/src/sink"
+import { TablerIcon } from "../../sink"
 
 export const ChevronDownIcon = (props: SVGProps<SVGSVGElement>) => (
   <TablerIcon {...props}>

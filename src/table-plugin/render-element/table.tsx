@@ -1,7 +1,7 @@
 import { useEffect } from "react"
 import { ReactEditor, useSelected, useSlateStatic } from "slate-react"
 
-import { ConstrainedRenderElementProps } from "~/src/sink"
+import { ConstrainedRenderElementProps } from "../../sink"
 
 import { normalizeTableIndexes } from "../normalize/normalize-table"
 import { TableElement } from "../types"

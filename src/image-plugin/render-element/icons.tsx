@@ -1,6 +1,6 @@
 import { SVGProps } from "react"
 
-import { TablerIcon } from "~/src/sink"
+import { TablerIcon } from "../../sink"
 
 export const ResizeIcon = (props: SVGProps<SVGSVGElement>) => (
   <TablerIcon {...props}>

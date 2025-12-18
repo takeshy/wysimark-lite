@@ -11,9 +11,10 @@ import {
 } from "react"
 import { createRoot } from "react-dom/client"
 import { Editable, useEditor, OnImageChangeHandler } from './entry/index'
+import type { UseEditorOptions } from './entry/useEditor'
 
 export { Editable, useEditor }
-export type { OnImageChangeHandler }
+export type { OnImageChangeHandler, UseEditorOptions }
 
 /**
  * The options passed into the standalone version of Wysimark.
@@ -116,7 +117,7 @@ export function createWysimark(
     unmount() {
       try {
         root.unmount()
-      } catch (e) {
+      } catch {
         /* ignore */
       }
     },

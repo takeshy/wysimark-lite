@@ -1,6 +1,6 @@
 import { Editor } from "slate"
 
-import { VoidActionReturn } from "~/src/sink"
+import { VoidActionReturn } from "../../../sink"
 
 import { autocompleteMark } from "./autocomplete-mark"
 

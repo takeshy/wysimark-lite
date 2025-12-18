@@ -17,52 +17,22 @@ export type UseEditorOptions = {
    * Disable raw Markdown editing mode.
    * When true, the raw mode toggle button will be hidden from the toolbar.
    * Defaults to true (raw mode is disabled by default).
-   *
-   * @example
-   * ```tsx
-   * const editor = useEditor({
-   *   disableRawMode: false  // Enable raw mode
-   * })
-   * ```
    */
   disableRawMode?: boolean
   /**
    * Disable task list (checklist) functionality.
-   * When true, the task list button will be hidden from the toolbar
-   * and task list creation will be disabled.
-   *
-   * @example
-   * ```tsx
-   * const editor = useEditor({
-   *   disableTaskList: true
-   * })
-   * ```
+   * When true, the task list button will be hidden from the toolbar.
    */
   disableTaskList?: boolean
   /**
    * Disable code block functionality.
    * When true, the code block button will be hidden from the toolbar.
-   *
-   * @example
-   * ```tsx
-   * const editor = useEditor({
-   *   disableCodeBlock: true
-   * })
-   * ```
    */
   disableCodeBlock?: boolean
   /**
    * Disable highlight mark functionality.
    * When true, the highlight button will be hidden from the toolbar.
-   * Highlight is serialized as <mark>text</mark> in markdown.
    * Defaults to true (highlight is disabled by default).
-   *
-   * @example
-   * ```tsx
-   * const editor = useEditor({
-   *   disableHighlight: false  // Enable highlight
-   * })
-   * ```
    */
   disableHighlight?: boolean
 }

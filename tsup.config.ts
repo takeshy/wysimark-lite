@@ -27,7 +27,7 @@ export default defineConfig([{
 {
   entry: ["src/index.tsx"],
   format: ["esm"],
-  dts: true,
+  dts: false,
   outDir: "dist/",
   tsconfig: "./tsconfig.tsup.json",
   splitting: true,

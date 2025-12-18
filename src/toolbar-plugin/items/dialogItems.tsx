@@ -1,10 +1,10 @@
-import { MenuItemData } from "~/src/shared-overlays"
+import { MenuItemData } from "../../shared-overlays"
 
 import { TableDialog } from "../components"
 import { ImageUrlDialog } from "../components/dialog/image-url-dialog"
 import { AnchorDialog } from "../components/dialog/anchor-dialog"
 import * as Icon from "../icons"
-import { t } from "~/src/utils/translations"
+import { t } from "../../utils/translations"
 
 export const dialogItems: MenuItemData[] = [
   {

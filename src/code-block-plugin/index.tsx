@@ -7,7 +7,7 @@ import {
   findElementUp,
   isCollapsed,
   TypedPlugin,
-} from "~/src/sink"
+} from "../sink"
 
 import { decorate } from "./decorate"
 import { createCodeBlockMethods } from "./methods"

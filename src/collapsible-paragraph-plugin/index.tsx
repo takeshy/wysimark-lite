@@ -5,7 +5,7 @@ import {
   createPlugin,
   curryOne,
   TypedPlugin,
-} from "~/src/sink"
+} from "../sink"
 
 import { normalizeNode } from "./normalize-node"
 import { Paragraph } from "./render-element/paragraph"

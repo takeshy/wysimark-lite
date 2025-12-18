@@ -1,4 +1,4 @@
-import { ImageSharedElement } from "~/src/image-plugin/types"
+import { ImageSharedElement } from "../../../image-plugin/types"
 
 /**
  * As a fallback, if there is no width/height or srcWidth/srcHeight info then

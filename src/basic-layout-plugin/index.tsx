@@ -1,7 +1,7 @@
 import { clsx } from "clsx"
 import { useFocused } from "slate-react"
 
-import { createPlugin, RenderEditable } from "~/src/sink"
+import { createPlugin, RenderEditable } from "../sink"
 
 import { $Editable } from "./styles"
 

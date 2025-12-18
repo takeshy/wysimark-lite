@@ -1,6 +1,6 @@
 import { Editor } from "slate"
 
-import { curryOne } from "~/src/sink"
+import { curryOne } from "../../sink"
 
 import { addConvertElementType } from "./add-convert-element-type"
 import { convertElements, CurriedConvertElements } from "./convert-elements"

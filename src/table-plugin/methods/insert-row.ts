@@ -1,6 +1,6 @@
 import { Editor, Transforms } from "slate"
 
-import { BetterAt } from "~/src/sink"
+import { BetterAt } from "../../sink"
 
 import { TableRowElement } from "../types"
 import { getTableInfo } from "./get-table-info"

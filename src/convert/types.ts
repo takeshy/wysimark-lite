@@ -1,6 +1,6 @@
-import { AnchorElement } from "~/src/anchor-plugin"
-import type { Element, Text } from "~/src/entry"
-import { ImageInlineElement } from "~/src/image-plugin/types"
+import { AnchorElement } from "../anchor-plugin"
+import type { Element, Text } from "../entry"
+import { ImageInlineElement } from "../image-plugin/types"
 
 export { Element, Text }
 export type Segment = Text | AnchorElement | ImageInlineElement

@@ -1,6 +1,6 @@
 import { Editor, Path, Transforms } from "slate"
 
-import { findElementUpPath } from "~/src/sink"
+import { findElementUpPath } from "../../sink"
 
 import { getReversedDeleteSafeRanges } from "./get-reversed-delete-safe-ranges"
 

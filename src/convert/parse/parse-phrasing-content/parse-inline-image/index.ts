@@ -1,6 +1,6 @@
 import type { Image } from "mdast"
 
-import { ImageSharedElement } from "~/src/image-plugin/types"
+import { ImageSharedElement } from "../../../../image-plugin/types"
 
 import { Segment } from "../../../types"
 import { imageParsers } from "./image-parsers"

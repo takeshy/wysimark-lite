@@ -1,6 +1,6 @@
 import { Editor, Element, Transforms } from "slate"
 
-import { BetterAt, findElementUp } from "~/src/sink"
+import { BetterAt, findElementUp } from "../../sink"
 
 import { BuiltInLanguage } from "../types"
 

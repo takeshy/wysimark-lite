@@ -1,7 +1,7 @@
 import { useCallback } from "react"
 import { useSlateStatic } from "slate-react"
 
-import { useTooltip } from "~/src/use-tooltip"
+import { useTooltip } from "../../../../../use-tooltip"
 
 import { $ImageButton } from "../../../../styles/image-with-controls-styles/image-buttons-styles"
 import { ImageBlockElement, ImageInlineElement } from "../../../../types"

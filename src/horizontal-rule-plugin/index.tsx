@@ -1,4 +1,4 @@
-import { createHotkeyHandler, createPlugin, TypedPlugin } from "~/src/sink"
+import { createHotkeyHandler, createPlugin, TypedPlugin } from "../sink"
 
 import { HorizontalRule } from "./horizontal-rule"
 import { createHorizontalRuleMethods } from "./methods"

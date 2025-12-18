@@ -5,7 +5,8 @@ import { diffMarks } from "./diff-marks"
 import { normalizeLine } from "./normalize-line"
 import { serializeSegment } from "./segment/serialize-segment"
 import {
-  convertMarksToSymbolsExceptCode,
+  convertMarksToOpenSymbols,
+  convertMarksToCloseSymbols,
   getMarksFromSegment,
   isPlainSpace,
 } from "./utils"
@@ -92,15 +93,7 @@ export function serializeLine(
      * First we start by adding the symbols needed to add the marks to this
      * segment.
      */
-    substrings.push(convertMarksToSymbolsExceptCode(leadingDiff.add))
-
-    /**
-     * Check if highlight mark is being added - if so, output <mark> tag
-     */
-    const hasHighlightOpen = leadingDiff.add.includes("highlight" as MarkKey)
-    if (hasHighlightOpen) {
-      substrings.push("<mark>")
-    }
+    substrings.push(convertMarksToOpenSymbols(leadingDiff.add))
 
     /**
      * Then we add the Text or the Anchor for the segment
@@ -116,16 +109,7 @@ export function serializeLine(
      */
     const nextMarks = getNextMarks(segments, i, trailingMarks)
     const trailingDiff = diffMarks(leadingDiff.nextOrderedMarks, nextMarks)
-
-    /**
-     * Check if highlight mark is being removed - if so, output </mark> tag
-     */
-    const hasHighlightClose = trailingDiff.remove.includes("highlight" as MarkKey)
-    if (hasHighlightClose) {
-      substrings.push("</mark>")
-    }
-
-    substrings.push(convertMarksToSymbolsExceptCode(trailingDiff.remove))
+    substrings.push(convertMarksToCloseSymbols(trailingDiff.remove))
 
     /**
      * The `trailingDiff` becomes the new `leadingDiff`

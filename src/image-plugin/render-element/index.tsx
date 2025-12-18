@@ -1,4 +1,4 @@
-import { ConstrainedRenderElementProps } from "~/src/sink"
+import { ConstrainedRenderElementProps } from "../../sink"
 
 import { ImageBlockElement, ImageInlineElement } from "../types"
 import { ImageBlock } from "./image-block"

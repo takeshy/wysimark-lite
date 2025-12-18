@@ -1,11 +1,10 @@
-import { MenuItemData } from "~/src/shared-overlays"
+import { MenuItemData } from "../../shared-overlays"
 
 import { expandedBlockItems, compactBlockItems } from "./block-items"
 import { compactDialogItems, expandedDialogItems, smallDialogItems } from "./dialogItems"
 import { compactMarkItems, expandedMarkItems } from "./mark-items"
 import { expandedListItems, compactListItems } from "./list-items"
 import { expandedQuoteItems, compactQuoteItems } from "./quote-items"
-import { rawModeItem, visualModeItem } from "./raw-mode-item"
 
 /**
  * A collection of `Item` objects that describe either
@@ -27,9 +26,6 @@ export const largeItems: MenuItemData[] = [
   ...expandedDialogItems,
   "divider",
   ...expandedQuoteItems,
-  "divider",
-  rawModeItem,
-  visualModeItem,
 ]
 
 export const mediumItems: MenuItemData[] = [
@@ -42,9 +38,6 @@ export const mediumItems: MenuItemData[] = [
   ...compactDialogItems,
   "divider",
   ...expandedQuoteItems,
-  "divider",
-  rawModeItem,
-  visualModeItem,
 ]
 
 export const smallItems: MenuItemData[] = [
@@ -57,9 +50,6 @@ export const smallItems: MenuItemData[] = [
   ...smallDialogItems,
   "divider",
   ...compactQuoteItems,
-  "divider",
-  rawModeItem,
-  visualModeItem,
 ]
 
 export const initialItems: MenuItemData[] = smallItems

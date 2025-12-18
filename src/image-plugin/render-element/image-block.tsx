@@ -1,6 +1,6 @@
 import { useSlateStatic } from "slate-react"
 
-import { ConstrainedRenderElementProps } from "~/src/sink"
+import { ConstrainedRenderElementProps } from "../../sink"
 
 import { $ImageBlock } from "../styles/image-block-styles"
 import { ImageBlockElement } from "../types"

@@ -1,5 +1,5 @@
-import { Editor, Element } from "slate"
-import { findElementUp, isStartOfElement } from "~/src/sink"
+import { Editor } from "slate"
+import { findElementUp, isStartOfElement } from "../../sink"
 import { isListItem } from ".."
 import { ListItemElement } from "../types"
 

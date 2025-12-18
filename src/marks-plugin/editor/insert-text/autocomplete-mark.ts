@@ -1,6 +1,6 @@
 import { Editor, Range, Text, Transforms } from "slate"
 
-import { VoidActionReturn } from "~/src/sink"
+import { VoidActionReturn } from "../../../sink"
 
 import { getRangeBackwards } from "./get-range-backwards"
 import { getTextBeforePointInBlock } from "./get-text-before-point-in-block"

@@ -1,7 +1,8 @@
-import { createSink } from "~/src/sink"
+import { createSink } from "../sink"
 
-import { defaultPlugins, PluginTypes } from "./plugins"
+import { plugins, PluginTypes } from "./plugins"
 
-const { withSink, SinkEditable } = createSink<PluginTypes>(defaultPlugins)
+const Sink = createSink<PluginTypes>(plugins)
 
+const { withSink, SinkEditable } = Sink
 export { SinkEditable, withSink }

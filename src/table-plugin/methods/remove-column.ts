@@ -1,6 +1,6 @@
 import { Editor, Transforms } from "slate"
 
-import { BetterAt } from "~/src/sink"
+import { BetterAt } from "../../sink"
 
 import { getTableInfo } from "./get-table-info"
 import { removeTable } from "./remove-table"

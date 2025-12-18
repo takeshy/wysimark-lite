@@ -1,6 +1,6 @@
 import { Editor, Point } from "slate"
 
-import { createPlugin, forceNormalizePath, TypedPlugin } from "~/src/sink"
+import { createPlugin, forceNormalizePath, TypedPlugin } from "../sink"
 
 export type NormalizeAfterDeleteEditor = {
   normalizeAfterDelete: true

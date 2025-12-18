@@ -2,7 +2,7 @@ import { clsx } from "clsx"
 import { useEffect } from "react"
 import { ReactEditor, useSlateStatic } from "slate-react"
 
-import { ConstrainedRenderElementProps } from "~/src/sink"
+import { ConstrainedRenderElementProps } from "../../sink"
 
 import { normalizeOrderedFirstAtDepth } from "../normalize-node"
 import { OrderedListItemElement as OrderedListItemElement } from "../types"

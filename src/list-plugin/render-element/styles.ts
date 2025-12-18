@@ -1,6 +1,6 @@
 import styled from "@emotion/styled"
 
-import { isDebug } from "~/src/sink"
+import { isDebug } from "../../sink"
 
 const $ListItem = styled("li")`
   margin-top: 0.5em;

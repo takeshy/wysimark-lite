@@ -1,6 +1,6 @@
 import { Editor, Element, Node, NodeEntry, Transforms } from "slate"
 
-import { createIsElementType, normalizeSiblings } from "~/src/sink"
+import { createIsElementType, normalizeSiblings } from "../../sink"
 
 import { isListItem, OrderedListItemElement } from ".."
 

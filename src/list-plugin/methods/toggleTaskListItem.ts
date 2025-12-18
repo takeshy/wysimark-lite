@@ -1,6 +1,6 @@
 import { Editor, Transforms } from "slate"
 
-import { BetterAt, findElementUp } from "~/src/sink"
+import { BetterAt, findElementUp } from "../../sink"
 
 import { TaskListItemElement } from "../types"
 

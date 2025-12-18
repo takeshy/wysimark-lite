@@ -1,6 +1,6 @@
 import { Editor, Path, Transforms } from "slate"
 
-import { selectStartOfElement } from "~/src/sink"
+import { selectStartOfElement } from "../../sink"
 
 import { getTableInfo } from "./get-table-info"
 import { insertRowBelow } from "./insert-row"

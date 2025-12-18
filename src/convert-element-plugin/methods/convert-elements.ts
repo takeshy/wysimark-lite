@@ -1,6 +1,6 @@
 import { Editor, Element, Node, Path, Point, Range, Transforms } from "slate"
 
-import { rewrapElement, TargetElement } from "~/src/sink"
+import { rewrapElement, TargetElement } from "../../sink"
 
 /**
  * Calculates the character offset of a point within an element.
@@ -283,6 +283,14 @@ export function convertElements<T extends Element = Element>(
   if (!selection) return false
 
   /**
+   * Save the cursor position (anchor offset) within the first convertible element
+   * so we can restore it after conversion
+   */
+  let savedAnchorOffset = -1
+  let savedFocusOffset = -1
+  const isCollapsed = Range.isCollapsed(selection)
+
+  /**
    * Find convertible elements
    */
   const entries = Array.from(
@@ -292,18 +300,6 @@ export function convertElements<T extends Element = Element>(
         editor.convertElement.isConvertibleElement(node),
     })
   )
-  /**
-   * If there aren't any convertible elements, there's nothing to do
-   */
-  if (entries.length === 0) return false
-
-  /**
-   * Save the cursor position (anchor offset) within the first convertible element
-   * so we can restore it after conversion
-   */
-  let savedAnchorOffset = -1
-  let savedFocusOffset = -1
-  let isCollapsed = Range.isCollapsed(selection)
 
   /**
    * Save cursor offset relative to the first entry before any transformations
@@ -313,6 +309,10 @@ export function convertElements<T extends Element = Element>(
     savedAnchorOffset = getOffsetInElement(editor, selection.anchor, firstPath)
     savedFocusOffset = getOffsetInElement(editor, selection.focus, firstPath)
   }
+  /**
+   * If there aren't any convertible elements, there's nothing to do
+   */
+  if (entries.length === 0) return false
 
   /**
    * Split elements that contain newlines at selected line boundaries

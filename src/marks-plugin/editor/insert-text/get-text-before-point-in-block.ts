@@ -1,6 +1,6 @@
 import { Editor, Element, Point } from "slate"
 
-import { findElementUp } from "~/src/sink"
+import { findElementUp } from "../../../sink"
 
 /**
  * Takes a Point anywhere in the editor and returns the text text in the current

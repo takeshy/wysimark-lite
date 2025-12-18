@@ -7,7 +7,8 @@ export type ImageDialogState = {
   alt: string
   title: string
   imageSource: "url" | "file"
-  uploadedUrl: string
+  vaultPath: string
+  selectedFile?: File
 }
 
 export type WysimarkEditor = {
@@ -21,19 +22,14 @@ export type WysimarkEditor = {
     }
 
     /**
-     * Whether the editor is in Raw mode
-     */
-    isRawMode?: boolean
-
-    /**
-     * Function to toggle Raw mode
-     */
-    toggleRawMode?: () => void
-
-    /**
-     * Handler for image file upload
+     * Handler for image change
      */
     onImageChange?: OnImageChangeHandler
+
+    /**
+     * Handler for markdown change (used by raw mode)
+     */
+    onChange?: (markdown: string) => void
 
     /**
      * Persisted state for the image dialog

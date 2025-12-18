@@ -1,4 +1,4 @@
-import { ImageSharedElement } from "~/src/image-plugin/types"
+import { ImageSharedElement } from "../../../image-plugin/types"
 
 import { parseUrl } from "../../parseUrl"
 

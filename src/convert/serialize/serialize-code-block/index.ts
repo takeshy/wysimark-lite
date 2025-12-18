@@ -1,4 +1,4 @@
-import { CodeBlockElement } from "~/src/code-block-plugin"
+import { CodeBlockElement } from "../../../code-block-plugin"
 
 import { serializeCodeLine } from "./serialize-code-line"
 

@@ -8,7 +8,7 @@ import {
   findElementUp,
   isStartOfElement,
   TypedPlugin,
-} from "~/src/sink"
+} from "../sink"
 
 import { createListMethods } from "./methods"
 import { normalizeNode } from "./normalize-node"

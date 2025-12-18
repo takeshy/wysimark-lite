@@ -1,6 +1,6 @@
 import { Editor } from "slate"
 
-import { curryOne, insertRootElement } from "~/src/sink"
+import { curryOne, insertRootElement } from "../../sink"
 
 function insertHorizontalRule(editor: Editor) {
   return insertRootElement(editor, {

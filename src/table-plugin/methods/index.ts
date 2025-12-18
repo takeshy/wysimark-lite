@@ -1,6 +1,6 @@
 import { Editor, Transforms } from "slate"
 
-import { BetterAt, curryOne } from "~/src/sink"
+import { BetterAt, curryOne } from "../../sink"
 
 import { getTableInfo } from "./get-table-info"
 import { insertColumn } from "./insert-column"

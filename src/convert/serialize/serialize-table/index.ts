@@ -4,7 +4,7 @@ import {
   TableContentElement,
   TableElement,
   TableRowElement,
-} from "~/src/table-plugin"
+} from "../../../table-plugin"
 
 import { Segment } from "../../types"
 import { assert, assertElementType } from "../../utils"

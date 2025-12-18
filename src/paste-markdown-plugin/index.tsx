@@ -1,4 +1,4 @@
-import { createPlugin, stopEvent, TypedPlugin } from "~/src/sink"
+import { createPlugin, stopEvent, TypedPlugin } from "../sink"
 
 import { createPasteMarkdownMethods } from "./methods"
 

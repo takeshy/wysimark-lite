@@ -3,7 +3,7 @@ import React from "react"
 import { useEffect, useRef } from "react"
 import { useSelected, useSlate } from "slate-react"
 
-import { ConstrainedRenderElementProps } from "~/src/sink"
+import { ConstrainedRenderElementProps } from "../../sink"
 
 import { useLayer } from "../../use-layer"
 import { AnchorElement } from "../index"

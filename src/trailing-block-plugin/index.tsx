@@ -1,6 +1,6 @@
 import { Editor, Element, Node, Path, Transforms } from "slate"
 
-import { createPlugin, TypedPlugin } from "~/src/sink"
+import { createPlugin, TypedPlugin } from "../sink"
 
 type TrailingBlockPluginCustomType = {
   Name: "trailing-block"

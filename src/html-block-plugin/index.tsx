@@ -1,6 +1,6 @@
 import { Transforms } from "slate"
 
-import { createPlugin, findElementUp, isCollapsed, TypedPlugin } from "~/src/sink"
+import { createPlugin, findElementUp, isCollapsed, TypedPlugin } from "../sink"
 
 import { HtmlBlockPluginCustomTypes } from "./types"
 import { HtmlBlock } from "./render-element"

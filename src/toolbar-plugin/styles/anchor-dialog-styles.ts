@@ -3,8 +3,9 @@ import styled from "@emotion/styled"
 import { $Panel } from "../../shared-overlays/styles/$Panel"
 
 export const $AnchorDialog = styled($Panel)`
-  padding: 1em;
   width: 24em;
+  padding: 0;
+  overflow: hidden;
 `
 export const $AnchorDialogInputLine = styled("div")`
   display: flex;
@@ -16,6 +17,7 @@ export const $AnchorDialogInput = styled("input")`
   padding: 0.5em 0.75em;
   border-radius: 0.25em;
   color: var(--shade-700);
+  background: var(--shade-50);
   border: 1px solid var(--shade-300);
   font-size: 0.9375em;
   &:focus {

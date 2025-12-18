@@ -1,6 +1,6 @@
 import { Editor } from "slate"
 
-import { curryOne } from "~/src/sink"
+import { curryOne } from "../../sink"
 
 import { createCodeBlock } from "./createCodeBlock"
 import { setCodeBlockLanguage } from "./setCodeBlockLanguage"

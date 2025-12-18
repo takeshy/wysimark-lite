@@ -1,6 +1,6 @@
 import { Editor } from "slate"
 
-import { curryOne } from "~/src/sink"
+import { curryOne } from "../../sink"
 
 import { removeMarks } from "./removeMarks"
 import { toggleMark } from "./toggle-mark"

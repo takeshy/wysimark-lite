@@ -2,33 +2,30 @@ import { BaseEditor, BaseText } from "slate"
 import { HistoryEditor } from "slate-history"
 import { ReactEditor } from "slate-react"
 
-import { AnchorPlugin } from "~/src/anchor-plugin"
-import { AtomicDeletePlugin } from "~/src/atomic-delete-plugin"
-import { ImagePlugin } from "~/src/image-plugin"
-import { BlockQuotePlugin } from "~/src/block-quote-plugin"
-import { CodeBlockPlugin } from "~/src/code-block-plugin"
-import { HtmlBlockPlugin } from "~/src/html-block-plugin"
-import { CollapsibleParagraphPlugin } from "~/src/collapsible-paragraph-plugin"
-import { ConvertElementPlugin } from "~/src/convert-element-plugin"
-import { HeadingPlugin } from "~/src/heading-plugin"
-import { HorizontalRulePlugin } from "~/src/horizontal-rule-plugin"
-import { InlineCodePlugin } from "~/src/inline-code-plugin"
-import { ListPlugin } from "~/src/list-plugin"
-import { MarksPlugin } from "~/src/marks-plugin"
-import { NormalizeAfterDeletePlugin } from "~/src/normalize-after-delete-plugin"
-import { ExtractCustomTypes } from "~/src/sink"
-import { TablePlugin } from "~/src/table-plugin"
-import { ThemePlugin } from "~/src/theme-plugin"
-import { ToolbarPlugin } from "~/src/toolbar-plugin"
-import { TrailingBlockPlugin } from "~/src/trailing-block-plugin"
+import { AnchorPlugin } from "../anchor-plugin"
+import { AtomicDeletePlugin } from "../atomic-delete-plugin"
+import { ImagePlugin } from "../image-plugin"
+import { BlockQuotePlugin } from "../block-quote-plugin"
+import { CodeBlockPlugin } from "../code-block-plugin"
+import { HtmlBlockPlugin } from "../html-block-plugin"
+import { CollapsibleParagraphPlugin } from "../collapsible-paragraph-plugin"
+import { ConvertElementPlugin } from "../convert-element-plugin"
+import { HeadingPlugin } from "../heading-plugin"
+import { HorizontalRulePlugin } from "../horizontal-rule-plugin"
+import { InlineCodePlugin } from "../inline-code-plugin"
+import { ListPlugin } from "../list-plugin"
+import { MarksPlugin } from "../marks-plugin"
+import { NormalizeAfterDeletePlugin } from "../normalize-after-delete-plugin"
+import { ExtractCustomTypes } from "../sink"
+import { TablePlugin } from "../table-plugin"
+import { ThemePlugin } from "../theme-plugin"
+import { ToolbarPlugin } from "../toolbar-plugin"
+import { TrailingBlockPlugin } from "../trailing-block-plugin"
 import { PasteMarkdownPlugin } from "../paste-markdown-plugin"
 import { PlaceholderPlugin } from "../placeholder-plugin"
 import { WysimarkEditor } from "./types"
 
-/**
- * Default plugins array (all built-in plugins in correct order)
- */
-export const defaultPlugins = [
+export const plugins = [
   PasteMarkdownPlugin,
   ConvertElementPlugin,
   AnchorPlugin,
@@ -50,11 +47,6 @@ export const defaultPlugins = [
   ImagePlugin,
   PlaceholderPlugin,
 ]
-
-/**
- * @deprecated Use defaultPlugins instead
- */
-export const plugins = defaultPlugins
 
 export type PluginTypes = ExtractCustomTypes<typeof plugins>
 

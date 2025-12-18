@@ -94,11 +94,15 @@ export type ImageSharedElement = {
 export type ImageBlockElement = {
   type: "image-block"
 } & ImageSharedElement
+
 /**
  * Default for smaller images, 48px and less
  *
  * Smaller images can be converted to block images though.
  */
+export type ImageInlineElement = {
+  type: "image-inline"
+} & ImageSharedElement
 
 export type ImagePluginCustomTypes = {
   Name: "image"

@@ -1,6 +1,6 @@
 import { Editor, Element, Location, Path } from "slate"
 
-import { findElementUp } from "~/src/sink"
+import { findElementUp } from "../../sink"
 
 import {
   TableCellElement,

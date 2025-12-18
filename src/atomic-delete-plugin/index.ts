@@ -1,6 +1,6 @@
 import { Editor, Transforms } from "slate"
 
-import { createPlugin, TypedPlugin } from "~/src/sink"
+import { createPlugin, TypedPlugin } from "../sink"
 
 import { isSafeDelete } from "./is-safe-delete"
 

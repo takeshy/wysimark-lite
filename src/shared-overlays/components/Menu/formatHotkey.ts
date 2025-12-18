@@ -1,4 +1,4 @@
-import { isMac } from "~/src/sink"
+import { isMac } from "../../../sink"
 
 /**
  * Character Reference

@@ -1,4 +1,4 @@
-import { ListItemElement } from "~/src/list-plugin/types"
+import { ListItemElement } from "../../../list-plugin/types"
 
 import { Element } from "../../types"
 

@@ -1,8 +1,8 @@
 import React, { useCallback, useRef, useState } from "react"
 import { useSlateStatic } from "slate-react"
 
-import { Menu, MenuItemData } from "~/src/shared-overlays"
-import { useLayer } from "~/src/use-layer"
+import { Menu, MenuItemData } from "../../../../shared-overlays"
+import { useLayer } from "../../../../use-layer"
 
 import {
   AlignCenter,

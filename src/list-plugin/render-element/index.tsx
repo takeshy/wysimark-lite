@@ -1,4 +1,4 @@
-import { ConstrainedRenderElementProps } from "~/src/sink"
+import { ConstrainedRenderElementProps } from "../../sink"
 
 import { ListItemElement } from "../types"
 import { OrderedListItem } from "./ordered-list-item"

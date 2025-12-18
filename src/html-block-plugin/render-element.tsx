@@ -1,7 +1,7 @@
 import { RenderElementProps } from "slate-react"
 import { HtmlBlockElement } from "./types"
 import { $HtmlBlock, $HtmlBlockLabel } from "./styles"
-import { unescapeUrlSlashes } from "~/src/convert/utils"
+import { unescapeUrlSlashes } from "../convert/utils"
 
 type HtmlBlockRenderElementProps = RenderElementProps & {
   element: HtmlBlockElement

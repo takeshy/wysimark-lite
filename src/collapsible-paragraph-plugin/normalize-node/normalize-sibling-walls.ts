@@ -1,6 +1,6 @@
 import { Editor, Element, Node, NodeEntry, Transforms } from "slate"
 
-import { normalizeSiblings } from "~/src/sink"
+import { normalizeSiblings } from "../../sink"
 
 function isWall(editor: Editor, node: Node) {
   if (!Element.isElement(node)) return false

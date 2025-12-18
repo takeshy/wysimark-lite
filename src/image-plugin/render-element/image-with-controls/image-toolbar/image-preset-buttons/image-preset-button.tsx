@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction, useCallback } from "react"
 import { Transforms } from "slate"
 import { ReactEditor, useSlateStatic } from "slate-react"
 
-import { useTooltip } from "~/src/use-tooltip"
+import { useTooltip } from "../../../../../use-tooltip"
 
 import { $ImageButton } from "../../../../styles/image-with-controls-styles/image-buttons-styles"
 import {

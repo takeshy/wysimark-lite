@@ -1,6 +1,6 @@
 import { SVGProps } from "react"
 
-import { TablerIcon } from "~/src/sink"
+import { TablerIcon } from "../../sink"
 
 export const ExternalLinkIcon = (props: SVGProps<SVGSVGElement>) => (
   <TablerIcon {...props}>
@@ -17,5 +17,11 @@ export const LinkOffIcon = (props: SVGProps<SVGSVGElement>) => (
 export const PencilIcon = (props: SVGProps<SVGSVGElement>) => (
   <TablerIcon {...props}>
     <path d="M4 20h4L18.5 9.5a1.5 1.5 0 0 0-4-4L4 16v4M13.5 6.5l4 4" />
+  </TablerIcon>
+)
+
+export const CloseIcon = (props: SVGProps<SVGSVGElement>) => (
+  <TablerIcon {...props}>
+    <path d="M18 6L6 18M6 6l12 12" />
   </TablerIcon>
 )

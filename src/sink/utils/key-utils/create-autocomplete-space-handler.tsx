@@ -1,7 +1,7 @@
 import { isHotkey } from "is-hotkey"
 import { Editor, Element as SlateElement, Range, Transforms } from "slate"
 
-import { findElementUp, stopEvent } from "~/src/sink"
+import { findElementUp, stopEvent } from "../.."
 
 export const isSpace = isHotkey(" ")
 export const isShiftSpace = isHotkey("SHIFT+SPACE")

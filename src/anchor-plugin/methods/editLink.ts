@@ -10,7 +10,6 @@ export function editLink(
 ) {
   const link = findElementUp(editor, "anchor", { at })
   if (!link) return false
-
   const [element, path] = link
 
   // Update href and title

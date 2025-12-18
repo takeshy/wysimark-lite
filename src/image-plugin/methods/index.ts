@@ -1,11 +1,11 @@
 import { Editor, Transforms } from "slate"
 import { ReactEditor } from "slate-react"
 
-import { curryOne } from "~/src/sink"
+import { curryOne } from "../../sink"
 import { ImageBlockElement} from "../types"
 
-function noop(editor: Editor) {
-  editor
+function noop(_editor: Editor) {
+  // Intentionally empty - noop function
 }
 
 function insertImageFromUrl(

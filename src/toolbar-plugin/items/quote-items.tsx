@@ -1,8 +1,8 @@
-import { MenuItemData } from "~/src/shared-overlays"
+import { MenuItemData } from "../../shared-overlays"
 import { Editor, Transforms } from "slate"
-import { findElementUp } from "~/src/sink"
+import { findElementUp } from "../../sink"
 import * as Icon from "../icons"
-import { t } from "~/src/utils/translations"
+import { t } from "../../utils/translations"
 
 const quoteItemsList: MenuItemData[] = [
   {
@@ -33,7 +33,7 @@ const quoteItemsList: MenuItemData[] = [
 
       // Case 1: If a code block is already active, convert it to a paragraph
       if (codeBlockEntry) {
-        const [codeBlock, path] = codeBlockEntry;
+        const [, path] = codeBlockEntry;
 
         // Extract text content from the code block
         const textContent = Editor.string(editor, path);
@@ -58,7 +58,7 @@ const quoteItemsList: MenuItemData[] = [
         // Handle multi-paragraph selection
         // This is more complex and would require custom handling
         // For simplicity, we'll just create a code block with default behavior
-        editor.codeBlock?.createCodeBlock({ language: "text" });
+        editor.codeBlock.createCodeBlock({ language: "text" });
         return;
       }
 
@@ -88,10 +88,10 @@ const quoteItemsList: MenuItemData[] = [
       }
 
       // Case 3: Default case - create a new empty code block
-      editor.codeBlock?.createCodeBlock({ language: "text" });
+      editor.codeBlock.createCodeBlock({ language: "text" });
     },
     active: (editor) => !!findElementUp(editor, "code-block"),
-    show: (editor) => !!editor.codeBlock && !editor.wysimark?.disableCodeBlock,
+    show: (editor) => !editor.wysimark.disableCodeBlock,
   },
 ]
 

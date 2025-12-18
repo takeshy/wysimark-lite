@@ -3,8 +3,8 @@ import { Dispatch, SetStateAction, useCallback } from "react"
 import { Editor, Transforms } from "slate"
 import { ReactEditor, useSlateStatic } from "slate-react"
 
-import { stopEvent } from "~/src/sink"
-import { useResizeBrowser } from "~/src/use-reposition/hooks"
+import { stopEvent } from "../../../../sink"
+import { useResizeBrowser } from "../../../../use-reposition/hooks"
 
 import {
   $ImageResizeHandle,

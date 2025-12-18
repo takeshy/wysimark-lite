@@ -1,4 +1,4 @@
-import { createPlugin, TypedPlugin } from "~/src/sink"
+import { createPlugin, TypedPlugin } from "../sink"
 
 import { createConvertElementMethods } from "./methods"
 

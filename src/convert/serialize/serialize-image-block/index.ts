@@ -1,4 +1,4 @@
-import { ImageBlockElement } from "~/src/image-plugin/types"
+import { ImageBlockElement } from "../../../image-plugin/types"
 
 import { serializeImageShared } from "../serialize-image-shared"
 

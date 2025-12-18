@@ -1,7 +1,7 @@
 import { useCallback } from "react"
 import { useSlateStatic } from "slate-react"
 
-import { ConstrainedRenderElementProps } from "~/src/sink"
+import { ConstrainedRenderElementProps } from "../../sink"
 
 import { TaskListItemElement } from "../types"
 import { CheckedIcon, UncheckedIcon } from "./list-icons"

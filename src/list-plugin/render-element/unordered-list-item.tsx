@@ -1,4 +1,4 @@
-import { ConstrainedRenderElementProps } from "~/src/sink"
+import { ConstrainedRenderElementProps } from "../../sink"
 
 import { UnorderedListItemElement } from "../types"
 import { BulletIcon } from "./list-icons"

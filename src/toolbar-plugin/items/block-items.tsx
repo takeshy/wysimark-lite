@@ -1,24 +1,22 @@
-import { MenuItemData } from "~/src/shared-overlays/types"
+import { MenuItemData } from "../../shared-overlays/types"
 
 import * as Icon from "../icons"
-import { t } from "~/src/utils/translations"
+import { t } from "../../utils/translations"
 
 const listDepthItems: MenuItemData[] = [
   {
     icon: Icon.IncreaseDepth,
     title: t("increaseDepth"),
     hotkey: "tab",
-    action: (editor) => editor.list?.increaseDepth(),
-    active: (editor) => editor.list?.canIncreaseDepth() ?? false,
-    show: (editor) => !!editor.list,
+    action: (editor) => editor.list.increaseDepth(),
+    active: (editor) => editor.list.canIncreaseDepth(),
   },
   {
     icon: Icon.DecreaseDepth,
     title: t("decreaseDepth"),
     hotkey: "shift+tab",
-    action: (editor) => editor.list?.decreaseDepth(),
-    active: (editor) => editor.list?.canDecreaseDepth() ?? false,
-    show: (editor) => !!editor.list,
+    action: (editor) => editor.list.decreaseDepth(),
+    active: (editor) => editor.list.canDecreaseDepth(),
   },
 ]
 

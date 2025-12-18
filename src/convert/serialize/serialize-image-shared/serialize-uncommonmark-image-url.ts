@@ -1,4 +1,4 @@
-import { ImageSharedElement } from "~/src/image-plugin/types"
+import { ImageSharedElement } from "../../../image-plugin/types"
 
 /**
  * In UncommonMark, we provide hints after the hash `#` portion of the URL that

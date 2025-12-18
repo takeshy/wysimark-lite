@@ -7,7 +7,7 @@ import {
   curryOne,
   curryTwo,
   TypedPlugin,
-} from "~/src/sink"
+} from "../sink"
 
 import { insertBreak } from "./insert-break"
 import { createHeadingMethods } from "./methods"

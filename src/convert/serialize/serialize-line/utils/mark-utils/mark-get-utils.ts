@@ -7,12 +7,9 @@ import { isPlainSpace, isText } from "../is-utils"
  * Gets all the marks in current `Text`
  */
 export function getMarksFromText(text: Text): MarkKey[] {
-  /**
-   * disable esling to eat the `_` without throwing an error
-   */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { text: _, ...marks } = text
-  return Object.keys(marks) as MarkKey[]
+  const { text: _textContent, ...marks } = text
+  void _textContent
+  return Object.keys(marks) as (keyof typeof marks)[]
 }
 
 /**

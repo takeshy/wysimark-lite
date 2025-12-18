@@ -1,6 +1,6 @@
 import { Editor } from "slate"
 
-import { curryOne } from "~/src/sink"
+import { curryOne } from "../../sink"
 
 import { editLink } from "./editLink"
 import { insertLink } from "./insertLink"

@@ -1,6 +1,6 @@
 import { Editor, Transforms } from "slate"
 
-import { findElementUp, rewrapElement } from "~/src/sink"
+import { findElementUp, rewrapElement } from "../../sink"
 
 import { isListItem } from ".."
 import { ListItemElement } from "../types"

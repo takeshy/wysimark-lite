@@ -5,7 +5,7 @@ import {
   createHotkeyHandler,
   createPlugin,
   TypedPlugin,
-} from "~/src/sink"
+} from "../sink"
 
 import { createMarksMethods } from "./methods"
 import { $MarksSpan } from "./styles"
@@ -23,6 +23,7 @@ export type MarksEditor = {
     italic?: boolean
     underline?: boolean
     strike?: boolean
+    highlight?: boolean
   }
 }
 
@@ -50,6 +51,7 @@ export const MarksPlugin = createPlugin<MarksPluginCustomTypes>((editor) => {
     "mod+u": editor.marksPlugin.toggleUnderline,
     "super+0": editor.marksPlugin.removeMarks,
     "super+k": editor.marksPlugin.toggleStrike,
+    "mod+h": editor.marksPlugin.toggleHighlight,
   })
   // Override insertText to apply active marks
   const { insertText: defaultInsertText } = editor
@@ -71,7 +73,7 @@ export const MarksPlugin = createPlugin<MarksPluginCustomTypes>((editor) => {
   editor.marksPlugin.removeMarks = () => {
     removeMarks()
     if (editor.selection) {
-      const point = Range.isRange(editor.selection as any) ? (editor.selection as Range).focus : editor.selection
+      const point = Range.isRange(editor.selection) ? editor.selection.focus : editor.selection
       if (Point.isPoint(point)) {
         const isAtLineEnd = Editor.after(editor, point) === null ||
           Editor.isEnd(editor, point, Editor.end(editor, []))

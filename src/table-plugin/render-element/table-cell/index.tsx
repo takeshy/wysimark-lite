@@ -1,7 +1,7 @@
 import { useContext } from "react"
 import { useSelected } from "slate-react"
 
-import { ConstrainedRenderElementProps } from "~/src/sink"
+import { ConstrainedRenderElementProps } from "../../../sink"
 
 import { TableCellElement } from "../../types"
 import { $TableCell } from "../styles"

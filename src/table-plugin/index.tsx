@@ -7,7 +7,7 @@ import {
   isEndOfElement,
   isStartOfElement,
   TypedPlugin,
-} from "~/src/sink"
+} from "../sink"
 
 import { deleteFragmentWithProtectedTypes } from "./delete-fragment"
 import { createTableMethods } from "./methods"

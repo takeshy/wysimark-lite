@@ -1,6 +1,6 @@
 import { Editor, Element, NodeEntry, Transforms } from "slate"
 
-import { normalizeSiblings } from "~/src/sink"
+import { normalizeSiblings } from "../../sink"
 
 import { ParagraphElement } from ".."
 

@@ -1,9 +1,9 @@
 import { RenderPlaceholderProps } from "slate-react"
 
-import { createPlugin, TypedPlugin } from "~/src/sink"
+import { createPlugin, TypedPlugin } from "../sink"
 
 export type PlaceholderEditor = {
-  placeholder: {}
+  placeholder: Record<string, never>
 }
 
 export type PlaceholderPluginCustomTypes = {

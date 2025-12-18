@@ -16,7 +16,27 @@ export function positionInside(
   { margin = 0 }: { margin?: number } = {}
 ) {
   if (src == null) return { ...pos, left: -1024 }
-  const right = pos.left + src.width
-  if (right <= container.right - margin) return pos
-  return { ...pos, left: container.right - src.width - margin }
+
+  const { top } = pos
+  let { left } = pos
+
+  const containerWidth = container.right - container.left - margin * 2
+
+  // If modal is wider than container, align to left edge
+  if (src.width >= containerWidth) {
+    left = container.left + margin
+  } else {
+    // Check if it goes beyond right edge
+    const right = left + src.width
+    if (right > container.right - margin) {
+      left = container.right - src.width - margin
+    }
+
+    // Check if it goes beyond left edge
+    if (left < container.left + margin) {
+      left = container.left + margin
+    }
+  }
+
+  return { left, top }
 }

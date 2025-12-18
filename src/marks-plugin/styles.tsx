@@ -21,6 +21,6 @@ export const $MarksSpan = styled("span")`
     text-decoration: underline line-through;
   }
   &.--highlight {
-    background-color: #ffeb3b;
+    background-color: #ffff00;
   }
 `
