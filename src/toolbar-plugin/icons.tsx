@@ -280,3 +280,9 @@ export const Highlight = () => (
     <path d="m14 19 6-6M18 15l2 2M5 21h4" />
   </TablerIcon>
 )
+
+export const HorizontalRule = () => (
+  <TablerIcon>
+    <path d="M5 12h14" />
+  </TablerIcon>
+)
