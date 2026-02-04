@@ -11,6 +11,9 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20]
     defaults:
       run:
         working-directory: ${{ env.WORKING_DIRECTORY }}
@@ -23,7 +26,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           registry-url: 'https://registry.npmjs.org'
       - name: Install dependencies
-        run: npm install
+        run: npm ci --include=optional
       - name: Build storybook
         run: npm run build-storybook
       - name: Upload Documents
