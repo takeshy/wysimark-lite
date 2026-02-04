@@ -1,5 +1,11 @@
 # wysimark-lite
 
+## 0.25.4
+
+### Patch Changes
+
+- Avoid escaping URLs inside HTML blocks (e.g. iframe/src), preventing invalid HTML on save
+
 ## 0.21.1
 
 ### Patch Changes
