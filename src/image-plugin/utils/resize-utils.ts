@@ -59,7 +59,7 @@ export function resizeInBounds(size: ImageSize, bounds: ImageSize): ImageSize {
  *   convention that scale should be 1 or less.
  */
 export function resizeInPreset(
-  size: ImageSize,
+  _size: ImageSize,
   srcSize: ImageSize,
   preset: ImageSizePreset
 ): ImageSize {

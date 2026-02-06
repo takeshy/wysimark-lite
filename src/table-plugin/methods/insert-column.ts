@@ -26,7 +26,7 @@ export function insertColumn(
     /**
      * Insert a `TableCell` at the correct spot.
      */
-    tableElement.children.forEach((rowElement, i) => {
+    tableElement.children.forEach((_rowElement, i) => {
       Transforms.insertNodes(editor, createCell(nextCellIndex), {
         at: [...tablePath, i, nextCellIndex],
       })

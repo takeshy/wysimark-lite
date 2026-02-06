@@ -36,7 +36,7 @@ export type Rect = {
  * This type is used by the method `mapHTMLElementLikeRecordToRectRecord`
  */
 export type MapHTMLElementLikeRecordToRectRecord<
-  T extends Record<string, HTMLElement | RefObject<HTMLElement>>
+  T extends Record<string, HTMLElement | RefObject<HTMLElement | null>>
 > = {
   [K in keyof T]: T[K] extends HTMLElement ? Rect : Rect | null
 }

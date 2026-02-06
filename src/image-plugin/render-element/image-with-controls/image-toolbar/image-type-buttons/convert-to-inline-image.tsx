@@ -42,7 +42,7 @@ export function convertToInlineImage(
     })
     Transforms.setNodes(
       editor,
-      { type: "image-inline", ...nextSize },
+      { type: "image-inline" as const, ...nextSize },
       { at: path }
     )
     Transforms.wrapNodes(

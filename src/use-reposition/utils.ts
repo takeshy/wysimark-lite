@@ -17,7 +17,7 @@ import { MapHTMLElementLikeRecordToRectRecord, Rect } from "./types"
  *   `HTMLElement`.
  */
 export function mapHTMLElementLikeRecordToRectRecord<
-  T extends Record<string, HTMLElement | RefObject<HTMLElement>>
+  T extends Record<string, HTMLElement | RefObject<HTMLElement | null>>
 >(
   elementLikeRecord: T,
   converElementToRect: (element: HTMLElement) => Rect

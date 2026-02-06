@@ -1,4 +1,4 @@
-import { useRef } from "react"
+import { CSSProperties, useRef } from "react"
 import { useSlateStatic } from "slate-react"
 
 import { useAbsoluteReposition } from "../../../use-reposition"
@@ -20,8 +20,9 @@ export function Menu({
   const editor = useSlateStatic()
   const ref = useRef<HTMLDivElement>(null)
   const style = useAbsoluteReposition({ src: ref, dest }, ({ dest }) => {
+    if (!dest) return { left: 0, top: 0 }
     return { left: dest.left - 8, top: dest.top + dest.height }
-  })
+  }) as CSSProperties
 
   return (
     <>

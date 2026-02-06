@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import { useSlateStatic } from "slate-react"
 
 import { BarsIcon, MinusIcon, PlusIcon } from "../../../icons"

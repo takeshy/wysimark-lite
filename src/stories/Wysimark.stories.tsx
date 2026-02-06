@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Editable, useEditor } from '../entry';
 

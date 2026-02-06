@@ -1,6 +1,7 @@
 import { isHotkey } from "is-hotkey"
 import {
   ChangeEvent,
+  CSSProperties,
   KeyboardEvent,
   useCallback,
   useMemo,
@@ -43,6 +44,7 @@ export function AnchorDialog({
   const baseStyle = useAbsoluteReposition(
     { src: ref, dest },
     ({ src, dest }, viewport) => {
+      if (!src || !dest) return { left: 0, top: 0 }
       return positionInside(
         src,
         viewport,
@@ -59,7 +61,7 @@ export function AnchorDialog({
     ...baseStyle,
     left: (baseStyle.left as number) + dragOffset.x,
     top: (baseStyle.top as number) + dragOffset.y,
-  }
+  } as CSSProperties
 
   // Get selected text as initial value for link text
   const initialText = useMemo(() => {

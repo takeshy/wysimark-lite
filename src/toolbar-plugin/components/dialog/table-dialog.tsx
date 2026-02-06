@@ -1,5 +1,5 @@
 import { clsx } from "clsx"
-import { useCallback, useRef, useState } from "react"
+import { CSSProperties, useCallback, useRef, useState } from "react"
 import { ReactEditor, useSlateStatic } from "slate-react"
 
 import { CloseMask } from "../../../shared-overlays"
@@ -26,8 +26,9 @@ export function TableDialog({
   const editor = useSlateStatic()
   const ref = useRef<HTMLDivElement>(null)
   const style = useAbsoluteReposition({ src: ref, dest }, ({ dest }) => {
+    if (!dest) return { left: 0, top: 0 }
     return { left: dest.left - 8, top: dest.top + dest.height }
-  })
+  }) as CSSProperties
   const rows = createRange(5).map((i) => i + 1)
   const cols = createRange(5).map((i) => i + 1)
 

@@ -1,5 +1,4 @@
 import { clsx } from "clsx"
-import React from "react"
 import { useEffect, useRef } from "react"
 import { useSelected, useSlate } from "slate-react"
 

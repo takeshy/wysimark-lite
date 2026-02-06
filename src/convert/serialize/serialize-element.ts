@@ -62,6 +62,8 @@ export function serializeElement(element: Element, orders: number[]): string {
     }
     case "image-block":
       return serializeImageBlock(element)
+    case "image-inline":
+      return `![${element.alt || ""}](${element.url})`
     case "code-block":
       return serializeCodeBlock(element)
     case "code-block-line":

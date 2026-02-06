@@ -1,4 +1,5 @@
-import { useRef, useState, useCallback } from "react"
+import { CSSProperties, useRef, useState, useCallback } from "react"
+import { Editor } from "slate"
 import { useSlateStatic } from "slate-react"
 
 import { CloseMask } from "../../../shared-overlays"
@@ -34,6 +35,7 @@ export function FileDialog({
   const baseStyle = useAbsoluteReposition(
     { src: ref, dest },
     ({ src, dest }, viewport) => {
+      if (!src || !dest) return { left: 0, top: 0 }
       return positionInside(
         src,
         viewport,
@@ -50,14 +52,14 @@ export function FileDialog({
     ...baseStyle,
     left: (baseStyle.left as number) + dragOffset.x,
     top: (baseStyle.top as number) + dragOffset.y,
-  }
+  } as CSSProperties
 
   async function onChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.files == null || e.target.files.length === 0) return
     stopEvent(e)
     const { files } = e.target
     for (const file of files) {
-      editor.upload.upload(file)
+      ;(editor as Editor & { upload: { upload: (file: File) => void } }).upload.upload(file)
     }
     close()
   }

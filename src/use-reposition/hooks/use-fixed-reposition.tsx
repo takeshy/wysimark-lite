@@ -37,7 +37,7 @@ import { useReposition } from "./use-reposition"
  *   refresh. The refresh is throttled in sync with the ot
  */
 export function useFixedReposition<
-  T extends Record<string, HTMLElement | RefObject<HTMLElement>>,
+  T extends Record<string, HTMLElement | RefObject<HTMLElement | null>>,
   R
 >(
   elementLikeRecord: T,

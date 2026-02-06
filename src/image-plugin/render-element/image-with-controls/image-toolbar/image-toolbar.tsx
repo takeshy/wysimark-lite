@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from "react"
+import { Dispatch, SetStateAction } from "react"
 
 import { $ImageToolbar } from "../../../styles/image-with-controls-styles/image-toolbar-styles"
 import {

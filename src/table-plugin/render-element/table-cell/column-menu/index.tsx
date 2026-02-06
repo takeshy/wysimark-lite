@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react"
+import { useCallback, useRef, useState } from "react"
 import { useSlateStatic } from "slate-react"
 
 import { Menu, MenuItemData } from "../../../../shared-overlays"

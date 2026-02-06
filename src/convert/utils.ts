@@ -50,7 +50,7 @@ export function escapeUrlSlashes(text: string): string {
  */
 export function unescapeUrlSlashes(text: string): string {
   // Unescape all escaped characters in the text
-  return text.replace(/\\(.)/g, (match, char) => {
+  return text.replace(/\\(.)/g, (_match, char) => {
     return char;
   });
 }
