@@ -1,5 +1,11 @@
 # wysimark-lite
 
+## 0.25.6
+
+### Patch Changes
+
+- Add flex: 1 to editable area so it fills available space in flex containers
+
 ## 0.25.4
 
 ### Patch Changes
