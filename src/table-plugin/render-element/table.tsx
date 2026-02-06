@@ -24,8 +24,16 @@ export function Table({
    * `x` and `y` are purely an internal requirement for rendering.
    */
   useEffect(() => {
-    const path = ReactEditor.findPath(editor, element)
-    normalizeTableIndexes(editor, [element, path])
+    try {
+      const path = ReactEditor.findPath(editor, element)
+      normalizeTableIndexes(editor, [element, path])
+    } catch {
+      // The element path may be stale if other normalizations (e.g.
+      // collapsible-paragraph inserting nodes) shifted indices before
+      // this effect runs. The plugin's normalizeNode handler already
+      // sets x/y during Slate's normalization cycle, so this is safe
+      // to skip.
+    }
   }, [])
   return (
     <TableContext.Provider value={{ isSelected }}>
