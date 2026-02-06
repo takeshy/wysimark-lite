@@ -48,7 +48,8 @@ export function SinkEditable(originalProps: EditableProps): React.ReactElement {
    */
   useEffect(() => {
     Editor.normalize(editor, { force: true })
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editor])
 
   const { plugins } = editor.sink
 
@@ -73,7 +74,19 @@ export function SinkEditable(originalProps: EditableProps): React.ReactElement {
       onPaste: createOnPaste(originalProps.onPaste, plugins),
       onDrop: createOnDrop(originalProps.onDrop, plugins),
     }),
-    Object.values(originalProps)
+    [
+      originalProps.decorate,
+      originalProps.renderElement,
+      originalProps.renderLeaf,
+      originalProps.renderPlaceholder,
+      originalProps.onKeyDown,
+      originalProps.onKeyUp,
+      originalProps.onPaste,
+      originalProps.onDrop,
+      originalProps.placeholder,
+      originalProps.className,
+      plugins,
+    ]
   )
 
   const NextEditable = useMemo(() => createEditable(plugins), [plugins])

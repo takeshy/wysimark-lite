@@ -47,6 +47,9 @@ export function Editable({
   // Store rawText to use when switching back to visual mode
   const pendingRawTextRef = useRef<string | null>(null)
 
+  const onChangeRef = useRef(onChange)
+  onChangeRef.current = onChange
+
   const onThrottledSlateChange = useCallback(
     throttle(
       () => {
@@ -55,12 +58,13 @@ export function Editable({
           markdown,
           children: editor.children,
         }
-        onChange(markdown)
+        onChangeRef.current(markdown)
       },
       throttleInMs,
       { leading: false, trailing: true }
     ),
-    [editor, onChange, throttleInMs]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [editor, throttleInMs]
   )
 
   const onSlateChange = useCallback(() => {
