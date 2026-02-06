@@ -231,7 +231,7 @@ export function Editable({
             minHeight: '200px',
             padding: '20px',
             fontFamily: 'monospace',
-            fontSize: '14px',
+            fontSize: '1rem',
             color: '#333',
             lineHeight: '1.5',
             backgroundColor: '#fff',
