@@ -8,7 +8,7 @@ import { t } from "../../../utils/translations"
 import { $FileDialog } from "../../styles/file-dialog-styles"
 import { DraggableHeader } from "./DraggableHeader"
 
-type ImageSource = "url" | "file"
+type ImageSource = "url" | "file" | "select"
 
 export function ImageUrlDialog({
     dest,
@@ -29,14 +29,24 @@ export function ImageUrlDialog({
     // Persist dialog values in editor.wysimark so they survive dialog close/reopen
     const savedState = editor.wysimark?.imageDialogState
     const hasOnImageChange = !!editor.wysimark?.onImageChange
+    const hasOnFileSelect = !!editor.wysimark?.onFileSelect
+
+    const defaultSource: ImageSource = savedState?.imageSource ?? (hasOnFileSelect ? "select" : hasOnImageChange ? "file" : "url")
 
     const [url, setUrl] = useState(savedState?.url ?? "")
     const [alt, setAlt] = useState(savedState?.alt ?? "")
     const [title, setTitle] = useState(savedState?.title ?? "")
     const [titleManuallyEdited, setTitleManuallyEdited] = useState(false)
-    const [imageSource, setImageSource] = useState<ImageSource>(savedState?.imageSource ?? (hasOnImageChange ? "file" : "url"))
+    const [imageSource, setImageSource] = useState<ImageSource>(defaultSource)
     const [isUploading, setIsUploading] = useState(false)
     const [uploadedUrl, setUploadedUrl] = useState(savedState?.uploadedUrl ?? "")
+
+    // Reset uploadedUrl when switching image source modes
+    const handleImageSourceChange = (source: ImageSource) => {
+        setImageSource(source)
+        setUploadedUrl("")
+        setUploadedFileName("")
+    }
     const [uploadedFileName, setUploadedFileName] = useState("")
 
     // Handlers for alt and title with sync
@@ -91,7 +101,7 @@ export function ImageUrlDialog({
 
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault()
-        const finalUrl = imageSource === "file" ? uploadedUrl : url
+        const finalUrl = (imageSource === "file" || imageSource === "select") ? uploadedUrl : url
         if (finalUrl.trim() === "") return
 
         editor.image.insertImageFromUrl(finalUrl, alt, title)
@@ -124,7 +134,22 @@ export function ImageUrlDialog({
         fileInputRef.current?.click()
     }
 
-    const isSubmitDisabled = imageSource === "file"
+    async function handleFileSelectFromPicker() {
+        if (!editor.wysimark?.onFileSelect) return
+        setIsUploading(true)
+        try {
+            const resultUrl = await editor.wysimark.onFileSelect()
+            if (resultUrl) {
+                setUploadedUrl(resultUrl)
+            }
+        } catch (error) {
+            void error
+        } finally {
+            setIsUploading(false)
+        }
+    }
+
+    const isSubmitDisabled = (imageSource === "file" || imageSource === "select")
         ? uploadedUrl.trim() === "" || isUploading
         : url.trim() === ""
 
@@ -134,26 +159,41 @@ export function ImageUrlDialog({
             <$FileDialog ref={ref} style={style}>
                 <DraggableHeader onDrag={handleDrag} />
                 <form onSubmit={(e) => void handleSubmit(e)} style={{ padding: "8px" }}>
-                    {hasOnImageChange && (
+                    {(hasOnImageChange || hasOnFileSelect) && (
                         <div style={{ marginBottom: "12px" }}>
-                            <label style={{ display: "inline-flex", alignItems: "center", marginRight: "16px", cursor: "pointer" }}>
-                                <input
-                                    type="radio"
-                                    name="imageSource"
-                                    value="file"
-                                    checked={imageSource === "file"}
-                                    onChange={() => setImageSource("file")}
-                                    style={{ marginRight: "4px" }}
-                                />
-                                {t("imageSourceFile")}
-                            </label>
+                            {hasOnFileSelect && (
+                                <label style={{ display: "inline-flex", alignItems: "center", marginRight: "16px", cursor: "pointer" }}>
+                                    <input
+                                        type="radio"
+                                        name="imageSource"
+                                        value="select"
+                                        checked={imageSource === "select"}
+                                        onChange={() => handleImageSourceChange("select")}
+                                        style={{ marginRight: "4px" }}
+                                    />
+                                    {t("imageSourceSelect")}
+                                </label>
+                            )}
+                            {hasOnImageChange && (
+                                <label style={{ display: "inline-flex", alignItems: "center", marginRight: "16px", cursor: "pointer" }}>
+                                    <input
+                                        type="radio"
+                                        name="imageSource"
+                                        value="file"
+                                        checked={imageSource === "file"}
+                                        onChange={() => handleImageSourceChange("file")}
+                                        style={{ marginRight: "4px" }}
+                                    />
+                                    {t("imageSourceFile")}
+                                </label>
+                            )}
                             <label style={{ display: "inline-flex", alignItems: "center", cursor: "pointer" }}>
                                 <input
                                     type="radio"
                                     name="imageSource"
                                     value="url"
                                     checked={imageSource === "url"}
-                                    onChange={() => setImageSource("url")}
+                                    onChange={() => handleImageSourceChange("url")}
                                     style={{ marginRight: "4px" }}
                                 />
                                 {t("imageSourceUrl")}
@@ -181,6 +221,32 @@ export function ImageUrlDialog({
                                 }}
                                 placeholder="https://example.com/image.jpg"
                             />
+                        </div>
+                    ) : imageSource === "select" ? (
+                        <div style={{ marginBottom: "8px" }}>
+                            <button
+                                type="button"
+                                onClick={() => void handleFileSelectFromPicker()}
+                                disabled={isUploading}
+                                style={{
+                                    padding: "8px 16px",
+                                    backgroundColor: isUploading ? "#ccc" : "#0078d4",
+                                    color: isUploading ? "#666" : "white",
+                                    border: "none",
+                                    borderRadius: "4px",
+                                    cursor: isUploading ? "not-allowed" : "pointer",
+                                    marginBottom: "8px",
+                                    fontWeight: "bold"
+                                }}
+                            >
+                                {isUploading ? t("uploading") : t("imageSourceSelect")}
+                            </button>
+
+                            {uploadedUrl && (
+                                <div style={{ marginTop: "8px", padding: "8px", backgroundColor: "var(--shade-100)", borderRadius: "4px" }}>
+                                    <div style={{ color: "green", marginBottom: "4px" }}>✓ {t("uploadComplete")}</div>
+                                </div>
+                            )}
                         </div>
                     ) : (
                         <div style={{ marginBottom: "8px" }}>

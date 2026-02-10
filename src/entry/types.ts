@@ -1,12 +1,13 @@
 import { Descendant } from "slate"
 
 export type OnImageChangeHandler = (file: File) => Promise<string>
+export type OnFileSelectHandler = () => Promise<string | null>
 
 export type ImageDialogState = {
   url: string
   alt: string
   title: string
-  imageSource: "url" | "file"
+  imageSource: "url" | "file" | "select"
   uploadedUrl?: string
 }
 
@@ -24,6 +25,11 @@ export type WysimarkEditor = {
      * Handler for image change
      */
     onImageChange?: OnImageChangeHandler
+
+    /**
+     * Handler for file selection (e.g. picking from Drive)
+     */
+    onFileSelect?: OnFileSelectHandler
 
     /**
      * Handler for markdown change (used by raw mode)
