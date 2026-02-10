@@ -69,7 +69,7 @@ export function ImageUrlDialog({
         if (editor.wysimark) {
             editor.wysimark.imageDialogState = { url, alt, title, imageSource, uploadedUrl }
         }
-    }, [url, alt, title, imageSource, uploadedUrl])
+    }, [editor, url, alt, title, imageSource, uploadedUrl])
 
     // Clear state on successful submit or cancel
     const clearState = () => {

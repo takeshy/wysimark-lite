@@ -53,6 +53,7 @@ export function Editable({
   const onChangeRef = useRef(onChange)
   onChangeRef.current = onChange
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const onThrottledSlateChange = useCallback(
     throttle(
       () => {
@@ -66,10 +67,10 @@ export function Editable({
       throttleInMs,
       { leading: false, trailing: true }
     ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [editor, throttleInMs]
   )
 
+  /* eslint-disable react-hooks/exhaustive-deps */
   const onSlateChange = useCallback(() => {
     if (prevValueRef.current === editor.children) {
       return
@@ -77,6 +78,7 @@ export function Editable({
     prevValueRef.current = editor.children
     onThrottledSlateChange()
   }, [onThrottledSlateChange])
+  /* eslint-enable react-hooks/exhaustive-deps */
 
   // Skip parsing when in raw mode - only update when in visual mode
   if (!isRawMode) {
