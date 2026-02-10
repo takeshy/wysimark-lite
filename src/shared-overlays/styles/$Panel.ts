@@ -21,6 +21,8 @@ export const $Panel = styled(SinkReset)`
     drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
   background: white;
   color: #333;
+  max-width: calc(100vw - 32px);
+  box-sizing: border-box;
   /**
    * If you are tempted to add the transitions back in, here's why we left
    * them off:

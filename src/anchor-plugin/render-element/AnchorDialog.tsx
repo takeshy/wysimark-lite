@@ -28,7 +28,8 @@ const $AnchorDialog = styled($Panel)`
   .--link {
     text-decoration: none;
     display: flex;
-    flex: 0 0 14em;
+    flex: 1 1 auto;
+    min-width: 0;
     overflow: hidden;
     color: var(--shade-400);
     &:hover {
@@ -41,7 +42,7 @@ const $AnchorDialog = styled($Panel)`
     margin-left: 0.5em;
     .--hostname {
       font-size: 0.875em;
-      width: 14em;
+      max-width: 14em;
       line-height: 1.5em;
       color: var(--blue-600);
       overflow-wrap: break-word;
@@ -53,7 +54,7 @@ const $AnchorDialog = styled($Panel)`
     .--pathname {
       margin-top: 0.125em;
       font-size: 0.75em;
-      width: 16.25em;
+      max-width: 16.25em;
       line-height: 1.5em;
       overflow-wrap: break-word;
     }
@@ -62,7 +63,7 @@ const $AnchorDialog = styled($Panel)`
       position: relative;
       margin-top: 1em;
       font-size: 0.875em;
-      width: 14em;
+      max-width: 14em;
       line-height: 1.5em;
       background: var(--shade-200);
       border-radius: 0.5em;
