@@ -1,10 +1,10 @@
 import styled from "@emotion/styled"
-import { useCallback, useState } from "react"
+import { useCallback, useRef, useState } from "react"
 import { useSlateStatic } from "slate-react"
 
 import { $Panel } from "../../shared-overlays"
 import { useLayer } from "../../use-layer"
-import { useAbsoluteReposition } from "../../use-reposition"
+import { positionInside, useAbsoluteReposition } from "../../use-reposition"
 import { useTooltip } from "../../use-tooltip"
 import { AnchorElement } from "../index"
 import { AnchorEditDialog } from "./AnchorEditDialog"
@@ -118,6 +118,7 @@ export function AnchorDialog({
 }) {
   const dialog = useLayer("dialog")
   const editor = useSlateStatic()
+  const ref = useRef<HTMLDivElement>(null)
   const url = parseUrl(element.href)
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
 
@@ -126,12 +127,17 @@ export function AnchorDialog({
   }, [])
 
   const baseStyle = useAbsoluteReposition(
-    { destAnchor, destStartEdge },
-    ({ destAnchor, destStartEdge }) => {
-      return {
-        left: destStartEdge.left,
-        top: destAnchor.top + destAnchor.height,
-      }
+    { src: ref, destAnchor, destStartEdge },
+    ({ src, destAnchor, destStartEdge }, viewport) => {
+      return positionInside(
+        src,
+        viewport,
+        {
+          left: destStartEdge.left,
+          top: destAnchor.top + destAnchor.height,
+        },
+        { margin: 16 }
+      )
     }
   )
 
@@ -174,7 +180,7 @@ export function AnchorDialog({
   }, [destAnchor, destStartEdge, element])
 
   return (
-    <$AnchorDialog contentEditable={false} style={style}>
+    <$AnchorDialog ref={ref} contentEditable={false} style={style}>
       <DraggableHeader onDrag={handleDrag} />
       <div style={{ display: "flex", padding: "1em" }}>
         <a
