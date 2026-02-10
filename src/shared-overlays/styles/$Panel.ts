@@ -20,6 +20,7 @@ export const $Panel = styled(SinkReset)`
   filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))
     drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
   background: white;
+  color: #333;
   /**
    * If you are tempted to add the transitions back in, here's why we left
    * them off:
