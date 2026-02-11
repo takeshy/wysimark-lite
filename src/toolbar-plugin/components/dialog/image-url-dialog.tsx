@@ -31,7 +31,7 @@ export function ImageUrlDialog({
     const hasOnImageChange = !!editor.wysimark?.onImageChange
     const hasOnFileSelect = !!editor.wysimark?.onFileSelect
 
-    const defaultSource: ImageSource = savedState?.imageSource ?? (hasOnFileSelect ? "select" : hasOnImageChange ? "file" : "url")
+    const defaultSource: ImageSource = savedState?.imageSource ?? (hasOnImageChange ? "file" : hasOnFileSelect ? "select" : "url")
 
     const [url, setUrl] = useState(savedState?.url ?? "")
     const [alt, setAlt] = useState(savedState?.alt ?? "")
@@ -161,19 +161,6 @@ export function ImageUrlDialog({
                 <form onSubmit={(e) => void handleSubmit(e)} style={{ padding: "8px" }}>
                     {(hasOnImageChange || hasOnFileSelect) && (
                         <div style={{ marginBottom: "12px" }}>
-                            {hasOnFileSelect && (
-                                <label style={{ display: "inline-flex", alignItems: "center", marginRight: "16px", cursor: "pointer" }}>
-                                    <input
-                                        type="radio"
-                                        name="imageSource"
-                                        value="select"
-                                        checked={imageSource === "select"}
-                                        onChange={() => handleImageSourceChange("select")}
-                                        style={{ marginRight: "4px" }}
-                                    />
-                                    {t("imageSourceSelect")}
-                                </label>
-                            )}
                             {hasOnImageChange && (
                                 <label style={{ display: "inline-flex", alignItems: "center", marginRight: "16px", cursor: "pointer" }}>
                                     <input
@@ -185,6 +172,19 @@ export function ImageUrlDialog({
                                         style={{ marginRight: "4px" }}
                                     />
                                     {t("imageSourceFile")}
+                                </label>
+                            )}
+                            {hasOnFileSelect && (
+                                <label style={{ display: "inline-flex", alignItems: "center", marginRight: "16px", cursor: "pointer" }}>
+                                    <input
+                                        type="radio"
+                                        name="imageSource"
+                                        value="select"
+                                        checked={imageSource === "select"}
+                                        onChange={() => handleImageSourceChange("select")}
+                                        style={{ marginRight: "4px" }}
+                                    />
+                                    {t("imageSourceSelect")}
                                 </label>
                             )}
                             <label style={{ display: "inline-flex", alignItems: "center", cursor: "pointer" }}>
