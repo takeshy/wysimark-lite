@@ -5,6 +5,7 @@ import { $Container } from "../../shared-layout"
 export const $Editable = styled("div")`
   padding: 2em;
   flex: 1;
+  min-height: 0;
 `
 
 export const $OuterContainer = styled($Container)`

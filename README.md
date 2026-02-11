@@ -163,6 +163,16 @@ pin "wysimark-lite", to: "https://cdn.jsdelivr.net/npm/wysimark-lite@latest/dist
 - React >= 17.x
 - React DOM >= 17.x
 
+## Development
+
+### Lint
+
+Run ESLint for TypeScript/TSX sources with:
+
+```bash
+npm run lint
+```
+
 ## License
 
 MIT
