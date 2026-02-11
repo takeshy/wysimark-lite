@@ -29,4 +29,6 @@ export const $OuterContainer = styled($Container)`
   overflow-y: clip;
   display: flex;
   flex-direction: column;
+  flex: 1;
+  min-height: 0;
 `

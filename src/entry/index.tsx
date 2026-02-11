@@ -158,7 +158,7 @@ export function Editable({
   const disableRawMode = editor.wysimark.disableRawMode
 
   return (
-    <div style={{ position: 'relative' }}>
+    <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
       {/* Raw mode toggle button - only show if not disabled */}
       {!disableRawMode && (
         <div style={{ position: 'absolute', top: '5px', right: '25px', zIndex: 10 }}>
@@ -249,7 +249,7 @@ export function Editable({
       </div>
 
       {/* Visual editor - always in DOM but hidden when in raw mode */}
-      <div style={{ display: isRawMode ? 'none' : 'block' }}>
+      <div style={{ display: isRawMode ? 'none' : 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
         <Slate
           editor={editor}
           initialValue={initialValueRef.current as Descendant[]}
