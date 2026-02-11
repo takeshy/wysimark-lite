@@ -227,7 +227,7 @@ export function Editable({
       {/* Raw mode textarea - always in DOM but hidden when not in raw mode */}
       <div style={{ display: isRawMode ? 'block' : 'none', textAlign: 'center' }}>
         <textarea
-          value={unescapeUrlSlashes(rawText).replace(/&nbsp;/g, '')}
+          value={unescapeUrlSlashes(rawText).replace(/&nbsp;|\u00A0/g, '')}
           onChange={handleRawTextChange}
           placeholder={placeholder}
           className={className}
