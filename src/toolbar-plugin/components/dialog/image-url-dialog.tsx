@@ -244,7 +244,7 @@ export function ImageUrlDialog({
 
                             {uploadedUrl && (
                                 <div style={{ marginTop: "8px", padding: "8px", backgroundColor: "var(--shade-100)", borderRadius: "4px" }}>
-                                    <div style={{ color: "green", marginBottom: "4px" }}>✓ {t("uploadComplete")}</div>
+                                    <div style={{ color: "green", marginBottom: "4px" }}>✓ {uploadedUrl.split("/").pop()}</div>
                                 </div>
                             )}
                         </div>
@@ -277,10 +277,7 @@ export function ImageUrlDialog({
 
                             {uploadedUrl && (
                                 <div style={{ marginTop: "8px", padding: "8px", backgroundColor: "var(--shade-100)", borderRadius: "4px" }}>
-                                    <div style={{ color: "green", marginBottom: "4px" }}>✓ {t("uploadComplete")}</div>
-                                    {uploadedFileName && (
-                                        <div style={{ fontSize: "12px", color: "var(--shade-500)" }}>{uploadedFileName}</div>
-                                    )}
+                                    <div style={{ color: "green", marginBottom: "4px" }}>✓ {uploadedFileName}</div>
                                 </div>
                             )}
                         </div>
