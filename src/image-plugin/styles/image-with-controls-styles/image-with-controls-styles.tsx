@@ -37,6 +37,7 @@ export const $Image = styled("img")`
    *   the image is loaded.
    */
   max-width: 100%;
+  max-height: 50vh;
   height: auto;
 
   /**
