@@ -1,4 +1,4 @@
-import { Descendant, Editor } from "slate"
+import { Descendant } from "slate"
 
 import {
   createHotkeyHandler,
@@ -32,38 +32,16 @@ export const CollapsibleParagraphPlugin =
   createPlugin<CollapsibleParagraphPluginCustomTypes>((editor) => {
     const { insertBreak } = editor
     editor.insertBreak = () => {
-      const { selection } = editor
-      if (selection && selection.anchor.path[0] === selection.focus.path[0]) {
-        // Get the full text of the current block
-        const blockPath = [selection.anchor.path[0]]
-        const blockStart = Editor.start(editor, blockPath)
-        const fullBlockText = Editor.string(editor, blockPath)
-        const textBeforeCursor = Editor.string(editor, {
-          anchor: blockStart,
-          focus: selection.anchor,
-        })
+      // Enter = new paragraph, Shift+Enter = soft break (handled in onKeyDown)
+      insertBreak()
+    }
 
-        // If the current paragraph is empty, immediately create a new paragraph.
-        // This preserves the empty paragraph as a visible blank line.
-        if (fullBlockText === "") {
-          insertBreak()
-        } else if (textBeforeCursor.endsWith('\n')) {
-          // Delete the trailing '\n' that triggered the paragraph break,
-          // so it doesn't remain in the previous paragraph after the split.
-          // Without this, the trailing '\n' is lost during serialize→parse
-          // round-trip (trimSpaceAtEndOfLine strips it), causing blank lines
-          // to disappear on reload.
-          editor.deleteBackward('character')
-          // Create a new paragraph
-          insertBreak()
-        } else {
-          // Insert a single line break
-          editor.insertText('\n')
-        }
-      } else {
-        // Otherwise fall back to default behavior
-        insertBreak()
-      }
+    /**
+     * Insert a soft break (line break within the same paragraph).
+     * Called by Shift+Enter via onKeyDown.
+     */
+    editor.insertSoftBreak = () => {
+      editor.insertText('\n')
     }
 
     editor.convertElement.addConvertElementType("paragraph")
@@ -102,18 +80,15 @@ export const CollapsibleParagraphPlugin =
           }
         },
         onKeyDown: (e) => {
-          // Handle Enter key in onKeyDown to bypass the IS_NODE_MAP_DIRTY
-          // deadlock in Slate's Android beforeinput handler. On mobile,
-          // rapid IME confirmation + Enter can permanently block Enter
-          // when IS_NODE_MAP_DIRTY is true and beforeinput returns early
-          // without calling preventDefault.
-          if (
-            e.key === "Enter" &&
-            !e.nativeEvent.isComposing &&
-            !e.shiftKey
-          ) {
+          if (e.key === "Enter" && !e.nativeEvent.isComposing) {
             e.preventDefault()
-            editor.insertBreak()
+            if (e.shiftKey) {
+              // Shift+Enter = soft break (line break within paragraph)
+              editor.insertSoftBreak()
+            } else {
+              // Enter = new paragraph
+              editor.insertBreak()
+            }
             return true
           }
           return createHotkeyHandler({
