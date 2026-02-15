@@ -65,8 +65,11 @@ export function serializeElements(elements: Element[]): string {
 
   /**
    * If there is no content return an empty string for the Markdown.
+   * Use a regex that only matches ASCII whitespace (not \u00A0) so that
+   * documents consisting entirely of blank lines (NBSP paragraphs) are
+   * preserved.
    */
-  if (joined.trim() === "") return ""
+  if (joined.replace(/[\t\n\r ]/g, "") === "") return ""
 
   /**
    * Remove leading newlines and trim trailing ASCII whitespace only.
