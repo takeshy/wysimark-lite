@@ -44,6 +44,12 @@ export const CollapsibleParagraphPlugin =
 
         // Check if cursor is right after a newline (creating empty line / paragraph break)
         if (textBeforeCursor.endsWith('\n')) {
+          // Delete the trailing '\n' that triggered the paragraph break,
+          // so it doesn't remain in the previous paragraph after the split.
+          // Without this, the trailing '\n' is lost during serialize→parse
+          // round-trip (trimSpaceAtEndOfLine strips it), causing blank lines
+          // to disappear on reload.
+          editor.deleteBackward('character')
           // Create a new paragraph
           insertBreak()
         } else {
