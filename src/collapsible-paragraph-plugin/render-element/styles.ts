@@ -10,6 +10,19 @@ export const $Paragraph = styled("p")`
   transition: background-color 200ms, margin-top 200ms, padding-top 200ms,
     margin-bottom 200ms, padding-bottom 200ms, font-size 200ms;
 
+  &:not(.--collapsible)&.--empty {
+    min-height: 1em;
+    border-left: 2px solid rgba(0, 127, 255, 0.15);
+    border-radius: 0;
+    margin-left: 2px;
+    &:hover {
+      border-left-color: rgba(0, 127, 255, 0.4);
+    }
+    &.--selected {
+      border-left-color: rgba(0, 127, 255, 0.5);
+    }
+  }
+
   &.--collapsible&.--empty {
     font-size: 0.25em; /* font-size is collapsed to 1/4 of regular em */
     margin: -0.4em 0;
