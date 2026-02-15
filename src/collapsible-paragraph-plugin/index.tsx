@@ -34,16 +34,20 @@ export const CollapsibleParagraphPlugin =
     editor.insertBreak = () => {
       const { selection } = editor
       if (selection && selection.anchor.path[0] === selection.focus.path[0]) {
-        // Get text from start of block to cursor position
+        // Get the full text of the current block
         const blockPath = [selection.anchor.path[0]]
         const blockStart = Editor.start(editor, blockPath)
+        const fullBlockText = Editor.string(editor, blockPath)
         const textBeforeCursor = Editor.string(editor, {
           anchor: blockStart,
           focus: selection.anchor,
         })
 
-        // Check if cursor is right after a newline (creating empty line / paragraph break)
-        if (textBeforeCursor.endsWith('\n')) {
+        // If the current paragraph is empty, immediately create a new paragraph.
+        // This preserves the empty paragraph as a visible blank line.
+        if (fullBlockText === "") {
+          insertBreak()
+        } else if (textBeforeCursor.endsWith('\n')) {
           // Delete the trailing '\n' that triggered the paragraph break,
           // so it doesn't remain in the previous paragraph after the split.
           // Without this, the trailing '\n' is lost during serialize→parse
