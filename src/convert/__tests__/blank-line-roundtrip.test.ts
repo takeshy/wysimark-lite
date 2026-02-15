@@ -68,4 +68,24 @@ describe("blank line round-trip", () => {
     assert.deepStrictEqual(parsed[1], { type: "paragraph", children: [{ text: "" }] })
     assert.deepStrictEqual(parsed[2], { type: "paragraph", children: [{ text: "text B" }] })
   })
+
+  it("soft break serializes as two trailing spaces + newline", () => {
+    // Simulate Shift+Enter (soft break within a paragraph)
+    const slateTree = [
+      { type: "paragraph", children: [{ text: "line1\nline2" }] },
+    ]
+    const serialized = serialize(slateTree as any)
+    // \n within text should become "  \n" (two trailing spaces + newline)
+    assert.strictEqual(serialized, "line1  \nline2")
+  })
+
+  it("soft break round-trip: two trailing spaces + newline parses back to \\n", () => {
+    const input = "line1  \nline2"
+    const parsed = parse(input)
+    assert.strictEqual(parsed.length, 1)
+    // remark-parse creates break node → parse converts to \n → Slate merges text
+    const children = parsed[0].children as { text: string }[]
+    const fullText = children.map(c => c.text).join("")
+    assert.strictEqual(fullText, "line1\nline2")
+  })
 })
