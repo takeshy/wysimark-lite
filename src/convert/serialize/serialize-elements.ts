@@ -69,8 +69,10 @@ export function serializeElements(elements: Element[]): string {
   if (joined.trim() === "") return ""
 
   /**
-   * Remove leading newlines and trim trailing whitespace.
-   * Keep consecutive newlines as-is to preserve blank lines in the source.
+   * Remove leading newlines and trim trailing ASCII whitespace only.
+   * We use a regex instead of .trim() because .trim() also removes
+   * non-breaking space (\u00A0) which is used to represent empty
+   * paragraphs (blank lines) in the serialized markdown.
    */
-  return joined.replace(/^\n+/, "").trim()
+  return joined.replace(/^\n+/, "").replace(/[\t\n\r ]+$/, "")
 }
