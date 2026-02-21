@@ -1,4 +1,4 @@
-import { escapeUrlSlashes } from "../utils"
+import { escapeUrlSlashes, unescapeMarkdown } from "../utils"
 
 describe("escapeUrlSlashes", () => {
   it("escapes plain text URLs", () => {
@@ -20,5 +20,37 @@ describe("escapeUrlSlashes", () => {
   it("does not escape URLs inside HTML blocks", () => {
     const input = "<div>https://example.com/path</div>"
     expect(escapeUrlSlashes(input)).toBe(input)
+  })
+})
+
+describe("unescapeMarkdown", () => {
+  it("unescapes backslash-escaped inline characters", () => {
+    expect(unescapeMarkdown("\\*bold\\*")).toBe("*bold*")
+    expect(unescapeMarkdown("\\_italic\\_")).toBe("_italic_")
+    expect(unescapeMarkdown("\\~strike\\~")).toBe("~strike~")
+    expect(unescapeMarkdown("\\`code\\`")).toBe("`code`")
+    expect(unescapeMarkdown("\\[link\\]")).toBe("[link]")
+    expect(unescapeMarkdown("\\|pipe\\|")).toBe("|pipe|")
+    expect(unescapeMarkdown("\\<html>")).toBe("<html>")
+  })
+
+  it("unescapes escaped backslashes", () => {
+    expect(unescapeMarkdown("\\\\")).toBe("\\")
+    expect(unescapeMarkdown("a\\\\b")).toBe("a\\b")
+  })
+
+  it("does not remove backslashes before non-target characters", () => {
+    expect(unescapeMarkdown("\\n")).toBe("\\n")
+    expect(unescapeMarkdown("\\a")).toBe("\\a")
+    expect(unescapeMarkdown("C:\\Users")).toBe("C:\\Users")
+  })
+
+  it("handles consecutive escaped characters", () => {
+    expect(unescapeMarkdown("\\*\\*bold\\*\\*")).toBe("**bold**")
+  })
+
+  it("returns plain text unchanged", () => {
+    expect(unescapeMarkdown("hello world")).toBe("hello world")
+    expect(unescapeMarkdown("")).toBe("")
   })
 })

@@ -10,7 +10,8 @@ import {
   useState,
 } from "react"
 import { createRoot } from "react-dom/client"
-import { Editable, useEditor, OnImageChangeHandler, unescapeMarkdown } from './entry/index'
+import { Editable, useEditor, OnImageChangeHandler } from './entry/index'
+import { unescapeMarkdown } from './convert'
 import type { UseEditorOptions } from './entry/useEditor'
 
 export { Editable, useEditor, unescapeMarkdown }
