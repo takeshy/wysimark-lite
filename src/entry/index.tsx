@@ -3,7 +3,8 @@ import { useCallback, useRef, useState } from "react"
 import { Descendant, Editor, Element, Transforms } from "slate"
 import { ReactEditor, RenderLeafProps, Slate } from "slate-react"
 
-import { parse, serialize, escapeUrlSlashes, unescapeUrlSlashes } from "../convert"
+import { parse, serialize, escapeUrlSlashes, unescapeUrlSlashes, unescapeMarkdown } from "../convert"
+export { unescapeMarkdown }
 import { t } from "../utils/translations"
 import { SinkEditable } from "./SinkEditable"
 import { useEditor } from "./useEditor"
@@ -152,7 +153,6 @@ export function Editable({
 
   editor.wysimark.onImageChange = onImageChange;
   editor.wysimark.onFileSelect = onFileSelect;
-  editor.wysimark.onChange = onChange;
 
   // Check if raw mode is disabled
   const disableRawMode = editor.wysimark.disableRawMode

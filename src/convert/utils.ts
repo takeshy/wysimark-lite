@@ -63,6 +63,15 @@ export function unescapeUrlSlashes(text: string): string {
   return text.replace(/\\\//g, "/");
 }
 
+/**
+ * Remove inline escape backslashes added by the serializer's escapeText.
+ * Matches `\` followed by any of: \ ` * _ [ ] ~ | <
+ * and replaces with just the character itself.
+ */
+export function unescapeMarkdown(text: string): string {
+  return text.replace(/\\([\\`*_\[\]~|<])/g, '$1');
+}
+
 type TagInfo = {
   name: string | null
   endIndex: number

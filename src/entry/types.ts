@@ -32,11 +32,6 @@ export type WysimarkEditor = {
     onFileSelect?: OnFileSelectHandler
 
     /**
-     * Handler for markdown change (used by raw mode)
-     */
-    onChange?: (markdown: string) => void
-
-    /**
      * Persisted state for the image dialog
      */
     imageDialogState?: ImageDialogState
