@@ -10,6 +10,10 @@ import { Descendant } from "slate"
  * Parse inline HTML content, with special handling for <mark> tags
  */
 function parseInlineHtml(htmlValue: string, marks: MarkProps): Segment[] {
+  // Check for <br> / <br/> / <br /> tags — treat as soft line break
+  if (/^<br\s*\/?>$/i.test(htmlValue)) {
+    return [{ text: "\n", ...marks }]
+  }
   // Check for <mark>...</mark> pattern
   const markMatch = htmlValue.match(/^<mark>(.+?)<\/mark>$/s)
   if (markMatch) {
