@@ -1,27 +1,26 @@
 /**
- * Characters that always need escaping in inline markdown text.
- * `_` and `~` are handled separately because CommonMark/GFM treat intraword
- * occurrences as literal, and escaping them only adds diff noise.
+ * Characters that always need escaping in inline markdown text regardless
+ * of surrounding context.
  */
-const INLINE_ESCAPES = [
-  "\\", // escape character
-  "`", // inline code
-  "*", // emphasis/bold
-  "[", // link start
-  "]", // link end
-  "|", // table cell (GFM)
-  "<", // HTML tag
-]
+const ALWAYS_ESCAPE = new Set(["`", "*", "[", "]", "|"])
 
-const INLINE_ESCAPES_REGEXP = new RegExp(
-  `(${INLINE_ESCAPES.map((symbol) => `\\${symbol}`).join("|")})`,
-  "g"
-)
+// ASCII punctuation per CommonMark: !"#$%&'()*+,-./:;<=>?@[\]^_`{|}~
+// These are the only characters `\` can escape, so a `\` not followed by one
+// of them is a literal backslash (e.g. Windows paths like `C:\Users`).
+function isAsciiPunct(ch: string): boolean {
+  return /[!-/:-@\[-`{-~]/.test(ch)
+}
 
-// A character is "word-like" for flanking purposes when it is neither
-// whitespace nor CommonMark punctuation. CommonMark classifies both Unicode P
-// (punctuation) and S (symbol, e.g. `$`, `+`, `<`, `|`, `~`, `` ` ``) as
-// punctuation for flanking. Start/end of string counts as whitespace-like
+// `<` only starts an HTML tag or autolink when followed by a letter, `/`,
+// `?`, or `!`. Otherwise (e.g. `a < b`, `a<5`) it is literal.
+function isHtmlTagStart(ch: string): boolean {
+  return /[a-zA-Z/?!]/.test(ch)
+}
+
+// A character is "word-like" for `_` / `~` flanking purposes when it is
+// neither whitespace nor CommonMark punctuation. CommonMark classifies both
+// Unicode P (punctuation) and S (symbol, e.g. `$`, `+`, `<`, `|`, `~`, `` ` ``)
+// as punctuation for flanking. Start/end of string counts as whitespace-like
 // (empty string fails all tests).
 function isWordLike(ch: string): boolean {
   if (ch === "") return false
@@ -34,25 +33,32 @@ function isWordLike(ch: string): boolean {
  * Escape text that could have an ambiguous meaning in markdown.
  *
  * Only escapes characters that genuinely need escaping:
- * - Characters with special inline meaning (always escaped)
- * - `_` and `~` only when they could open/close emphasis/strikethrough
- *   (not intraword)
- * - Characters with special meaning at the start of a line (position-aware)
+ * - `` ` ``, `*`, `[`, `]`, `|` — always escaped
+ * - `\` — escaped only when followed by an ASCII punctuation character
+ * - `<` — escaped only when it could start an HTML tag or autolink
+ * - `_`, `~` — escaped only when they could open/close emphasis/strikethrough
+ *   (not between word-like characters)
+ * - `#`, ordered list markers, `-`/`+`/`>` — escaped only at the start of a line
  */
 export function escapeText(s: string) {
-  // Escape characters that always have inline meaning
-  let result = s.replace(INLINE_ESCAPES_REGEXP, (m: string) => `\\${m}`)
+  let result = ""
+  for (let i = 0; i < s.length; i++) {
+    const ch = s[i]
+    const prev = i > 0 ? s[i - 1] : ""
+    const next = i + 1 < s.length ? s[i + 1] : ""
 
-  // Escape `_` and `~` only when they are NOT surrounded by word-like
-  // characters on both sides. CommonMark disables intraword emphasis for `_`,
-  // and GFM strikethrough requires non-word flanking, so identifiers like
-  // `foo_bar` or `foo~bar` need no escape.
-  result = result.replace(/[_~]/g, (m, offset: number) => {
-    const prev = offset > 0 ? result[offset - 1] : ""
-    const next = offset < result.length - 1 ? result[offset + 1] : ""
-    if (isWordLike(prev) && isWordLike(next)) return m
-    return `\\${m}`
-  })
+    if (ALWAYS_ESCAPE.has(ch)) {
+      result += `\\${ch}`
+    } else if (ch === "\\") {
+      result += isAsciiPunct(next) ? "\\\\" : "\\"
+    } else if (ch === "<") {
+      result += isHtmlTagStart(next) ? "\\<" : "<"
+    } else if (ch === "_" || ch === "~") {
+      result += isWordLike(prev) && isWordLike(next) ? ch : `\\${ch}`
+    } else {
+      result += ch
+    }
+  }
 
   // Escape characters that only have special meaning at the start of a line
   result = result.replace(/^(#{1,6})(\s)/m, "\\$1$2") // headings

@@ -45,17 +45,38 @@ describe("escapeText", () => {
     })
   })
 
+  describe("backslash", () => {
+    it("does not escape backslashes before non-punctuation", () => {
+      expect(escapeText("C:\\Users\\name")).toBe("C:\\Users\\name")
+      expect(escapeText("a\\b")).toBe("a\\b")
+    })
+
+    it("escapes backslashes before ASCII punctuation", () => {
+      expect(escapeText("a\\*b")).toBe("a\\\\\\*b")
+      expect(escapeText("a\\.b")).toBe("a\\\\.b")
+    })
+  })
+
+  describe("less-than", () => {
+    it("does not escape `<` followed by non-tag characters", () => {
+      expect(escapeText("a < b")).toBe("a < b")
+      expect(escapeText("a<5 && 5>b")).toBe("a<5 && 5>b")
+    })
+
+    it("escapes `<` that could start an HTML tag or autolink", () => {
+      expect(escapeText("a<div>")).toBe("a\\<div>")
+      expect(escapeText("<a>")).toBe("\\<a>")
+      expect(escapeText("</close>")).toBe("\\</close>")
+    })
+  })
+
   describe("other inline escapes still work", () => {
     it("escapes asterisks", () => {
       expect(escapeText("foo*bar")).toBe("foo\\*bar")
     })
 
-    it("escapes backticks, brackets, pipes, and <", () => {
-      expect(escapeText("`[]|<")).toBe("\\`\\[\\]\\|\\<")
-    })
-
-    it("escapes backslash", () => {
-      expect(escapeText("a\\b")).toBe("a\\\\b")
+    it("escapes backticks, brackets, and pipes", () => {
+      expect(escapeText("`[]|")).toBe("\\`\\[\\]\\|")
     })
   })
 
