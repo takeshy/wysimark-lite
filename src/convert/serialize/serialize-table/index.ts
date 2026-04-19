@@ -56,8 +56,13 @@ function serializeTableRow(element: TableRowElement): string {
 
 function serializeTableCell(element: TableCellElement): string {
   assertElementType(element, "table-cell")
-  // Join multiple table-content children with <br> to keep the row on one line.
-  return element.children.map(serializeTableContent).join("<br>")
+  assert(
+    element.children.length === 1,
+    `Expected table-cell to have one child but is ${JSON.stringify(
+      element.children
+    )}`
+  )
+  return element.children.map(serializeTableContent).join("")
 }
 
 function serializeTableContent(element: TableContentElement): string {
