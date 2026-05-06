@@ -18,9 +18,13 @@ describe("escapeText", () => {
       assert.strictEqual(escapeText("a _b_ c"), "a \\_b\\_ c")
     })
 
-    it("escapes trailing/leading underscores adjacent to whitespace", () => {
-      assert.strictEqual(escapeText("foo _"), "foo \\_")
-      assert.strictEqual(escapeText("_ foo"), "\\_ foo")
+    it("does not escape underscores that cannot form an emphasis pair", () => {
+      assert.strictEqual(escapeText("foo _"), "foo _")
+      assert.strictEqual(escapeText("_ foo"), "_ foo")
+      assert.strictEqual(escapeText("_foo_bar"), "_foo_bar")
+      assert.strictEqual(escapeText("foo_bar_"), "foo_bar_")
+      assert.strictEqual(escapeText("path/_file"), "path/_file")
+      assert.strictEqual(escapeText("path_/file"), "path_/file")
     })
 
     it("does not escape underscores between non-ASCII word-like characters", () => {

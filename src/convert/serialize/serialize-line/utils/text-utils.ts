@@ -11,6 +11,14 @@ function isAsciiPunct(ch: string): boolean {
   return /[!-/:-@\[-`{-~]/.test(ch)
 }
 
+function isWhitespace(ch: string): boolean {
+  return ch === "" || /\s/u.test(ch)
+}
+
+function isPunctOrSymbol(ch: string): boolean {
+  return ch !== "" && /[\p{P}\p{S}]/u.test(ch)
+}
+
 // `<` only starts an HTML tag or autolink when followed by a letter, `/`,
 // `?`, or `!`. Otherwise (e.g. `a < b`, `a<5`) it is literal.
 function isHtmlTagStart(ch: string): boolean {
@@ -23,10 +31,38 @@ function isHtmlTagStart(ch: string): boolean {
 // as punctuation for flanking. Start/end of string counts as whitespace-like
 // (empty string fails all tests).
 function isWordLike(ch: string): boolean {
-  if (ch === "") return false
-  if (/\s/.test(ch)) return false
-  if (/[\p{P}\p{S}]/u.test(ch)) return false
+  if (isWhitespace(ch)) return false
+  if (isPunctOrSymbol(ch)) return false
   return true
+}
+
+function getUnderscoresThatCanEmphasize(chars: string[]): Set<number> {
+  const escaped = new Set<number>()
+  const openers: number[] = []
+
+  for (let i = 0; i < chars.length; i++) {
+    if (chars[i] !== "_") continue
+
+    const prev = i > 0 ? chars[i - 1] : ""
+    const next = i + 1 < chars.length ? chars[i + 1] : ""
+    const leftFlanking =
+      !isWhitespace(next) &&
+      (!isPunctOrSymbol(next) || isWhitespace(prev) || isPunctOrSymbol(prev))
+    const rightFlanking =
+      !isWhitespace(prev) &&
+      (!isPunctOrSymbol(prev) || isWhitespace(next) || isPunctOrSymbol(next))
+
+    const canOpen = leftFlanking && (!rightFlanking || isPunctOrSymbol(prev))
+    const canClose = rightFlanking && (!leftFlanking || isPunctOrSymbol(next))
+
+    if (canClose && openers.length > 0) {
+      escaped.add(openers.pop() as number)
+      escaped.add(i)
+    }
+    if (canOpen) openers.push(i)
+  }
+
+  return escaped
 }
 
 /**
@@ -41,11 +77,13 @@ function isWordLike(ch: string): boolean {
  * - `#`, ordered list markers, `-`/`+`/`>` — escaped only at the start of a line
  */
 export function escapeText(s: string) {
+  const chars = Array.from(s)
+  const emphasisUnderscores = getUnderscoresThatCanEmphasize(chars)
   let result = ""
-  for (let i = 0; i < s.length; i++) {
-    const ch = s[i]
-    const prev = i > 0 ? s[i - 1] : ""
-    const next = i + 1 < s.length ? s[i + 1] : ""
+  for (let i = 0; i < chars.length; i++) {
+    const ch = chars[i]
+    const prev = i > 0 ? chars[i - 1] : ""
+    const next = i + 1 < chars.length ? chars[i + 1] : ""
 
     if (ALWAYS_ESCAPE.has(ch)) {
       result += `\\${ch}`
@@ -53,7 +91,9 @@ export function escapeText(s: string) {
       result += isAsciiPunct(next) ? "\\\\" : "\\"
     } else if (ch === "<") {
       result += isHtmlTagStart(next) ? "\\<" : "<"
-    } else if (ch === "_" || ch === "~") {
+    } else if (ch === "_") {
+      result += emphasisUnderscores.has(i) ? `\\${ch}` : ch
+    } else if (ch === "~") {
       result += isWordLike(prev) && isWordLike(next) ? ch : `\\${ch}`
     } else {
       result += ch
