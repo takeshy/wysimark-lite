@@ -41,14 +41,24 @@ describe("escapeText", () => {
   })
 
   describe("tilde", () => {
-    it("does not escape intraword tildes (GFM: no strikethrough)", () => {
+    it("does not escape unpaired intraword tildes", () => {
       assert.strictEqual(escapeText("foo~bar"), "foo~bar")
-      assert.strictEqual(escapeText("a~b~c"), "a~b~c")
     })
 
     it("escapes tildes that could form strikethrough", () => {
       assert.strictEqual(escapeText("~strike~"), "\\~strike\\~")
       assert.strictEqual(escapeText("hello ~world~"), "hello \\~world\\~")
+      assert.strictEqual(escapeText("~~strike~~"), "\\~\\~strike\\~\\~")
+      assert.strictEqual(escapeText("~foo~bar"), "\\~foo\\~bar")
+      assert.strictEqual(escapeText("foo~bar~"), "foo\\~bar\\~")
+      assert.strictEqual(escapeText("foo~bar~baz"), "foo\\~bar\\~baz")
+    })
+
+    it("does not escape tildes that cannot form a strikethrough pair", () => {
+      assert.strictEqual(escapeText("foo ~"), "foo ~")
+      assert.strictEqual(escapeText("~ foo"), "~ foo")
+      assert.strictEqual(escapeText("path/~file"), "path/~file")
+      assert.strictEqual(escapeText("path~/file"), "path~/file")
     })
   })
 

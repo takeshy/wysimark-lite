@@ -25,23 +25,12 @@ function isHtmlTagStart(ch: string): boolean {
   return /[a-zA-Z/?!]/.test(ch)
 }
 
-// A character is "word-like" for `_` / `~` flanking purposes when it is
-// neither whitespace nor CommonMark punctuation. CommonMark classifies both
-// Unicode P (punctuation) and S (symbol, e.g. `$`, `+`, `<`, `|`, `~`, `` ` ``)
-// as punctuation for flanking. Start/end of string counts as whitespace-like
-// (empty string fails all tests).
-function isWordLike(ch: string): boolean {
-  if (isWhitespace(ch)) return false
-  if (isPunctOrSymbol(ch)) return false
-  return true
-}
-
-function getUnderscoresThatCanEmphasize(chars: string[]): Set<number> {
+function getDelimitersThatCanPair(chars: string[], delimiter: string): Set<number> {
   const escaped = new Set<number>()
   const openers: number[] = []
 
   for (let i = 0; i < chars.length; i++) {
-    if (chars[i] !== "_") continue
+    if (chars[i] !== delimiter) continue
 
     const prev = i > 0 ? chars[i - 1] : ""
     const next = i + 1 < chars.length ? chars[i + 1] : ""
@@ -54,6 +43,28 @@ function getUnderscoresThatCanEmphasize(chars: string[]): Set<number> {
 
     const canOpen = leftFlanking && (!rightFlanking || isPunctOrSymbol(prev))
     const canClose = rightFlanking && (!leftFlanking || isPunctOrSymbol(next))
+
+    if (canClose && openers.length > 0) {
+      escaped.add(openers.pop() as number)
+      escaped.add(i)
+    }
+    if (canOpen) openers.push(i)
+  }
+
+  return escaped
+}
+
+function getTildesThatCanPair(chars: string[]): Set<number> {
+  const escaped = new Set<number>()
+  const openers: number[] = []
+
+  for (let i = 0; i < chars.length; i++) {
+    if (chars[i] !== "~") continue
+
+    const prev = i > 0 ? chars[i - 1] : ""
+    const next = i + 1 < chars.length ? chars[i + 1] : ""
+    const canOpen = !isWhitespace(next)
+    const canClose = !isWhitespace(prev)
 
     if (canClose && openers.length > 0) {
       escaped.add(openers.pop() as number)
@@ -78,7 +89,8 @@ function getUnderscoresThatCanEmphasize(chars: string[]): Set<number> {
  */
 export function escapeText(s: string) {
   const chars = Array.from(s)
-  const emphasisUnderscores = getUnderscoresThatCanEmphasize(chars)
+  const emphasisUnderscores = getDelimitersThatCanPair(chars, "_")
+  const strikethroughTildes = getTildesThatCanPair(chars)
   let result = ""
   for (let i = 0; i < chars.length; i++) {
     const ch = chars[i]
@@ -94,7 +106,7 @@ export function escapeText(s: string) {
     } else if (ch === "_") {
       result += emphasisUnderscores.has(i) ? `\\${ch}` : ch
     } else if (ch === "~") {
-      result += isWordLike(prev) && isWordLike(next) ? ch : `\\${ch}`
+      result += strikethroughTildes.has(i) ? `\\${ch}` : ch
     } else {
       result += ch
     }
