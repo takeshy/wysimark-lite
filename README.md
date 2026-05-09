@@ -13,6 +13,8 @@ Thanks to the original author of wysimark, portive m(_ _)m
 You can try out the editor using storybook in the following link:
 https://takeshy.github.io/wysimark-lite
 
+![Wysimark-lite editor screenshot](wysimark.png)
+
 ## Usage
 
 ### As React Component
