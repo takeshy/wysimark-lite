@@ -68,7 +68,8 @@ describe("escapeText", () => {
     })
 
     it("escapes backslashes before ASCII punctuation", () => {
-      assert.strictEqual(escapeText("a\\*b"), "a\\\\\\*b")
+      // the `*` itself stays literal because it cannot pair
+      assert.strictEqual(escapeText("a\\*b"), "a\\\\*b")
       assert.strictEqual(escapeText("a\\.b"), "a\\\\.b")
     })
   })
@@ -86,13 +87,72 @@ describe("escapeText", () => {
     })
   })
 
-  describe("other inline escapes still work", () => {
-    it("escapes asterisks", () => {
-      assert.strictEqual(escapeText("foo*bar"), "foo\\*bar")
+  describe("asterisk", () => {
+    it("does not escape asterisks that cannot form an emphasis pair", () => {
+      assert.strictEqual(escapeText("2 * 3 = 6"), "2 * 3 = 6")
+      assert.strictEqual(escapeText("use the * operator"), "use the * operator")
+      assert.strictEqual(escapeText("foo*bar"), "foo*bar")
+      assert.strictEqual(escapeText("foo *"), "foo *")
     })
 
-    it("escapes backticks, brackets, and pipes", () => {
-      assert.strictEqual(escapeText("`[]|"), "\\`\\[\\]\\|")
+    it("escapes asterisks that could open/close emphasis", () => {
+      assert.strictEqual(escapeText("*italic*"), "\\*italic\\*")
+      assert.strictEqual(escapeText("hello *world*"), "hello \\*world\\*")
+      assert.strictEqual(escapeText("**bold**"), "\\*\\*bold\\*\\*")
+      // unlike `_`, `*` can form intraword emphasis
+      assert.strictEqual(escapeText("foo*bar*baz"), "foo\\*bar\\*baz")
+    })
+  })
+
+  describe("backtick", () => {
+    it("does not escape a lone backtick (cannot form a code span)", () => {
+      assert.strictEqual(escapeText("back`tick"), "back`tick")
+      assert.strictEqual(escapeText("don`t"), "don`t")
+    })
+
+    it("escapes backticks that could pair into a code span", () => {
+      assert.strictEqual(escapeText("a `b` c"), "a \\`b\\` c")
+      assert.strictEqual(escapeText("a ` b ` c"), "a \\` b \\` c")
+    })
+
+    it("escapes a lone backtick when the line context requires it", () => {
+      assert.strictEqual(
+        escapeText("a`b", { escapeBackticks: true }),
+        "a\\`b"
+      )
+    })
+  })
+
+  describe("brackets", () => {
+    it("does not escape brackets that cannot form a link", () => {
+      assert.strictEqual(escapeText("[TODO] check this"), "[TODO] check this")
+      assert.strictEqual(escapeText("array[0] = 1"), "array[0] = 1")
+      assert.strictEqual(escapeText("a] b [c"), "a] b [c")
+      assert.strictEqual(escapeText("x](y"), "x](y")
+    })
+
+    it("escapes bracket pairs that could form a link or image", () => {
+      assert.strictEqual(escapeText("[a](b)"), "\\[a\\](b)")
+      assert.strictEqual(escapeText("![a](b)"), "!\\[a\\](b)")
+      assert.strictEqual(escapeText("see [docs](#x) now"), "see \\[docs\\](#x) now")
+    })
+
+    it("escapes `[` that could start a footnote reference", () => {
+      assert.strictEqual(escapeText("[^1]"), "\\[^1]")
+    })
+
+    it("escapes all brackets inside an anchor label", () => {
+      assert.strictEqual(
+        escapeText("a]b[c", { inAnchorLabel: true }),
+        "a\\]b\\[c"
+      )
+    })
+  })
+
+  describe("pipe", () => {
+    it("does not escape pipes outside of tables", () => {
+      assert.strictEqual(escapeText("a | b"), "a | b")
+      assert.strictEqual(escapeText("foo|bar"), "foo|bar")
     })
   })
 
@@ -107,6 +167,7 @@ describe("escapeText", () => {
 
     it("escapes list/blockquote markers", () => {
       assert.strictEqual(escapeText("- item"), "\\- item")
+      assert.strictEqual(escapeText("* item"), "\\* item")
       assert.strictEqual(escapeText("> quote"), "\\> quote")
     })
   })
