@@ -135,4 +135,19 @@ describe("escape round-trip", () => {
       assert.strictEqual(markdown, "[a\\]b](https://example.com)")
     })
   })
+
+  describe("highlight", () => {
+    it("round-trips inline mark tags as highlight text", () => {
+      const input = "<mark>highlight</mark>"
+      const parsed = parse(input) as Element[]
+
+      assert.deepStrictEqual(parsed, [
+        {
+          type: "paragraph",
+          children: [{ text: "highlight", highlight: true }],
+        },
+      ])
+      assert.strictEqual(serialize(parsed).trimEnd(), input)
+    })
+  })
 })

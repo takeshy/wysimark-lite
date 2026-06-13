@@ -14,8 +14,8 @@ function parseInlineHtml(htmlValue: string, marks: MarkProps): Segment[] {
   if (/^<br\s*\/?>$/i.test(htmlValue)) {
     return [{ text: "\n", ...marks }]
   }
-  // Check for <mark>...</mark> pattern
-  const markMatch = htmlValue.match(/^<mark>(.+?)<\/mark>$/s)
+  // Check for <mark>...</mark> pattern when the parser keeps it in one node.
+  const markMatch = htmlValue.match(/^<mark\b[^>]*>(.+?)<\/mark>$/is)
   if (markMatch) {
     return [{ text: markMatch[1], ...marks, highlight: true }]
   }
@@ -28,8 +28,20 @@ export function parsePhrasingContents(
   marks: MarkProps = {}
 ): Segment[] {
   const segments: Segment[] = []
+  let activeMarks = { ...marks }
   for (const phrasingContent of phrasingContents) {
-    segments.push(...parsePhrasingContent(phrasingContent, marks))
+    if (phrasingContent.type === "html") {
+      if (/^<mark\b[^>]*>$/i.test(phrasingContent.value)) {
+        activeMarks = { ...activeMarks, highlight: true }
+        continue
+      }
+      if (/^<\/mark>$/i.test(phrasingContent.value)) {
+        const { highlight: _highlight, ...nextMarks } = activeMarks
+        activeMarks = nextMarks
+        continue
+      }
+    }
+    segments.push(...parsePhrasingContent(phrasingContent, activeMarks))
   }
   const nextInlines = normalizeSegments(segments)
   return nextInlines
