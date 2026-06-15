@@ -1,7 +1,6 @@
 import type { Plugin, Processor } from 'unified'
-import { gfmTableFromMarkdown } from 'mdast-util-gfm-table'
 import { gfm } from 'micromark-extension-gfm'
-import { gfmToMarkdown } from 'mdast-util-gfm'
+import { gfmFromMarkdown, gfmToMarkdown } from 'mdast-util-gfm'
 
 // Internal type for unified processor data
 interface ProcessorData {
@@ -21,6 +20,22 @@ function wrapHandler(originalHandler: Function | undefined) {
     }
     return originalHandler.call(this, token);
   };
+}
+
+function patchFromMarkdownExtension(extension: any) {
+  if (extension.enter) {
+    for (const key of Object.keys(extension.enter)) {
+      extension.enter[key] = wrapHandler(extension.enter[key]);
+    }
+  }
+
+  if (extension.exit) {
+    for (const key of Object.keys(extension.exit)) {
+      extension.exit[key] = wrapHandler(extension.exit[key]);
+    }
+  }
+
+  return extension;
 }
 
 /**
@@ -49,29 +64,9 @@ export function customRemarkGfm(): Plugin {
     // We're using the original extensions from remark-gfm
     micromarkExtensions.push(gfm());
 
-    // Create a patched version of gfmTableFromMarkdown
-    const patchedFromMarkdown = function() {
-      const extension = gfmTableFromMarkdown();
-
-      // Wrap all enter handlers to ensure this.data is initialized
-      if (extension.enter) {
-        for (const key of Object.keys(extension.enter)) {
-          (extension.enter as any)[key] = wrapHandler((extension.enter as any)[key]);
-        }
-      }
-
-      // Wrap all exit handlers to ensure this.data is initialized
-      if (extension.exit) {
-        for (const key of Object.keys(extension.exit)) {
-          (extension.exit as any)[key] = wrapHandler((extension.exit as any)[key]);
-        }
-      }
-
-      return extension;
-    };
-
-    // Add our patched extensions
-    fromMarkdownExtensions.push(patchedFromMarkdown());
+    // Add all GFM from-markdown extensions, including task list items.
+    const patchedFromMarkdown = gfmFromMarkdown().map(patchFromMarkdownExtension);
+    fromMarkdownExtensions.push(...patchedFromMarkdown);
     toMarkdownExtensions.push(gfmToMarkdown());
 
     return undefined; // Return undefined as the plugin doesn't need to return anything
