@@ -1,4 +1,4 @@
-import { Editor, Transforms } from "slate"
+import { Editor, Element, Range, Transforms } from "slate"
 
 import {
   createHotkeyHandler,
@@ -25,6 +25,40 @@ export const LIST_ITEM_TYPES: ListItemElement["type"][] = [
 
 export const isListItem = createIsElementType<ListItemElement>(LIST_ITEM_TYPES)
 
+function autocompleteTaskList(editor: Editor, text: string) {
+  if (text !== " ") return false
+  if (!editor.selection || !Range.isCollapsed(editor.selection)) return false
+
+  const [entry] = Array.from(
+    Editor.nodes(editor, {
+      match: (node) => Element.isElement(node) && node.type === "paragraph",
+      mode: "lowest",
+    })
+  )
+  if (!entry) return false
+
+  const [, path] = entry
+  const start = Editor.start(editor, path)
+  const range = { anchor: start, focus: editor.selection.anchor }
+  const marker = Editor.string(editor, range)
+  const match = /^-\s+\[([ xX])\]$/.exec(marker)
+  if (!match) return false
+
+  Editor.withoutNormalizing(editor, () => {
+    Transforms.delete(editor, { at: range })
+    editor.convertElement.convertElements(
+      (element) => element.type === "task-list-item",
+      (element) => ({
+        type: "task-list-item",
+        checked: match[1].toLowerCase() === "x",
+        depth: "depth" in element && typeof element.depth === "number" ? element.depth : 0,
+      }),
+      false
+    )
+  })
+  return true
+}
+
 export const ListPlugin = createPlugin<ListPluginCustomTypes>(
   (editor, _options, { createPolicy }) => {
     editor.convertElement.addConvertElementType(LIST_ITEM_TYPES)
@@ -41,6 +75,7 @@ export const ListPlugin = createPlugin<ListPluginCustomTypes>(
       name: "list",
       editor: {
         normalizeNode: (entry) => normalizeNode(editor, entry),
+        insertText: (text) => autocompleteTaskList(editor, text),
         insertBreak: list.insertBreak,
         deleteBackward: (unit) => {
           if (unit !== "character") return false
