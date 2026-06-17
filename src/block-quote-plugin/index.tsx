@@ -1,13 +1,81 @@
+import type { MouseEvent } from "react"
 import { Descendant, Editor, Element, Node, Transforms } from "slate"
+import { ReactEditor, useFocused, useSlateStatic } from "slate-react"
 
 import {
+  createAutocompleteSpaceHandler,
   createHotkeyHandler,
   createPlugin,
+  ConstrainedRenderElementProps,
   normalizeSiblings,
   TypedPlugin,
+  useIsElementSelectionInside,
 } from "../sink"
 
-import { $BlockQuote } from "./styles"
+import { getCalloutInfo } from "./callout"
+import {
+  $BlockQuote,
+  $Callout,
+  $CalloutBody,
+  $CalloutFoldIcon,
+  $CalloutIcon,
+  $CalloutTitle,
+  $CalloutTitleText,
+} from "./styles"
+
+function BlockQuote({
+  element,
+  attributes,
+  children,
+}: ConstrainedRenderElementProps<BlockQuoteElement>) {
+  const editor = useSlateStatic()
+  const callout = getCalloutInfo(element)
+  const isFocused = useFocused()
+  const hasSelectionInside = useIsElementSelectionInside(element)
+  const isEditing = isFocused && hasSelectionInside
+
+  function editBlock(event: MouseEvent) {
+    const target = event.target
+    if (
+      target instanceof HTMLElement &&
+      target.closest(".wysimark-callout-body")
+    ) {
+      return
+    }
+
+    event.preventDefault()
+    const path = ReactEditor.findPath(editor, element)
+    Transforms.select(editor, Editor.start(editor, path))
+    ReactEditor.focus(editor)
+  }
+
+  if (callout && !isEditing) {
+    return (
+      <$Callout
+        {...attributes}
+        data-callout={callout.type}
+        data-callout-source-type={callout.displayType}
+        data-callout-fold={callout.fold}
+        onMouseDown={editBlock}
+      >
+        <$CalloutTitle
+          className="wysimark-callout-title"
+          contentEditable={false}
+          data-fold={callout.fold}
+        >
+          <$CalloutFoldIcon>
+            {callout.fold === "closed" ? "›" : callout.fold === "open" ? "⌄" : null}
+          </$CalloutFoldIcon>
+          <$CalloutIcon>{callout.icon}</$CalloutIcon>
+          <$CalloutTitleText>{callout.title}</$CalloutTitleText>
+        </$CalloutTitle>
+        <$CalloutBody className="wysimark-callout-body">{children}</$CalloutBody>
+      </$Callout>
+    )
+  }
+
+  return <$BlockQuote {...attributes}>{children}</$BlockQuote>
+}
 
 export type BlockQuoteEditor = {
   supportsBlockQuote: true
@@ -174,6 +242,13 @@ export const BlockQuotePlugin = createPlugin<BlockQuotePluginCustomTypes>(
         )
       },
     }
+    const autocompleteHandler = createAutocompleteSpaceHandler(editor, {
+      ">": editor.blockQuotePlugin.indent,
+    })
+    const hotkeyHandler = createHotkeyHandler({
+      "super+.": editor.blockQuotePlugin.indent,
+      "super+,": editor.blockQuotePlugin.outdent,
+    })
     return {
       name: "block-quote",
       editor: {
@@ -197,13 +272,18 @@ export const BlockQuotePlugin = createPlugin<BlockQuotePluginCustomTypes>(
       editableProps: {
         renderElement: ({ element, attributes, children }) => {
           if (element.type === "block-quote") {
-            return <$BlockQuote {...attributes}>{children}</$BlockQuote>
+            return (
+              <BlockQuote element={element} attributes={attributes}>
+                {children}
+              </BlockQuote>
+            )
           }
         },
-        onKeyDown: createHotkeyHandler({
-          "super+.": editor.blockQuotePlugin.indent,
-          "super+,": editor.blockQuotePlugin.outdent,
-        }),
+        onKeyDown: (e) => {
+          if (hotkeyHandler(e)) return true
+          if (autocompleteHandler(e)) return true
+          return false
+        },
       },
     }
   }

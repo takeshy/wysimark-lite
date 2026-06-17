@@ -273,11 +273,41 @@ This editor has all features enabled:
 - **Raw Mode**: Click the Markdown icon to edit raw markdown
 - **Task List**: Create checklists with the toolbar
 - **Code Block**: Add code blocks with syntax highlighting
+- **Callout**: Obsidian-style callouts render when the cursor leaves the block
+- **Mermaid**: Mermaid code blocks render as diagrams when the cursor leaves the block
 
 Try <mark>highlighted text</mark> here!
 
 - [x] Completed task
 - [ ] Pending task
+
+> [!tip] Obsidian callout
+> This block uses Obsidian callout syntax.
+> Move the cursor outside this block to see the callout preview.
+
+\`\`\`javascript
+const message = "JavaScript code block";
+console.log(message);
+\`\`\`
+
+\`\`\`mermaid
+flowchart TD
+  A[Start] --> B{Ready?}
+  B -->|Yes| C[Render Mermaid]
+  B -->|No| D[Edit Markdown]
+  D --> B
+\`\`\`
+
+> [!note] Mermaid inside a callout
+> The Mermaid block below should be editable while selected and render when the cursor leaves it.
+>
+> \`\`\`mermaid
+> sequenceDiagram
+>   participant User
+>   participant Editor
+>   User->>Editor: Move cursor outside block
+>   Editor-->>User: Show diagram
+> \`\`\`
 `,
     placeholder: 'Start writing...',
     disableRawMode: false,

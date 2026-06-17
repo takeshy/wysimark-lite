@@ -15,6 +15,7 @@ export type BuiltInLanguage =
   | "java"
   | "c"
   | "clike"
+  | "mermaid"
 
 /**
  * Maps a number of supported or semi-supported syntax highlighting languages
@@ -38,6 +39,7 @@ export const LanguageMap: Record<string, BuiltInLanguage> = {
   "c#": "clike",
   "c++": "clike",
   java: "clike",
+  mermaid: "mermaid",
   javascript: "javascript",
   js: "javascript",
 }
@@ -52,6 +54,7 @@ export const LanguageList: BuiltInLanguage[] = [
   "html",
   "css",
   "svg",
+  "mermaid",
   "javascript",
   "java",
   "c",
