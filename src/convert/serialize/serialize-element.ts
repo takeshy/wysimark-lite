@@ -14,7 +14,18 @@ export function serializeElement(element: Element, orders: number[]): string {
       return `[${serializeLine(element.children as Segment[])}](${element.href
         })`
     case "block-quote": {
-      const lines = serializeElements(element.children as Element[])
+      const children = element.children as Element[]
+      const firstChild = children[0]
+      const isCallout =
+        firstChild?.type === "paragraph" &&
+        /^\[![A-Za-z0-9_-]+\][+-]?(?:\s+.*)?$/.test(
+          serializeLine(firstChild.children as Segment[])
+        )
+      const lines = isCallout
+        ? `${serializeElement(firstChild, orders).trimEnd()}\n${serializeElements(
+          children.slice(1)
+        ).trimStart()}`
+        : serializeElements(children)
       return `${lines
         .split("\n")
         .map((line) => (line ? `> ${line}` : ">"))

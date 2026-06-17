@@ -27,6 +27,39 @@ export const $CodeBlockScroller = styled("div")`
   overflow-x: auto;
 `
 
+export const $CodeBlockEditingScroller = styled($CodeBlockScroller)`
+  padding-top: 1em;
+`
+
+export const $CodeBlockActions = styled("div")`
+  position: absolute;
+  top: 0.25em;
+  right: 0.25em;
+  z-index: 2;
+  display: flex;
+  gap: 0.25em;
+`
+
+export const $CodeBlockActionButton = styled("button")`
+  width: 2em;
+  height: 2em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--shade-300);
+  border-radius: 0.375em;
+  color: var(--shade-700);
+  background: var(--shade-100);
+  font: inherit;
+  line-height: 1;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--shade-900);
+    background: var(--shade-200);
+  }
+`
+
 export const $CodeBlockLanguage = styled("span")`
   cursor: pointer;
   position: absolute;
@@ -55,6 +88,19 @@ export const $CodeBlockLanguage = styled("span")`
   }
 `
 
+export const $CodeBlockLanguageInput = styled("input")`
+  box-sizing: border-box;
+  min-width: 0;
+  flex: 1 1 auto;
+  border: 0;
+  outline: 0;
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+`
+
 export const $CodeBlockLine = styled("div")`
   white-space: pre;
   line-height: 1.5em;
@@ -78,4 +124,48 @@ export const $CodeBlockLine = styled("div")`
     display: inline-block;
     width: 2em;
   } */
+`
+
+export const $MermaidPreview = styled($CodeBlock)`
+  min-height: 8em;
+  cursor: text;
+`
+
+export const $MermaidPreviewContent = styled("div")`
+  box-sizing: border-box;
+  min-height: 8em;
+  padding: 1.5em 1em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-x: auto;
+  color: var(--shade-700);
+
+  svg {
+    max-width: 100%;
+    height: auto;
+  }
+`
+
+export const $MermaidError = styled("pre")`
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0;
+  white-space: pre-wrap;
+  color: rgb(185 28 28);
+  background: rgb(254 242 242);
+  border: 1px solid rgb(252 165 165);
+  border-radius: 0.375em;
+  padding: 0.75em;
+  font-family: "andale mono", AndaleMono, monospace;
+  font-size: 0.8125em;
+`
+
+export const $MermaidSource = styled("div")`
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
 `

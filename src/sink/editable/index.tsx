@@ -1,8 +1,11 @@
-import { useEffect, useMemo, useRef } from "react"
-import { Editor, Transforms } from "slate"
+import type { ClipboardEvent } from "react"
+import { useCallback, useEffect, useMemo, useRef } from "react"
+import { Editor, Range, Transforms } from "slate"
 import { ReactEditor, useSlateStatic } from "slate-react"
 import { EditableProps } from "slate-react/dist/components/editable"
 
+import { serialize } from "../../convert"
+import type { Element } from "../../entry/plugins"
 import { SinkEditor } from "../types"
 import { createDecorate } from "./create-decorate"
 import { createEditable } from "./create-editable"
@@ -107,6 +110,31 @@ export function SinkEditable(originalProps: EditableProps): React.ReactElement {
   const editor = useSlateStatic() as unknown as Editor & SinkEditor
   const skipInputTextRef = useRef<string | null>(null)
 
+  const writeMarkdownFragmentToClipboard = useCallback(
+    (
+      event: ClipboardEvent<HTMLDivElement>,
+      options: { deleteSelection: boolean }
+    ) => {
+      const { selection } = editor
+      if (selection == null || Range.isCollapsed(selection)) return false
+
+      const fragment = Editor.fragment(editor, selection) as Element[]
+      const markdown = serialize(fragment).trimEnd()
+      if (markdown === "") return false
+
+      event.preventDefault()
+      event.clipboardData.setData("text/plain", markdown)
+      event.clipboardData.setData("text/markdown", markdown)
+
+      if (options.deleteSelection) {
+        Transforms.delete(editor)
+      }
+
+      return true
+    },
+    [editor]
+  )
+
   /**
    * We ask Slate to normalize the editor once at the very start.
    *
@@ -155,6 +183,18 @@ export function SinkEditable(originalProps: EditableProps): React.ReactElement {
       onKeyDown: createOnKeyDown(originalProps.onKeyDown, plugins),
       onKeyUp: createOnKeyUp(originalProps.onKeyUp, plugins),
       onPaste: createOnPaste(originalProps.onPaste, plugins),
+      onCopy: (event) => {
+        originalProps.onCopy?.(event)
+        if (!event.defaultPrevented) {
+          writeMarkdownFragmentToClipboard(event, { deleteSelection: false })
+        }
+      },
+      onCut: (event) => {
+        originalProps.onCut?.(event)
+        if (!event.defaultPrevented) {
+          writeMarkdownFragmentToClipboard(event, { deleteSelection: true })
+        }
+      },
       onDrop: createOnDrop(originalProps.onDrop, plugins),
       onDOMBeforeInput: createOnDOMBeforeInput(
         originalProps.onDOMBeforeInput,
@@ -171,6 +211,8 @@ export function SinkEditable(originalProps: EditableProps): React.ReactElement {
       originalProps.onKeyDown,
       originalProps.onKeyUp,
       originalProps.onPaste,
+      originalProps.onCopy,
+      originalProps.onCut,
       originalProps.onDrop,
       originalProps.onDOMBeforeInput,
       originalProps.onInput,
@@ -178,6 +220,7 @@ export function SinkEditable(originalProps: EditableProps): React.ReactElement {
       originalProps.className,
       editor,
       plugins,
+      writeMarkdownFragmentToClipboard,
     ]
   )
 
