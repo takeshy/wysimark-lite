@@ -7,7 +7,6 @@ import {
   createHotkeyHandler,
   createPlugin,
   ConstrainedRenderElementProps,
-  normalizeSiblings,
   TypedPlugin,
   useIsElementSelectionInside,
 } from "../sink"
@@ -251,24 +250,6 @@ export const BlockQuotePlugin = createPlugin<BlockQuotePluginCustomTypes>(
     })
     return {
       name: "block-quote",
-      editor: {
-        normalizeNode(entry) {
-          const [node, path] = entry
-          if (!Element.isElement(node)) return false
-          if (node.type !== "block-quote") return false
-          return normalizeSiblings<Element>(editor, [node, path], (a, b) => {
-            if (
-              Element.isElement(a[0]) &&
-              Element.isElement(b[0]) &&
-              a[0].type === "block-quote" &&
-              b[0].type === "block-quote"
-            ) {
-              Transforms.mergeNodes(editor, { at: b[1] })
-            }
-            return true
-          })
-        },
-      },
       editableProps: {
         renderElement: ({ element, attributes, children }) => {
           if (element.type === "block-quote") {

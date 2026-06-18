@@ -1,10 +1,12 @@
 import assert from "node:assert/strict"
 import { describe, it } from "node:test"
+import { createEditor, Editor } from "slate"
 
 import { parse } from "../convert/parse"
 import { serialize } from "../convert/serialize"
-import { getCalloutInfo } from "./callout"
-import type { BlockQuoteElement } from "."
+import { createSink } from "../sink"
+import { BlockQuotePlugin, type BlockQuoteElement } from "."
+import { getCalloutInfo, isCalloutBlockQuote } from "./callout"
 
 function blockQuote(marker: string): BlockQuoteElement {
   return {
@@ -55,6 +57,7 @@ describe("getCalloutInfo", () => {
 
   it("ignores ordinary blockquotes", () => {
     assert.equal(getCalloutInfo(blockQuote("Not a callout")), null)
+    assert.equal(isCalloutBlockQuote(blockQuote("Not a callout")), false)
   })
 
   it("splits marker line from body when parsing Obsidian blockquote syntax", () => {
@@ -75,6 +78,43 @@ describe("getCalloutInfo", () => {
       "> [!tip] Title",
       "> First body line  ",
       "> Second body line",
+    ].join("\n"))
+  })
+
+  it("keeps adjacent callouts separate during normalization", () => {
+    const { withSink } = createSink([BlockQuotePlugin])
+    const editor = withSink(createEditor(), {} as never)
+    editor.children = parse(
+      "> [!info] One\n> Body one\n\n> [!example] Two\n> Body two\n"
+    )
+
+    Editor.normalize(editor, { force: true })
+
+    assert.equal(editor.children.length, 2)
+    assert.equal(isCalloutBlockQuote(editor.children[0]), true)
+    assert.equal(isCalloutBlockQuote(editor.children[1]), true)
+    assert.equal(serialize(editor.children).trimEnd(), [
+      "> [!info] One",
+      "> Body one",
+      "",
+      "> [!example] Two",
+      "> Body two",
+    ].join("\n"))
+  })
+
+  it("keeps adjacent ordinary blockquotes separate during normalization", () => {
+    const { withSink } = createSink([BlockQuotePlugin])
+    const editor = withSink(createEditor(), {} as never)
+    editor.children = parse("> First\n\n> Second\n")
+
+    Editor.normalize(editor, { force: true })
+
+    assert.equal(editor.children.length, 2)
+    assert.equal(isCalloutBlockQuote(editor.children[0]), false)
+    assert.equal(serialize(editor.children).trimEnd(), [
+      "> First",
+      "",
+      "> Second",
     ].join("\n"))
   })
 })
