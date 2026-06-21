@@ -221,7 +221,18 @@ export function AnchorDialog({
       <DraggableHeader onDrag={handleDrag} />
       <div style={{ display: "flex", padding: "1em" }}>
         {isInternalLink ? (
-          <span className="--internal-link">
+          <span
+            className="--internal-link"
+            style={
+              editor.wysimark.onInternalLinkClick ? { cursor: "pointer" } : undefined
+            }
+            onMouseDown={(e) => {
+              if (!editor.wysimark.onInternalLinkClick) return
+              e.preventDefault()
+              editor.wysimark.onInternalLinkClick(internalTarget)
+              dialog.close()
+            }}
+          >
             <ExternalLinkIcon />
             <div className="--url">
               <div className="--hostname">{t("linkTypeInternal")}</div>

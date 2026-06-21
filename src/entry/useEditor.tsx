@@ -44,6 +44,7 @@ export type UseEditorOptions = {
   enableInternalLinks?: boolean
   renderInternalLinkPreview?: RenderInternalLinkPreview
   renderInternalEmbed?: RenderInternalEmbed
+  onInternalLinkClick?: (target: string) => void
 }
 
 export function useEditor({
@@ -58,6 +59,7 @@ export function useEditor({
   enableInternalLinks,
   renderInternalLinkPreview,
   renderInternalEmbed,
+  onInternalLinkClick,
 }: UseEditorOptions = {}): Editor & ReactEditor & WysimarkEditor {
   const [editor] = useState(() => {
     const editor = createEditor()
@@ -86,6 +88,7 @@ export function useEditor({
       enableInternalLinks: enableInternalLinks ?? false,
       renderInternalLinkPreview,
       renderInternalEmbed,
+      onInternalLinkClick,
     }
     editor.getMarkdown = () => {
       return serialize(editor.children as Element[], {
@@ -104,6 +107,12 @@ export function useEditor({
     }
     return nextEditor
   })
+
+  // Keep host callbacks fresh — editor.wysimark is created once, but these
+  // closures may capture changing state (e.g. the file list) on each render.
+  editor.wysimark.renderInternalLinkPreview = renderInternalLinkPreview
+  editor.wysimark.renderInternalEmbed = renderInternalEmbed
+  editor.wysimark.onInternalLinkClick = onInternalLinkClick
 
   return editor
 }

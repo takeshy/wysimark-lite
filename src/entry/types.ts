@@ -73,6 +73,12 @@ export type WysimarkEditor = {
      * Render inline content for an internal embed (`![[spec]]`).
      */
     renderInternalEmbed?: RenderInternalEmbed
+
+    /**
+     * Called when an internal link is activated (e.g. the navigate button in
+     * the link dialog). Receives the raw target including any `#heading`.
+     */
+    onInternalLinkClick?: (target: string) => void
   }
   /**
    * Public methods for the wysimark editor.
