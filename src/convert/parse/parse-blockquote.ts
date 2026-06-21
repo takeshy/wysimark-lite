@@ -1,6 +1,7 @@
 import type { Blockquote } from "mdast"
 import { Descendant } from "slate"
 
+import { InternalLinkOptions } from "../obsidian-links"
 import { Element } from "../types"
 import { parseContents } from "./parse-content"
 
@@ -36,11 +37,14 @@ function splitCalloutMarker(elements: Element[]): Element[] {
   return [markerParagraph, restParagraph, ...elements.slice(1)]
 }
 
-export function parseBlockquote(content: Blockquote): Element[] {
+export function parseBlockquote(
+  content: Blockquote,
+  options: InternalLinkOptions = {}
+): Element[] {
   return [
     {
       type: "block-quote",
-      children: splitCalloutMarker(parseContents(content.children)),
+      children: splitCalloutMarker(parseContents(content.children, options)),
     },
   ]
 }

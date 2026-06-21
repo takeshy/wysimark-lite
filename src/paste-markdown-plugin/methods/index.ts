@@ -7,7 +7,9 @@ import { parse, escapeUrlSlashes } from "../../convert"
 function pasteMarkdown(editor: Editor, markdown: string) {
   // Escape forward slashes in URLs before parsing
   const escapedMarkdown = escapeUrlSlashes(markdown);
-  const fragment = parse(escapedMarkdown)
+  const fragment = parse(escapedMarkdown, {
+    enableInternalLinks: editor.wysimark.enableInternalLinks,
+  })
   Transforms.insertNodes(editor, fragment)
 }
 

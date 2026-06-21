@@ -4,14 +4,23 @@ import { unified } from "unified"
 
 import { Element } from "../types"
 import { customRemarkGfm } from "./custom-gfm"
+import {
+  InternalLinkOptions,
+  protectEscapedWikiLinks,
+} from "../obsidian-links"
 import { parseContents } from "./parse-content"
 import { transformInlineLinks } from "./transform-inline-links"
 
 // @ts-expect-error - Ignore TypeScript errors for the unified plugin system
 const parser = unified().use(remarkParse).use(customRemarkGfm())
 
-export function parseToAst(markdown: string) {
-  const ast = parser.parse(markdown) as Root
+export function parseToAst(
+  markdown: string,
+  options: InternalLinkOptions = {}
+) {
+  const ast = parser.parse(
+    options.enableInternalLinks ? protectEscapedWikiLinks(markdown) : markdown
+  ) as Root
   /**
    * Takes linkReference and imageReference and turns them into link and image.
    */
@@ -22,8 +31,11 @@ export function parseToAst(markdown: string) {
 /**
  * Takes a Markdown string as input and returns a remarkParse AST
  */
-export function parse(markdown: string): Element[] {
-  const ast = parseToAst(markdown)
+export function parse(
+  markdown: string,
+  options: InternalLinkOptions = {}
+): Element[] {
+  const ast = parseToAst(markdown, options)
   /**
    * If there is no content, remark returns a root ast with no children (i.e.
    * no paragraphs) but for Slate, we need it to return an empty paragraph.
@@ -35,5 +47,5 @@ export function parse(markdown: string): Element[] {
     return [{ type: "paragraph", children: [{ text: "" }] }] as Element[]
   }
 
-  return parseContents(ast.children as TopLevelContent[])
+  return parseContents(ast.children as TopLevelContent[], options)
 }

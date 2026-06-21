@@ -1,5 +1,6 @@
 import type { TopLevelContent } from "mdast"
 
+import { InternalLinkOptions } from "../obsidian-links"
 import { Element } from "../types"
 import { assertUnreachable } from "../utils"
 import { parseBlockquote } from "./parse-blockquote"
@@ -12,7 +13,10 @@ import { parseParagraph } from "./parse-paragraph"
 import { parseTable } from "./parse-table"
 import { parseThematicBreak } from "./parse-thematic-break"
 
-export function parseContents(contents: TopLevelContent[]): Element[] {
+export function parseContents(
+  contents: TopLevelContent[],
+  options: InternalLinkOptions = {}
+): Element[] {
   const elements: Element[] = []
   for (let i = 0; i < contents.length; i++) {
     /**
@@ -35,15 +39,18 @@ export function parseContents(contents: TopLevelContent[]): Element[] {
         }
       }
     }
-    elements.push(...parseContent(contents[i]))
+    elements.push(...parseContent(contents[i], options))
   }
   return elements
 }
 
-export function parseContent(content: TopLevelContent): Element[] {
+export function parseContent(
+  content: TopLevelContent,
+  options: InternalLinkOptions = {}
+): Element[] {
   switch (content.type) {
     case "blockquote":
-      return parseBlockquote(content)
+      return parseBlockquote(content, options)
     case "code":
       return parseCodeBlock(content)
     case "definition":
@@ -53,20 +60,20 @@ export function parseContent(content: TopLevelContent): Element[] {
        */
       throw new Error(`The type "definition" should not exist. See comments`)
     case "footnoteDefinition":
-      return parseFootnoteDefinition(content)
+      return parseFootnoteDefinition(content, options)
     case "heading":
-      return parseHeading(content)
+      return parseHeading(content, options)
     case "html":
       return parseHTML(content)
     case "list":
-      return parseList(content)
+      return parseList(content, 0, options)
     case "paragraph":
       /**
        * Returns a `paragraph` or an `image-block` Element.
        */
-      return parseParagraph(content)
+      return parseParagraph(content, options)
     case "table":
-      return parseTable(content)
+      return parseTable(content, options)
     case "thematicBreak":
       return parseThematicBreak()
     case "yaml":

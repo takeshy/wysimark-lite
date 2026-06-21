@@ -1,7 +1,11 @@
 import { Element } from "../types"
+import { InternalLinkOptions } from "../obsidian-links"
 import { serializeElement } from "./serialize-element"
 
-export function serializeElements(elements: Element[]): string {
+export function serializeElements(
+  elements: Element[],
+  options: InternalLinkOptions = {}
+): string {
   const segments: string[] = []
 
   /**
@@ -39,7 +43,7 @@ export function serializeElements(elements: Element[]): string {
     }
 
     // Get the serialized element
-    let serialized = serializeElement(element, orders);
+    let serialized = serializeElement(element, orders, options);
 
     // If this is a list item and the next element is not a list item,
     // add an extra newline to create proper spacing between list and paragraph

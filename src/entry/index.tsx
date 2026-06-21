@@ -57,7 +57,9 @@ export function Editable({
   const onThrottledSlateChange = useCallback(
     throttle(
       () => {
-        const markdown = serialize(editor.children as Element[])
+        const markdown = serialize(editor.children as Element[], {
+          enableInternalLinks: editor.wysimark.enableInternalLinks,
+        })
         editor.wysimark.prevValue = {
           markdown,
           children: editor.children,
@@ -91,7 +93,9 @@ export function Editable({
     if (editor.wysimark.prevValue == null || initialValueRef.current == null) {
       ignoreNextChangeRef.current = true
       const valueToProcess = escapeUrlSlashes(markdownToUse);
-      const children = parse(valueToProcess)
+      const children = parse(valueToProcess, {
+        enableInternalLinks: editor.wysimark.enableInternalLinks,
+      })
       editor.children = children
       prevValueRef.current = initialValueRef.current = children
       editor.wysimark.prevValue = {
@@ -102,7 +106,9 @@ export function Editable({
       if (markdownToUse !== editor.wysimark.prevValue.markdown) {
         ignoreNextChangeRef.current = true
         const valueToProcess = escapeUrlSlashes(markdownToUse);
-        const documentValue = parse(valueToProcess)
+        const documentValue = parse(valueToProcess, {
+          enableInternalLinks: editor.wysimark.enableInternalLinks,
+        })
         editor.children = documentValue
         editor.selection = null
         Transforms.select(editor, Editor.start(editor, [0]))

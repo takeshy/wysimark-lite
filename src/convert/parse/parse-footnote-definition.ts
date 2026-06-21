@@ -1,5 +1,6 @@
 import type { FootnoteDefinition } from "mdast"
 
+import { InternalLinkOptions } from "../obsidian-links"
 import { Element } from "../types"
 import { parseContents } from "./parse-content"
 
@@ -13,7 +14,8 @@ import { parseContents } from "./parse-content"
  * brackets like `[1]`
  */
 export function parseFootnoteDefinition(
-  footnote: FootnoteDefinition
+  footnote: FootnoteDefinition,
+  options: InternalLinkOptions = {}
 ): Element[] {
   return [
     {
@@ -28,7 +30,7 @@ export function parseFootnoteDefinition(
          * The rest of the children are parsed as is and supports the full range
          * of element types like headings, lists and nested block quotes.
          */
-        ...parseContents(footnote.children),
+        ...parseContents(footnote.children, options),
       ],
     },
   ]

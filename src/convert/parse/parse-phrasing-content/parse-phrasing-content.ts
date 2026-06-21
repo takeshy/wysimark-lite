@@ -5,6 +5,14 @@ import { assertUnreachable } from "../../utils"
 import { normalizeSegments } from "./normalize-segments"
 import { parseInlineImage } from "./parse-inline-image"
 import { Descendant } from "slate"
+import {
+  InternalLinkOptions,
+  restoreEscapedWikiLinks,
+  wikiEmbedUrl,
+  wikiLinkDisplayText,
+  wikiLinkHref,
+} from "../../obsidian-links"
+import { unescapeMarkdown } from "../../utils"
 
 /**
  * Parse inline HTML content, with special handling for <mark> tags
@@ -23,9 +31,51 @@ function parseInlineHtml(htmlValue: string, marks: MarkProps): Segment[] {
   return [{ text: htmlValue, code: true }]
 }
 
+function parseObsidianLinks(value: string, marks: MarkProps): Segment[] {
+  const segments: Segment[] = []
+  const pattern = /(!)?\[\[((?:\\.|[^\]\\\n])+?)\]\]/g
+  let lastIndex = 0
+  let match: RegExpExecArray | null
+
+  while ((match = pattern.exec(value)) !== null) {
+    const start = match.index
+    if (start > 0 && value[start - 1] === "\\") continue
+    if (start > lastIndex) {
+      segments.push({
+        text: restoreEscapedWikiLinks(value.slice(lastIndex, start)),
+        ...marks,
+      })
+    }
+
+    const rawSpec = unescapeMarkdown(restoreEscapedWikiLinks(match[2])).trim()
+    if (match[1]) {
+      segments.push({
+        type: "image-inline",
+        url: wikiEmbedUrl(rawSpec),
+        alt: rawSpec,
+        children: [{ text: "" }],
+      })
+    } else {
+      segments.push({
+        type: "anchor",
+        href: wikiLinkHref(rawSpec),
+        children: [{ text: wikiLinkDisplayText(rawSpec), ...marks }],
+      })
+    }
+    lastIndex = start + match[0].length
+  }
+
+  if (lastIndex === 0) return [{ text: restoreEscapedWikiLinks(value), ...marks }]
+  if (lastIndex < value.length) {
+    segments.push({ text: restoreEscapedWikiLinks(value.slice(lastIndex)), ...marks })
+  }
+  return segments
+}
+
 export function parsePhrasingContents(
   phrasingContents: PhrasingContent[],
-  marks: MarkProps = {}
+  marks: MarkProps = {},
+  options: InternalLinkOptions = {}
 ): Segment[] {
   const segments: Segment[] = []
   let activeMarks = { ...marks }
@@ -41,7 +91,7 @@ export function parsePhrasingContents(
         continue
       }
     }
-    segments.push(...parsePhrasingContent(phrasingContent, activeMarks))
+    segments.push(...parsePhrasingContent(phrasingContent, activeMarks, options))
   }
   const nextInlines = normalizeSegments(segments)
   return nextInlines
@@ -49,19 +99,22 @@ export function parsePhrasingContents(
 
 function parsePhrasingContent(
   phrasingContent: PhrasingContent,
-  marks: MarkProps = {}
+  marks: MarkProps = {},
+  options: InternalLinkOptions = {}
 ): Segment[] {
   switch (phrasingContent.type) {
     case "delete":
-      return parsePhrasingContents(phrasingContent.children, {
-        ...marks,
-        strike: true,
-      })
+      return parsePhrasingContents(
+        phrasingContent.children,
+        { ...marks, strike: true },
+        options
+      )
     case "emphasis":
-      return parsePhrasingContents(phrasingContent.children, {
-        ...marks,
-        italic: true,
-      })
+      return parsePhrasingContents(
+        phrasingContent.children,
+        { ...marks, italic: true },
+        options
+      )
     case "footnoteReference":
       return [{ text: `[${phrasingContent.identifier}]` }]
     case "html":
@@ -69,7 +122,9 @@ function parsePhrasingContent(
     case "image":
       return parseInlineImage(phrasingContent)
     case "inlineCode": {
-      return [{ text: phrasingContent.value, ...marks, code: true }]
+      return [
+        { text: restoreEscapedWikiLinks(phrasingContent.value), ...marks, code: true },
+      ]
     }
     case "link":
       return [
@@ -81,16 +136,23 @@ function parsePhrasingContent(
              * Ensure that `title` is undefined if it's null.
              */
             phrasingContent.title == null ? undefined : phrasingContent.title,
-          children: parsePhrasingContents(phrasingContent.children, marks) as Descendant[],
+          children: parsePhrasingContents(
+            phrasingContent.children,
+            marks,
+            options
+          ) as Descendant[],
         },
       ]
     case "strong":
-      return parsePhrasingContents(phrasingContent.children, {
-        ...marks,
-        bold: true,
-      })
+      return parsePhrasingContents(
+        phrasingContent.children,
+        { ...marks, bold: true },
+        options
+      )
     case "text":
-      return [{ text: phrasingContent.value, ...marks }]
+      return options.enableInternalLinks
+        ? parseObsidianLinks(phrasingContent.value, marks)
+        : [{ text: restoreEscapedWikiLinks(phrasingContent.value), ...marks }]
     case "linkReference":
     case "imageReference":
       throw new Error(

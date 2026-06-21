@@ -3,6 +3,7 @@ import { Descendant } from "slate"
 
 import { ImageBlockElement, ImageInlineElement } from "../../image-plugin/types"
 
+import { InternalLinkOptions } from "../obsidian-links"
 import { Element, Segment } from "../types"
 import { parsePhrasingContents } from "./parse-phrasing-content/parse-phrasing-content"
 
@@ -29,8 +30,11 @@ function isSingleNBSP(segments: Segment[]): boolean {
  * We need to do it this way because an ImageBlock is a Paragraph that happens
  * to have exactly one ImageInline child.
  */
-export function parseParagraph(content: Paragraph): Element[] {
-  const segments = parsePhrasingContents(content.children)
+export function parseParagraph(
+  content: Paragraph,
+  options: InternalLinkOptions = {}
+): Element[] {
+  const segments = parsePhrasingContents(content.children, {}, options)
   if (isImageBlock(segments)) {
     const imageSegment = segments[1] as ImageInlineElement
     const imageBlockElement: ImageBlockElement = {
