@@ -23,6 +23,8 @@ interface Translations {
     linkTypeInternal: string;
     internalLinkTarget: string;
     internalLinkTargetHint: string;
+    internalLinkEmbed: string;
+    internalLinkEmbedHint: string;
     linkText: string;
     linkTextHint: string;
     tooltipText: string;
@@ -84,6 +86,8 @@ export const translations: Translations = {
     linkTypeInternal: "内部",
     internalLinkTarget: "内部リンク先",
     internalLinkTargetHint: "例: Page または Folder/Page#Heading",
+    internalLinkEmbed: "埋め込みとして挿入",
+    internalLinkEmbedHint: "オンにすると ![[...]] として埋め込まれます",
     linkText: "リンクテキスト",
     linkTextHint: "リンクとして表示されるテキスト",
     tooltipText: "ツールチップテキスト",
@@ -142,6 +146,8 @@ export const translations: Translations = {
     linkTypeInternal: "Internal",
     internalLinkTarget: "Internal Link Target",
     internalLinkTargetHint: "Example: Page or Folder/Page#Heading",
+    internalLinkEmbed: "Insert as embed",
+    internalLinkEmbedHint: "When on, inserts as ![[...]]",
     linkText: "Link Text",
     linkTextHint: "Text displayed as the link",
     tooltipText: "Tooltip Text",

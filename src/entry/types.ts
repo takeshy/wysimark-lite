@@ -4,6 +4,7 @@ import type { ReactNode } from "react"
 export type OnImageChangeHandler = (file: File) => Promise<string>
 export type OnFileSelectHandler = () => Promise<string | null>
 export type RenderInternalLinkPreview = (target: string) => ReactNode
+export type RenderInternalEmbed = (spec: string) => ReactNode
 
 export type ImageDialogState = {
   url: string
@@ -67,6 +68,11 @@ export type WysimarkEditor = {
      * Render preview content for an internal link target.
      */
     renderInternalLinkPreview?: RenderInternalLinkPreview
+
+    /**
+     * Render inline content for an internal embed (`![[spec]]`).
+     */
+    renderInternalEmbed?: RenderInternalEmbed
   }
   /**
    * Public methods for the wysimark editor.

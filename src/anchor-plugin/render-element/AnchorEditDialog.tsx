@@ -112,6 +112,7 @@ export function AnchorEditDialog({
   const [mode, setMode] = useState<LinkMode>(
     isInitialInternal ? "internal" : "external"
   )
+  const [embed, setEmbed] = useState<boolean>(false)
   const [href, setHref] = useState<string>(element.href)
   const [target, setTarget] = useState<string>(initialInternalTarget)
   const [text, setText] = useState<string>(
@@ -121,8 +122,8 @@ export function AnchorEditDialog({
   )
   const [title, setTitle] = useState<string>(element.title || "")
 
-  const formRef = useRef({ href, target, text, title, mode })
-  formRef.current = { href, target, text, title, mode }
+  const formRef = useRef({ href, target, text, title, mode, embed })
+  formRef.current = { href, target, text, title, mode, embed }
 
   const handleHrefChange = useCallback<
     React.ChangeEventHandler<HTMLInputElement>
@@ -171,7 +172,7 @@ export function AnchorEditDialog({
   }, [destAnchor, destStartEdge, element])
 
   const handleSubmit = useCallback(() => {
-    const { href, target, text, title, mode } = formRef.current
+    const { href, target, text, title, mode, embed } = formRef.current
     if (mode === "internal") {
       const trimmedTarget = target.trim()
       if (trimmedTarget === "") return
@@ -180,6 +181,13 @@ export function AnchorEditDialog({
         trimmedText && trimmedText !== wikiLinkDisplayText(trimmedTarget)
           ? `${trimmedTarget}|${trimmedText}`
           : trimmedTarget
+      if (embed) {
+        // Replace the anchor with an inline embed (`![[spec]]`). The embed is
+        // a void element, so there is no anchor dialog to reopen afterwards.
+        editor.anchor.convertToEmbed(spec, { at: element })
+        dialog.close()
+        return
+      }
       editor.anchor.editLink(
         {
           href: wikiLinkHref(spec),
@@ -193,7 +201,7 @@ export function AnchorEditDialog({
       editor.anchor.editLink({ href, text, title }, { at: element })
     }
     openAnchorDialog()
-  }, [openAnchorDialog])
+  }, [editor, element, dialog, openAnchorDialog])
 
   return (
     <$AnchorEditDialog ref={ref} contentEditable={false} style={style}>
@@ -220,11 +228,24 @@ export function AnchorEditDialog({
           </$FormGroup>
         ) : null}
         {mode === "internal" ? (
-          <$FormGroup>
-            <$FormCaption>{t("internalLinkTarget")}</$FormCaption>
-            <$Input type="text" value={target} onChange={handleTargetChange} />
-            <$FormHint>{t("internalLinkTargetHint")}</$FormHint>
-          </$FormGroup>
+          <>
+            <$FormGroup>
+              <$FormCaption>{t("internalLinkTarget")}</$FormCaption>
+              <$Input type="text" value={target} onChange={handleTargetChange} />
+              <$FormHint>{t("internalLinkTargetHint")}</$FormHint>
+            </$FormGroup>
+            <$FormGroup>
+              <label style={{ display: "flex", alignItems: "center", gap: "0.5em", cursor: "pointer" }}>
+                <input
+                  type="checkbox"
+                  checked={embed}
+                  onChange={(e) => setEmbed(e.target.checked)}
+                />
+                {t("internalLinkEmbed")}
+              </label>
+              <$FormHint>{t("internalLinkEmbedHint")}</$FormHint>
+            </$FormGroup>
+          </>
         ) : (
           <$FormGroup>
             <$FormCaption>{t("linkUrl")}</$FormCaption>

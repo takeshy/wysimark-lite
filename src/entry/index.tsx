@@ -17,7 +17,12 @@ function renderLeaf({ children, attributes }: RenderLeafProps) {
 }
 
 import type { OnImageChangeHandler, OnFileSelectHandler } from "./types"
-export type { OnImageChangeHandler, OnFileSelectHandler } from "./types"
+export type {
+  OnImageChangeHandler,
+  OnFileSelectHandler,
+  RenderInternalEmbed,
+  RenderInternalLinkPreview,
+} from "./types"
 
 export type EditableProps = {
   editor: Editor

@@ -7,7 +7,7 @@ import { parse, serialize, escapeUrlSlashes } from "../convert"
 import { Element } from "./plugins"
 import { withSink } from "./SinkEditable"
 import { WysimarkEditor } from "./types"
-import type { RenderInternalLinkPreview } from "./types"
+import type { RenderInternalLinkPreview, RenderInternalEmbed } from "./types"
 
 export type UseEditorOptions = {
   authToken?: string
@@ -43,6 +43,7 @@ export type UseEditorOptions = {
    */
   enableInternalLinks?: boolean
   renderInternalLinkPreview?: RenderInternalLinkPreview
+  renderInternalEmbed?: RenderInternalEmbed
 }
 
 export function useEditor({
@@ -56,6 +57,7 @@ export function useEditor({
   disableHighlight,
   enableInternalLinks,
   renderInternalLinkPreview,
+  renderInternalEmbed,
 }: UseEditorOptions = {}): Editor & ReactEditor & WysimarkEditor {
   const [editor] = useState(() => {
     const editor = createEditor()
@@ -83,6 +85,7 @@ export function useEditor({
       disableHighlight: disableHighlight ?? true,
       enableInternalLinks: enableInternalLinks ?? false,
       renderInternalLinkPreview,
+      renderInternalEmbed,
     }
     editor.getMarkdown = () => {
       return serialize(editor.children as Element[], {
