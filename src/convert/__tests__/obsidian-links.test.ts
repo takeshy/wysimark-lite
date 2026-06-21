@@ -1,12 +1,22 @@
 import assert from "node:assert/strict"
 import { describe, it } from "node:test"
+import { Text as SlateText } from "slate"
 
+import type { AnchorElement } from "../../anchor-plugin"
 import { parse } from "../parse"
 import { serialize } from "../serialize"
 import { normalizeWikiLinkInput } from "../obsidian-links"
-import type { Element } from "../types"
+import type { Element, Segment } from "../types"
 
 const internalLinks = { enableInternalLinks: true }
+
+function findAnchor(children: Segment[]): AnchorElement {
+  const anchor = children.find(
+    (child): child is AnchorElement => "type" in child && child.type === "anchor"
+  )
+  assert.ok(anchor)
+  return anchor
+}
 
 describe("Obsidian wiki links", () => {
   it("normalizes wiki link input for dialogs", () => {
@@ -123,13 +133,7 @@ describe("Obsidian wiki links", () => {
   it("serializes edited display text over the original wiki display", () => {
     const parsed = parse("[[Page|Old Label]]", internalLinks)
     const paragraph = parsed[0] as Element
-    const link = paragraph.children.find(
-      (child): child is Extract<
-        (typeof paragraph.children)[number],
-        { type: "anchor" }
-      > => "type" in child && child.type === "anchor"
-    )
-    assert.ok(link)
+    const link = findAnchor(paragraph.children as Segment[])
     link.children = [{ text: "New Label" }]
 
     assert.equal(
@@ -155,16 +159,12 @@ describe("Obsidian wiki links", () => {
     const markdown = serialize(tree, internalLinks).trimEnd()
     const reparsed = parse(markdown, internalLinks)
     const paragraph = reparsed[0] as Element
-    const link = paragraph.children.find(
-      (child): child is Extract<
-        (typeof paragraph.children)[number],
-        { type: "anchor" }
-      > => "type" in child && child.type === "anchor"
-    )
+    const link = findAnchor(paragraph.children as Segment[])
+    const label = link.children[0]
 
     assert.equal(markdown, "[[Page|label \\[\\[nested\\]\\]]]")
-    assert.ok(link)
-    assert.equal(link.children[0].text, "label [[nested]]")
+    assert.ok(SlateText.isText(label))
+    assert.equal(label.text, "label [[nested]]")
     assert.equal(serialize(reparsed, internalLinks).trimEnd(), markdown)
   })
 

@@ -86,14 +86,14 @@ describe("getCalloutInfo", () => {
     const editor = withSink(createEditor(), {} as never)
     editor.children = parse(
       "> [!info] One\n> Body one\n\n> [!example] Two\n> Body two\n"
-    )
+    ) as BlockQuoteElement[]
 
     Editor.normalize(editor, { force: true })
 
     assert.equal(editor.children.length, 2)
     assert.equal(isCalloutBlockQuote(editor.children[0]), true)
     assert.equal(isCalloutBlockQuote(editor.children[1]), true)
-    assert.equal(serialize(editor.children).trimEnd(), [
+    assert.equal(serialize(editor.children as BlockQuoteElement[]).trimEnd(), [
       "> [!info] One",
       "> Body one",
       "",
@@ -105,13 +105,13 @@ describe("getCalloutInfo", () => {
   it("keeps adjacent ordinary blockquotes separate during normalization", () => {
     const { withSink } = createSink([BlockQuotePlugin])
     const editor = withSink(createEditor(), {} as never)
-    editor.children = parse("> First\n\n> Second\n")
+    editor.children = parse("> First\n\n> Second\n") as BlockQuoteElement[]
 
     Editor.normalize(editor, { force: true })
 
     assert.equal(editor.children.length, 2)
     assert.equal(isCalloutBlockQuote(editor.children[0]), false)
-    assert.equal(serialize(editor.children).trimEnd(), [
+    assert.equal(serialize(editor.children as BlockQuoteElement[]).trimEnd(), [
       "> First",
       "",
       "> Second",

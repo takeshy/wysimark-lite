@@ -209,15 +209,15 @@ export const BlockQuotePlugin = createPlugin<BlockQuotePluginCustomTypes>(
 
         // Calculate the current depth
         let depth = 0
-        let current = node
+        let current = node as BlockQuoteElement
 
         while (
-          (current as Element).children.length === 1 &&
-          Element.isElement((current as Element).children[0]) &&
-          ((current as Element).children[0] as Element).type === "block-quote"
+          current.children.length === 1 &&
+          Element.isElement(current.children[0]) &&
+          current.children[0].type === "block-quote"
         ) {
           depth++
-          current = (current as Element).children[0]
+          current = current.children[0] as BlockQuoteElement
         }
 
         return depth < MAX_DEPTH
