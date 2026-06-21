@@ -1,4 +1,9 @@
 import { ImageSharedElement } from "../../../image-plugin/types"
+import {
+  InternalLinkOptions,
+  isWikiEmbedUrl,
+  serializeWikiEmbedUrl,
+} from "../../obsidian-links"
 
 import { serializeGenericImageUrl } from "./serialize-generic-image-url"
 import { serializePortiveImageUrl } from "./serialize-portive-image-url"
@@ -10,7 +15,14 @@ const urlSerializers = [
   serializeGenericImageUrl,
 ]
 
-export function serializeImageShared(image: ImageSharedElement): string {
+export function serializeImageShared(
+  image: ImageSharedElement,
+  options: InternalLinkOptions = {}
+): string {
+  if (options.enableInternalLinks && isWikiEmbedUrl(image.url)) {
+    return serializeWikiEmbedUrl(image.url)
+  }
+
   for (const urlSerializer of urlSerializers) {
     const url = urlSerializer(image)
     if (typeof url === "string") {

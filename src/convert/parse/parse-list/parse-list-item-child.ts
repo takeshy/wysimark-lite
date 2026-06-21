@@ -1,6 +1,7 @@
 import type { ListItem } from "mdast"
 import { Descendant } from "slate"
 
+import { InternalLinkOptions } from "../../obsidian-links"
 import { Element } from "../../types"
 import { parseContent } from "../parse-content"
 import { parsePhrasingContents } from "../parse-phrasing-content/parse-phrasing-content"
@@ -12,7 +13,8 @@ export function parseListItemChild(
     depth,
     ordered,
     checked,
-  }: { depth: number; ordered: boolean; checked: boolean | null | undefined }
+  }: { depth: number; ordered: boolean; checked: boolean | null | undefined },
+  options: InternalLinkOptions = {}
 ): Element[] {
   switch (child.type) {
     case "paragraph":
@@ -22,7 +24,7 @@ export function parseListItemChild(
             type: "task-list-item",
             depth,
             checked,
-            children: parsePhrasingContents(child.children) as Descendant[],
+            children: parsePhrasingContents(child.children, {}, options) as Descendant[],
           },
         ]
       } else if (ordered) {
@@ -30,7 +32,7 @@ export function parseListItemChild(
           {
             type: "ordered-list-item",
             depth,
-            children: parsePhrasingContents(child.children) as Descendant[],
+            children: parsePhrasingContents(child.children, {}, options) as Descendant[],
           },
         ]
       } else {
@@ -38,12 +40,12 @@ export function parseListItemChild(
           {
             type: "unordered-list-item",
             depth,
-            children: parsePhrasingContents(child.children) as Descendant[],
+            children: parsePhrasingContents(child.children, {}, options) as Descendant[],
           },
         ]
       }
     case "list":
-      return parseList(child, depth + 1)
+      return parseList(child, depth + 1, options)
     default:
       /**
        * NOTE:
@@ -67,6 +69,6 @@ export function parseListItemChild(
        *   toggle headings or list items should do if they were nested.
        *
        */
-      return parseContent(child)
+      return parseContent(child, options)
   }
 }

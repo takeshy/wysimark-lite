@@ -1,7 +1,9 @@
 import { Descendant } from "slate"
+import type { ReactNode } from "react"
 
 export type OnImageChangeHandler = (file: File) => Promise<string>
 export type OnFileSelectHandler = () => Promise<string | null>
+export type RenderInternalLinkPreview = (target: string) => ReactNode
 
 export type ImageDialogState = {
   url: string
@@ -55,6 +57,16 @@ export type WysimarkEditor = {
      * Whether highlight mark is disabled
      */
     disableHighlight?: boolean
+
+    /**
+     * Whether Obsidian-style internal links are enabled
+     */
+    enableInternalLinks?: boolean
+
+    /**
+     * Render preview content for an internal link target.
+     */
+    renderInternalLinkPreview?: RenderInternalLinkPreview
   }
   /**
    * Public methods for the wysimark editor.

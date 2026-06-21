@@ -119,7 +119,9 @@ export function SinkEditable(originalProps: EditableProps): React.ReactElement {
       if (selection == null || Range.isCollapsed(selection)) return false
 
       const fragment = Editor.fragment(editor, selection) as Element[]
-      const markdown = serialize(fragment).trimEnd()
+      const markdown = serialize(fragment, {
+        enableInternalLinks: editor.wysimark.enableInternalLinks,
+      }).trimEnd()
       if (markdown === "") return false
 
       event.preventDefault()

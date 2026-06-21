@@ -19,6 +19,10 @@ interface Translations {
     checkList: string;
     list: string;
     linkUrl: string;
+    linkTypeExternal: string;
+    linkTypeInternal: string;
+    internalLinkTarget: string;
+    internalLinkTargetHint: string;
     linkText: string;
     linkTextHint: string;
     tooltipText: string;
@@ -76,6 +80,10 @@ export const translations: Translations = {
     checkList: "チェックリスト",
     list: "リスト",
     linkUrl: "リンクのURL",
+    linkTypeExternal: "外部",
+    linkTypeInternal: "内部",
+    internalLinkTarget: "内部リンク先",
+    internalLinkTargetHint: "例: Page または Folder/Page#Heading",
     linkText: "リンクテキスト",
     linkTextHint: "リンクとして表示されるテキスト",
     tooltipText: "ツールチップテキスト",
@@ -130,6 +138,10 @@ export const translations: Translations = {
     checkList: "Check List",
     list: "List",
     linkUrl: "Link URL",
+    linkTypeExternal: "External",
+    linkTypeInternal: "Internal",
+    internalLinkTarget: "Internal Link Target",
+    internalLinkTargetHint: "Example: Page or Folder/Page#Heading",
     linkText: "Link Text",
     linkTextHint: "Text displayed as the link",
     tooltipText: "Tooltip Text",

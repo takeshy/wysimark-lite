@@ -29,7 +29,7 @@ export function serializeSegment(
       return serializeAnchor(segment, options)
     }
     case "image-inline":
-      return serializeImageShared(segment)
+      return serializeImageShared(segment, options)
     default:
       assertUnreachable(segment)
   }

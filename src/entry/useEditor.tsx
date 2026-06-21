@@ -7,6 +7,7 @@ import { parse, serialize, escapeUrlSlashes } from "../convert"
 import { Element } from "./plugins"
 import { withSink } from "./SinkEditable"
 import { WysimarkEditor } from "./types"
+import type { RenderInternalLinkPreview } from "./types"
 
 export type UseEditorOptions = {
   authToken?: string
@@ -35,6 +36,13 @@ export type UseEditorOptions = {
    * Defaults to true (highlight is disabled by default).
    */
   disableHighlight?: boolean
+  /**
+   * Enable Obsidian-style internal links and embeds.
+   * When true, [[Page]] and ![[file.png]] are parsed and serialized as
+   * internal links. Defaults to false.
+   */
+  enableInternalLinks?: boolean
+  renderInternalLinkPreview?: RenderInternalLinkPreview
 }
 
 export function useEditor({
@@ -46,6 +54,8 @@ export function useEditor({
   disableTaskList,
   disableCodeBlock,
   disableHighlight,
+  enableInternalLinks,
+  renderInternalLinkPreview,
 }: UseEditorOptions = {}): Editor & ReactEditor & WysimarkEditor {
   const [editor] = useState(() => {
     const editor = createEditor()
@@ -71,14 +81,20 @@ export function useEditor({
       disableCodeBlock,
       // Disable highlight (defaults to true)
       disableHighlight: disableHighlight ?? true,
+      enableInternalLinks: enableInternalLinks ?? false,
+      renderInternalLinkPreview,
     }
     editor.getMarkdown = () => {
-      return serialize(editor.children as Element[])
+      return serialize(editor.children as Element[], {
+        enableInternalLinks: editor.wysimark.enableInternalLinks,
+      })
     }
     editor.setMarkdown = (markdown: string) => {
       // Escape forward slashes in URLs before parsing
       const escapedMarkdown = escapeUrlSlashes(markdown);
-      const documentValue = parse(escapedMarkdown)
+      const documentValue = parse(escapedMarkdown, {
+        enableInternalLinks: editor.wysimark.enableInternalLinks,
+      })
       editor.children = documentValue
       editor.selection = null
       Transforms.select(editor, Editor.start(editor, [0]))

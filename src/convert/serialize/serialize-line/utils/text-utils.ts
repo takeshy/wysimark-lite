@@ -82,12 +82,16 @@ function getTildesThatCanPair(chars: string[]): Set<number> {
 // reference: a `[...]` pair whose `]` is directly followed by `(`, or a `[`
 // directly followed by `^`. Shortcut reference links (`[foo]` alone) cannot
 // resolve because parse inlines all reference links and drops definitions.
-function getBracketsThatCanFormLinks(chars: string[]): Set<number> {
+function getBracketsThatCanFormLinks(
+  chars: string[],
+  enableInternalLinks = false
+): Set<number> {
   const escaped = new Set<number>()
   const openers: number[] = []
 
   for (let i = 0; i < chars.length; i++) {
     if (chars[i] === "[") {
+      if (enableInternalLinks && chars[i + 1] === "[") escaped.add(i)
       if (chars[i + 1] === "^") escaped.add(i)
       openers.push(i)
     } else if (chars[i] === "]") {
@@ -108,6 +112,7 @@ export type EscapeTextOptions = {
    * would change where the label ends, so brackets are always escaped there.
    */
   inAnchorLabel?: boolean
+  enableInternalLinks?: boolean
   /**
    * Whether backticks in this text could pair with another backtick run in
    * the same line (a sibling text node or a code mark) to form a code span.
@@ -140,7 +145,10 @@ export function escapeText(s: string, options: EscapeTextOptions = {}) {
   const emphasisUnderscores = getDelimitersThatCanPair(chars, "_", false)
   const emphasisAsterisks = getDelimitersThatCanPair(chars, "*", true)
   const strikethroughTildes = getTildesThatCanPair(chars)
-  const linkBrackets = getBracketsThatCanFormLinks(chars)
+  const linkBrackets = getBracketsThatCanFormLinks(
+    chars,
+    options.enableInternalLinks
+  )
   const escapeBackticks =
     options.escapeBackticks ?? chars.filter((c) => c === "`").length >= 2
   let result = ""

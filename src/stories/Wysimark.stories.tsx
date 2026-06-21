@@ -14,6 +14,7 @@ function WysimarkEditor({
   disableTaskList,
   disableCodeBlock,
   enableImageUpload,
+  enableInternalLinks,
 }: {
   initialValue?: string;
   placeholder?: string;
@@ -25,10 +26,30 @@ function WysimarkEditor({
   disableTaskList?: boolean;
   disableCodeBlock?: boolean;
   enableImageUpload?: boolean;
+  enableInternalLinks?: boolean;
 }) {
   const [value, setValue] = useState(initialValue);
   const [showMarkdown, setShowMarkdown] = useState(false);
-  const editor = useEditor({ height, minHeight, maxHeight, disableRawMode, disableHighlight, disableTaskList, disableCodeBlock });
+  const editor = useEditor({
+    height,
+    minHeight,
+    maxHeight,
+    disableRawMode,
+    disableHighlight,
+    disableTaskList,
+    disableCodeBlock,
+    enableInternalLinks,
+    renderInternalLinkPreview: enableInternalLinks
+      ? (target) => (
+        <div>
+          <strong>{target}</strong>
+          <p style={{ margin: '6px 0 0' }}>
+            This is a mocked internal-link preview from Storybook.
+          </p>
+        </div>
+      )
+      : undefined,
+  });
 
   const handleChange = useCallback((markdown: string) => {
     setValue(markdown);
@@ -161,6 +182,10 @@ const meta: Meta<typeof WysimarkEditor> = {
     enableImageUpload: {
       control: 'boolean',
       description: 'Enable image upload functionality with onImageChange callback',
+    },
+    enableInternalLinks: {
+      control: 'boolean',
+      description: 'Enable Obsidian-style internal links and previews',
     },
   },
 };
@@ -331,5 +356,25 @@ Try uploading an image below!
 `,
     placeholder: 'Start writing...',
     enableImageUpload: true,
+  },
+};
+
+export const WithInternalLinks: Story = {
+  args: {
+    initialValue: `# Internal Links
+
+This is an internal link: [[Project plan]].
+
+This one has a heading and label: [[Project plan#Milestones|the milestones]].
+
+This is an embed syntax preserved in Markdown:
+
+![[diagram.png|640x480]]
+
+\`[[inside code stays text]]\`
+`,
+    placeholder: 'Start writing...',
+    disableRawMode: false,
+    enableInternalLinks: true,
   },
 };
