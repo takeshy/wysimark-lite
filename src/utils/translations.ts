@@ -31,6 +31,8 @@ interface Translations {
     tooltipHint: string;
     apply: string;
     cancel: string;
+    edit: string;
+    remove: string;
     insertLink: string;
     quote: string;
     insertTable: string;
@@ -94,6 +96,8 @@ export const translations: Translations = {
     tooltipHint: "マウスホバー時に表示されるツールチップ",
     apply: "適用",
     cancel: "キャンセル",
+    edit: "編集",
+    remove: "削除",
     insertLink: "リンク",
     quote: "引用",
     insertTable: "表",
@@ -154,6 +158,8 @@ export const translations: Translations = {
     tooltipHint: "Tooltip shown on mouse hover",
     apply: "Apply",
     cancel: "Cancel",
+    edit: "Edit",
+    remove: "Remove",
     insertLink: "Link",
     quote: "Quote",
     insertTable: "Table",

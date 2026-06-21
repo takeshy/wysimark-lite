@@ -65,10 +65,14 @@ export function AnchorEditDialog({
   destAnchor,
   destStartEdge,
   element,
+  initialEmbed = false,
+  onCancel,
 }: {
-  destAnchor: HTMLAnchorElement
-  destStartEdge: HTMLSpanElement
+  destAnchor: HTMLElement
+  destStartEdge: HTMLElement
   element: AnchorElement
+  initialEmbed?: boolean
+  onCancel?: () => void
 }) {
   const dialog = useLayer("dialog")
   const ref = useRef<HTMLDivElement>(null)
@@ -112,7 +116,7 @@ export function AnchorEditDialog({
   const [mode, setMode] = useState<LinkMode>(
     isInitialInternal ? "internal" : "external"
   )
-  const [embed, setEmbed] = useState<boolean>(false)
+  const [embed, setEmbed] = useState<boolean>(initialEmbed)
   const [href, setHref] = useState<string>(element.href)
   const [target, setTarget] = useState<string>(initialInternalTarget)
   const [text, setText] = useState<string>(
@@ -170,6 +174,14 @@ export function AnchorEditDialog({
       />
     ))
   }, [destAnchor, destStartEdge, element])
+
+  const handleCancel = useCallback(() => {
+    if (onCancel) {
+      onCancel()
+      return
+    }
+    openAnchorDialog()
+  }, [onCancel, openAnchorDialog])
 
   const handleSubmit = useCallback(() => {
     const { href, target, text, title, mode, embed } = formRef.current
@@ -270,7 +282,7 @@ export function AnchorEditDialog({
           <$PrimaryButton onClick={handleSubmit}>{t("apply")}</$PrimaryButton>
         </$FormGroup>
         <$FormGroup>
-          <$CancelButton onClick={openAnchorDialog}>{t("cancel")}</$CancelButton>
+          <$CancelButton onClick={handleCancel}>{t("cancel")}</$CancelButton>
         </$FormGroup>
       </div>
     </$AnchorEditDialog>

@@ -49,6 +49,26 @@ function WysimarkEditor({
         </div>
       )
       : undefined,
+    renderInternalEmbed: enableInternalLinks
+      ? (spec) => (
+        <div
+          style={{
+            display: 'inline-block',
+            minWidth: '180px',
+            padding: '12px',
+            border: '1px solid #cbd5e1',
+            borderRadius: '6px',
+            background: '#f8fafc',
+            color: '#334155',
+          }}
+        >
+          <strong>{spec}</strong>
+          <p style={{ margin: '6px 0 0' }}>
+            Mocked internal embed from Storybook.
+          </p>
+        </div>
+      )
+      : undefined,
   });
 
   const handleChange = useCallback((markdown: string) => {

@@ -2,10 +2,11 @@ import { useSlateStatic } from "slate-react"
 
 import { ConstrainedRenderElementProps } from "../../sink"
 
-import { isWikiEmbedUrl, wikiEmbedSpecFromUrl } from "../../convert/obsidian-links"
+import { isWikiEmbedUrl } from "../../convert/obsidian-links"
 import { $ImageBlock } from "../styles/image-block-styles"
 import { ImageBlockElement } from "../types"
 import { ImageWithControls } from "./image-with-controls"
+import { WikiEmbedView } from "./wiki-embed-view"
 
 export function ImageBlock({
   element,
@@ -13,13 +14,10 @@ export function ImageBlock({
   children,
 }: ConstrainedRenderElementProps<ImageBlockElement>) {
   const editor = useSlateStatic()
-  const renderInternalEmbed = editor.wysimark.renderInternalEmbed
-  if (isWikiEmbedUrl(element.url) && renderInternalEmbed) {
+  if (isWikiEmbedUrl(element.url) && editor.wysimark.renderInternalEmbed) {
     return (
       <div {...attributes}>
-        <div contentEditable={false}>
-          {renderInternalEmbed(wikiEmbedSpecFromUrl(element.url))}
-        </div>
+        <WikiEmbedView element={element} />
         {children}
       </div>
     )

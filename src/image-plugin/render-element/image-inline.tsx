@@ -2,10 +2,11 @@ import { useSlateStatic } from "slate-react"
 
 import { ConstrainedRenderElementProps } from "../../sink"
 
-import { isWikiEmbedUrl, wikiEmbedSpecFromUrl } from "../../convert/obsidian-links"
+import { isWikiEmbedUrl } from "../../convert/obsidian-links"
 import { $ImageInline } from "../styles/image-inline-styles"
 import { ImageInlineElement } from "../types"
 import { ImageWithControls } from "./image-with-controls"
+import { WikiEmbedView } from "./wiki-embed-view"
 
 export function ImageInline({
   element,
@@ -13,13 +14,10 @@ export function ImageInline({
   children,
 }: ConstrainedRenderElementProps<ImageInlineElement>) {
   const editor = useSlateStatic()
-  const renderInternalEmbed = editor.wysimark.renderInternalEmbed
-  if (isWikiEmbedUrl(element.url) && renderInternalEmbed) {
+  if (isWikiEmbedUrl(element.url) && editor.wysimark.renderInternalEmbed) {
     return (
       <span {...attributes} style={{ display: "inline-block" }}>
-        <span contentEditable={false}>
-          {renderInternalEmbed(wikiEmbedSpecFromUrl(element.url))}
-        </span>
+        <WikiEmbedView element={element} />
         {children}
       </span>
     )
