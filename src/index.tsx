@@ -10,7 +10,12 @@ import {
   useState,
 } from "react"
 import { createRoot } from "react-dom/client"
-import { Editable, useEditor, OnImageChangeHandler } from './entry/index'
+import {
+  Editable,
+  useEditor,
+  OnImageChangeHandler,
+  OnFileSelectHandler,
+} from './entry/index'
 import { unescapeMarkdown } from './convert'
 import type { UseEditorOptions } from './entry/useEditor'
 
@@ -25,6 +30,8 @@ type StandaloneOptions = Parameters<typeof useEditor>[0] & {
   placeholder?: string
   initialMarkdown?: string
   className?: string
+  onImageChange?: OnImageChangeHandler
+  onFileSelect?: OnFileSelectHandler
 }
 
 type StandaloneMethods = {
@@ -42,7 +49,14 @@ export type Wysimark = {
 }
 
 function StandaloneEditor({
-  standaloneOptions: { onChange, placeholder, className, ...options },
+  standaloneOptions: {
+    onChange,
+    placeholder,
+    className,
+    onImageChange,
+    onFileSelect,
+    ...options
+  },
   standaloneMethodsRef,
 }: {
   standaloneOptions: StandaloneOptions
@@ -92,6 +106,8 @@ function StandaloneEditor({
       className={className || ""}
       onChange={onChangeEditable}
       placeholder={placeholder}
+      onImageChange={onImageChange}
+      onFileSelect={onFileSelect}
     />
   )
 }

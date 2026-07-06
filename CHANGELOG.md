@@ -1,5 +1,11 @@
 # wysimark-lite
 
+## 0.27.8
+
+### Patch Changes
+
+- Pass `onImageChange` and `onFileSelect` through `createWysimark` standalone mode so image upload controls are enabled outside React usage.
+
 ## 0.25.6
 
 ### Patch Changes
