@@ -111,7 +111,7 @@ HTML要素に対して直接エディタを初期化することもできます:
 ※ Rails importmapを使用している場合は、importmap.rbに以下を追加してください。
 ※ @latestはwysimark-liteの最新バージョンです。特定のバージョンを指定する場合は、@latestを使用したいバージョンに置き換えてください。
 ```
-pin "wysimark-lite", to: "https://cdn.jsdelivr.net/npm/wysimark-lite@latest/dist/index.js"
+pin 'wysimark-lite', to: 'https://esm.sh/wysimark-lite@latest?deps=react@19.2.0,react-dom@19.2.0'
 ```
 
 ```html

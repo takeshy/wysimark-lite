@@ -111,7 +111,7 @@ You can also initialize the editor directly on an HTML element:
 # you use rails importmap, add the following line to your importmap.rb
 ※ @latest is the latest version of wysimark-lite. If you want to specify a version, replace @latest with the version you want to use.
 ```
-pin "wysimark-lite", to: "https://cdn.jsdelivr.net/npm/wysimark-lite@latest/dist/index.js"
+pin 'wysimark-lite', to: 'https://esm.sh/wysimark-lite@latest?deps=react@19.2.0,react-dom@19.2.0'
 ```
 
 ```html
