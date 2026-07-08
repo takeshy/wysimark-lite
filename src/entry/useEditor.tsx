@@ -63,19 +63,6 @@ export function useEditor({
 }: UseEditorOptions = {}): Editor & ReactEditor & WysimarkEditor {
   const [editor] = useState(() => {
     const editor = createEditor()
-    const nextEditor = withSink(withReact(withHistory(editor)), {
-      toolbar: {
-        height,
-        minHeight,
-        maxHeight,
-        /**
-         * If `authToken` is provided then show upload buttons.
-         */
-        showUploadButtons: !!authToken,
-      },
-      image: {}
-    })
-    nextEditor.convertElement.addConvertElementType("paragraph")
     editor.wysimark = {
       // Disable raw mode (defaults to true)
       disableRawMode: disableRawMode ?? true,
@@ -90,6 +77,19 @@ export function useEditor({
       renderInternalEmbed,
       onInternalLinkClick,
     }
+    const nextEditor = withSink(withReact(withHistory(editor)), {
+      toolbar: {
+        height,
+        minHeight,
+        maxHeight,
+        /**
+         * If `authToken` is provided then show upload buttons.
+         */
+        showUploadButtons: !!authToken,
+      },
+      image: {}
+    })
+    nextEditor.convertElement.addConvertElementType("paragraph")
     editor.getMarkdown = () => {
       return serialize(editor.children as Element[], {
         enableInternalLinks: editor.wysimark.enableInternalLinks,
