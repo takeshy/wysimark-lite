@@ -35,6 +35,25 @@ export const CodeBlockPlugin = createPlugin<CodeBlockPluginCustomTypes>(
       }
       return false
     }
+    const hotkeys = {
+      ...(!editor.wysimark.disableCodeBlock && {
+        "super+`": () =>
+          editor.codeBlock.createCodeBlock({ language: "text" }),
+      }),
+      "mod+a": () => {
+        /**
+         * When selection is in code-block and the user pressed mod+a,
+         * select the code-block instead of the full document.
+         */
+        const entry = findElementUp(
+          editor,
+          (el) => Element.isElement(el) && el.type === "code-block"
+        )
+        if (!entry) return false
+        Transforms.select(editor, entry[1])
+        return true
+      },
+    }
 
     return createPolicy({
       name: "code-block",
@@ -62,23 +81,7 @@ export const CodeBlockPlugin = createPlugin<CodeBlockPluginCustomTypes>(
       },
       editableProps: {
         decorate,
-        onKeyDown: createHotkeyHandler({
-          "super+`": () =>
-            editor.codeBlock.createCodeBlock({ language: "text" }),
-          "mod+a": () => {
-            /**
-             * When selection is in code-block and the user pressed mod+a,
-             * select the code-block instead of the full document.
-             */
-            const entry = findElementUp(
-              editor,
-              (el) => Element.isElement(el) && el.type === "code-block"
-            )
-            if (!entry) return false
-            Transforms.select(editor, entry[1])
-            return true
-          },
-        }),
+        onKeyDown: createHotkeyHandler(hotkeys),
         renderElement,
         renderLeaf: ({ leaf, children }) => {
           const style = leaf.prismToken

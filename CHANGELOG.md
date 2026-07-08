@@ -1,5 +1,11 @@
 # wysimark-lite
 
+## 0.27.9
+
+### Patch Changes
+
+- Respect disabled editor features for code block, task list, and highlight keyboard shortcuts.
+
 ## 0.27.8
 
 ### Patch Changes

@@ -45,14 +45,17 @@ export type MarksPluginCustomTypes = {
 export const MarksPlugin = createPlugin<MarksPluginCustomTypes>((editor) => {
   editor.marksPlugin = createMarksMethods(editor)
   editor.activeMarks = {}
-  const hotkeyHandler = createHotkeyHandler({
+  const hotkeys = {
     "mod+b": editor.marksPlugin.toggleBold,
     "mod+i": editor.marksPlugin.toggleItalic,
     "mod+u": editor.marksPlugin.toggleUnderline,
     "super+0": editor.marksPlugin.removeMarks,
     "super+k": editor.marksPlugin.toggleStrike,
-    "mod+h": editor.marksPlugin.toggleHighlight,
-  })
+    ...(!editor.wysimark.disableHighlight && {
+      "mod+h": editor.marksPlugin.toggleHighlight,
+    }),
+  }
+  const hotkeyHandler = createHotkeyHandler(hotkeys)
   // Override insertText to apply active marks
   const { insertText: defaultInsertText } = editor
   editor.insertText = (text) => {

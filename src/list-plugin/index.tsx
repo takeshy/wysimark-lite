@@ -26,6 +26,7 @@ export const LIST_ITEM_TYPES: ListItemElement["type"][] = [
 export const isListItem = createIsElementType<ListItemElement>(LIST_ITEM_TYPES)
 
 function autocompleteTaskList(editor: Editor, text: string) {
+  if (editor.wysimark.disableTaskList) return false
   if (text !== " ") return false
   if (!editor.selection || !Range.isCollapsed(editor.selection)) return false
 
@@ -63,13 +64,16 @@ export const ListPlugin = createPlugin<ListPluginCustomTypes>(
   (editor, _options, { createPolicy }) => {
     editor.convertElement.addConvertElementType(LIST_ITEM_TYPES)
     const list = (editor.list = createListMethods(editor))
-    const hotkeyHandler = createHotkeyHandler({
+    const hotkeys = {
       tab: list.indent,
       "shift+tab": list.outdent,
       "super+7": curryOne(list.convertOrderedList, true),
       "super+8": curryOne(list.convertUnorderedList, true),
-      "super+9": curryOne(list.convertTaskList, true),
-    })
+      ...(!editor.wysimark.disableTaskList && {
+        "super+9": curryOne(list.convertTaskList, true),
+      }),
+    }
+    const hotkeyHandler = createHotkeyHandler(hotkeys)
 
     return createPolicy({
       name: "list",
