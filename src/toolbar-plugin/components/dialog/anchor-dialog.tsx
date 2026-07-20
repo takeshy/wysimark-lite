@@ -84,6 +84,21 @@ export function AnchorDialog({
   const [title, setTitle] = useState(initialText)
   const [mode, setMode] = useState<LinkMode>("external")
   const [titleManuallyEdited, setTitleManuallyEdited] = useState(false)
+  const [selectingTarget, setSelectingTarget] = useState(false)
+
+  const selectInternalTarget = useCallback(async () => {
+    if (!editor.wysimark.onLinkSelect || selectingTarget) return
+    setSelectingTarget(true)
+    try {
+      const selected = await editor.wysimark.onLinkSelect()
+      if (!selected) return
+      const parsed = normalizeWikiLinkInput(selected)
+      setTarget(parsed.target)
+      if (parsed.display !== undefined) setText(parsed.display)
+    } finally {
+      setSelectingTarget(false)
+    }
+  }, [editor, selectingTarget])
 
   const insertLink = () => {
     if (mode === "internal") {
@@ -222,14 +237,26 @@ export function AnchorDialog({
             style={{ marginTop: editor.wysimark.enableInternalLinks ? "0.5em" : 0 }}
           >
             {mode === "internal" ? (
-              <$AnchorDialogInput
-                type="text"
-                value={target}
-                autoFocus
-                placeholder={t("internalLinkTarget")}
-                onChange={onChangeTarget}
-                onKeyDown={onKeyDown}
-              />
+              <>
+                <$AnchorDialogInput
+                  type="text"
+                  value={target}
+                  autoFocus
+                  placeholder={t("internalLinkTarget")}
+                  onChange={onChangeTarget}
+                  onKeyDown={onKeyDown}
+                />
+                {editor.wysimark.onLinkSelect ? (
+                  <$DialogButton
+                    type="button"
+                    disabled={selectingTarget}
+                    onClick={() => void selectInternalTarget()}
+                    style={{ marginLeft: "0.25em" }}
+                  >
+                    {t("imageSourceSelect")}
+                  </$DialogButton>
+                ) : null}
+              </>
             ) : (
               <$AnchorDialogInput
                 type="text"

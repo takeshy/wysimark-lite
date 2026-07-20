@@ -66,6 +66,10 @@ const editor = useEditor({
 | `disableTaskList` | `false` | When `true`, hides the task list (checklist) button from the toolbar |
 | `disableCodeBlock` | `false` | When `true`, hides the code block button from the toolbar |
 
+Hosts can also provide `onFileSelect` for the image dialog's Select tab and
+`onLinkSelect` for a picker button in the internal-link tab. Both callbacks
+return a selected URL/path or `null` when cancelled.
+
 ### With Image Upload
 
 You can enable image file upload by providing the `onImageChange` callback:

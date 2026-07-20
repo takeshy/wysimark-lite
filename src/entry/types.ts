@@ -3,6 +3,7 @@ import type { ReactNode } from "react"
 
 export type OnImageChangeHandler = (file: File) => Promise<string>
 export type OnFileSelectHandler = () => Promise<string | null>
+export type OnLinkSelectHandler = () => Promise<string | null>
 export type RenderInternalLinkPreview = (target: string) => ReactNode
 export type RenderInternalEmbed = (spec: string) => ReactNode
 
@@ -33,6 +34,9 @@ export type WysimarkEditor = {
      * Handler for file selection (e.g. picking from Drive)
      */
     onFileSelect?: OnFileSelectHandler
+
+    /** Select an internal link target from a host-provided file picker. */
+    onLinkSelect?: OnLinkSelectHandler
 
     /**
      * Persisted state for the image dialog

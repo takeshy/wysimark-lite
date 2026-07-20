@@ -15,12 +15,13 @@ import {
   useEditor,
   OnImageChangeHandler,
   OnFileSelectHandler,
+  OnLinkSelectHandler,
 } from './entry/index'
 import { unescapeMarkdown } from './convert'
 import type { UseEditorOptions } from './entry/useEditor'
 
 export { Editable, useEditor, unescapeMarkdown }
-export type { OnImageChangeHandler, UseEditorOptions }
+export type { OnImageChangeHandler, OnFileSelectHandler, OnLinkSelectHandler, UseEditorOptions }
 
 /**
  * The options passed into the standalone version of Wysimark.
@@ -32,6 +33,7 @@ type StandaloneOptions = Parameters<typeof useEditor>[0] & {
   className?: string
   onImageChange?: OnImageChangeHandler
   onFileSelect?: OnFileSelectHandler
+  onLinkSelect?: OnLinkSelectHandler
 }
 
 type StandaloneMethods = {
@@ -55,6 +57,7 @@ function StandaloneEditor({
     className,
     onImageChange,
     onFileSelect,
+    onLinkSelect,
     ...options
   },
   standaloneMethodsRef,
@@ -108,6 +111,7 @@ function StandaloneEditor({
       placeholder={placeholder}
       onImageChange={onImageChange}
       onFileSelect={onFileSelect}
+      onLinkSelect={onLinkSelect}
     />
   )
 }
