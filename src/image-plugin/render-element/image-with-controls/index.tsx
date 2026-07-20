@@ -1,6 +1,6 @@
 import { clsx } from "clsx"
-import { useState } from "react"
-import { useSelected } from "slate-react"
+import { useEffect, useState } from "react"
+import { useSelected, useSlateStatic } from "slate-react"
 
 import {
   $Image,
@@ -35,7 +35,25 @@ export function ImageWithControls({
   element: ImageBlockElement | ImageInlineElement
   presets: ImageSizePreset[]
 }) {
+  const editor = useSlateStatic()
   const url = element.url
+  const [displayUrl, setDisplayUrl] = useState(url)
+  useEffect(() => {
+    let cancelled = false
+    const resolver = editor.wysimark.resolveImageSrc
+    if (!resolver) {
+      setDisplayUrl(url)
+      return
+    }
+    void Promise.resolve(resolver(url)).then((resolved) => {
+      if (!cancelled) setDisplayUrl(resolved || url)
+    }).catch(() => {
+      if (!cancelled) setDisplayUrl(url)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [editor, url])
   const selected = useSelected()
   const [isDragging, setIsDragging] = useState(false)
   const [size, setSize] = useState(
@@ -87,7 +105,7 @@ export function ImageWithControls({
    */
   return (
     <$ImageContainer className={className}>
-      <$Image src={url} width={size?.width} height={size?.height} />
+      <$Image src={displayUrl} width={size?.width} height={size?.height} />
       {showControls ? (
         <ImageToolbar
           element={element}

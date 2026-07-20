@@ -16,11 +16,12 @@ function renderLeaf({ children, attributes }: RenderLeafProps) {
   return <span {...attributes}>{children}</span>
 }
 
-import type { OnImageChangeHandler, OnFileSelectHandler, OnLinkSelectHandler } from "./types"
+import type { OnImageChangeHandler, OnFileSelectHandler, OnLinkSelectHandler, ResolveImageSrcHandler } from "./types"
 export type {
   OnImageChangeHandler,
   OnFileSelectHandler,
   OnLinkSelectHandler,
+  ResolveImageSrcHandler,
   RenderInternalEmbed,
   RenderInternalLinkPreview,
 } from "./types"
@@ -36,6 +37,7 @@ export type EditableProps = {
   onImageChange?: OnImageChangeHandler
   onFileSelect?: OnFileSelectHandler
   onLinkSelect?: OnLinkSelectHandler
+  resolveImageSrc?: ResolveImageSrcHandler
 }
 
 export function Editable({
@@ -49,6 +51,7 @@ export function Editable({
   onImageChange,
   onFileSelect,
   onLinkSelect,
+  resolveImageSrc,
 }: EditableProps) {
   const [isRawMode, setIsRawMode] = useState(false)
   const [rawText, setRawText] = useState(value)
@@ -167,6 +170,7 @@ export function Editable({
   editor.wysimark.onImageChange = onImageChange;
   editor.wysimark.onFileSelect = onFileSelect;
   editor.wysimark.onLinkSelect = onLinkSelect;
+  editor.wysimark.resolveImageSrc = resolveImageSrc;
 
   // Check if raw mode is disabled
   const disableRawMode = editor.wysimark.disableRawMode

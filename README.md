@@ -69,6 +69,8 @@ const editor = useEditor({
 Hosts can also provide `onFileSelect` for the image dialog's Select tab and
 `onLinkSelect` for a picker button in the internal-link tab. Both callbacks
 return a selected URL/path or `null` when cancelled.
+`resolveImageSrc` can asynchronously map a stored relative image URL to a
+display URL without changing the Markdown that is serialized.
 
 ### With Image Upload
 
