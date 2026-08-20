@@ -1,11 +1,12 @@
 import throttle from "lodash.throttle"
 import { useCallback, useRef, useState } from "react"
-import { Descendant, Editor, Element, Transforms } from "slate"
+import { Descendant, Editor, Element } from "slate"
 import { ReactEditor, RenderLeafProps, Slate } from "slate-react"
 
 import { parse, serialize, escapeUrlSlashes, unescapeUrlSlashes } from "../convert"
 import { t } from "../utils/translations"
 import { SinkEditable } from "./SinkEditable"
+import { replaceDocument } from "./replace-document"
 import { useEditor } from "./useEditor"
 
 export type { Element, Text } from "./plugins"
@@ -82,6 +83,11 @@ export function Editable({
 
   /* eslint-disable react-hooks/exhaustive-deps */
   const onSlateChange = useCallback(() => {
+    if (ignoreNextChangeRef.current) {
+      ignoreNextChangeRef.current = false
+      prevValueRef.current = editor.children
+      return
+    }
     if (prevValueRef.current === editor.children) {
       return
     }
@@ -99,7 +105,6 @@ export function Editable({
     }
 
     if (editor.wysimark.prevValue == null || initialValueRef.current == null) {
-      ignoreNextChangeRef.current = true
       const valueToProcess = escapeUrlSlashes(markdownToUse);
       const children = parse(valueToProcess, {
         enableInternalLinks: editor.wysimark.enableInternalLinks,
@@ -117,9 +122,12 @@ export function Editable({
         const documentValue = parse(valueToProcess, {
           enableInternalLinks: editor.wysimark.enableInternalLinks,
         })
-        editor.children = documentValue
-        editor.selection = null
-        Transforms.select(editor, Editor.start(editor, [0]))
+        replaceDocument(editor, documentValue)
+        prevValueRef.current = editor.children
+        editor.wysimark.prevValue = {
+          markdown: markdownToUse,
+          children: editor.children,
+        }
       }
     }
   }
