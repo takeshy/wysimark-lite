@@ -1,11 +1,12 @@
 import { useState } from "react"
-import { createEditor, Editor, Transforms } from "slate"
+import { createEditor, Editor } from "slate"
 import { withHistory } from "slate-history"
 import { ReactEditor, withReact } from "slate-react"
 
 import { parse, serialize, escapeUrlSlashes } from "../convert"
 import { Element } from "./plugins"
 import { withSink } from "./SinkEditable"
+import { replaceDocument } from "./replace-document"
 import { WysimarkEditor } from "./types"
 import type { RenderInternalLinkPreview, RenderInternalEmbed } from "./types"
 
@@ -101,9 +102,7 @@ export function useEditor({
       const documentValue = parse(escapedMarkdown, {
         enableInternalLinks: editor.wysimark.enableInternalLinks,
       })
-      editor.children = documentValue
-      editor.selection = null
-      Transforms.select(editor, Editor.start(editor, [0]))
+      replaceDocument(editor, documentValue)
     }
     return nextEditor
   })
