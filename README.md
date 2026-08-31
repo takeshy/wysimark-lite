@@ -62,7 +62,6 @@ const editor = useEditor({
 | Option | Default | Description |
 |--------|---------|-------------|
 | `disableRawMode` | `true` | When `false`, shows a toggle button to switch between WYSIWYG and raw Markdown editing |
-| `softBreakOnEnter` | `false` | When `true`, Enter inserts a line break and Shift+Enter creates a new paragraph |
 | `disableHighlight` | `true` | When `false`, shows a highlight button in the toolbar. Highlight is saved as `<mark>text</mark>` in Markdown |
 | `disableTaskList` | `false` | When `true`, hides the task list (checklist) button from the toolbar |
 | `disableCodeBlock` | `false` | When `true`, hides the code block button from the toolbar |

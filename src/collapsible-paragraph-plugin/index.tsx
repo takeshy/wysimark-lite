@@ -28,13 +28,6 @@ export type CollapsibleParagraphPluginCustomTypes = {
   Element: ParagraphElement
 }
 
-export function shouldInsertSoftBreak(
-  softBreakOnEnter: boolean,
-  shiftKey: boolean
-): boolean {
-  return softBreakOnEnter ? !shiftKey : shiftKey
-}
-
 export const CollapsibleParagraphPlugin =
   createPlugin<CollapsibleParagraphPluginCustomTypes>((editor) => {
     const { insertBreak } = editor
@@ -89,14 +82,11 @@ export const CollapsibleParagraphPlugin =
         onKeyDown: (e) => {
           if (e.key === "Enter" && !e.nativeEvent.isComposing) {
             e.preventDefault()
-            if (
-              shouldInsertSoftBreak(
-                editor.wysimark.softBreakOnEnter ?? false,
-                e.shiftKey
-              )
-            ) {
+            if (e.shiftKey) {
+              // Shift+Enter = soft break (line break within paragraph)
               editor.insertSoftBreak()
             } else {
+              // Enter = new paragraph
               editor.insertBreak()
             }
             return true
