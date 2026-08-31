@@ -62,6 +62,7 @@ const editor = useEditor({
 | オプション | デフォルト | 説明 |
 |--------|---------|-------------|
 | `disableRawMode` | `true` | `false`にすると、WYSIWYGとRawマークダウン編集を切り替えるボタンが表示される |
+| `softBreakOnEnter` | `false` | `true`にすると、Enterで段落内改行、Shift+Enterで新しい段落を作成する |
 | `disableHighlight` | `true` | `false`にすると、ツールバーにハイライトボタンが表示される。ハイライトはMarkdownで`<mark>text</mark>`として保存される |
 | `disableTaskList` | `false` | `true`にすると、タスクリスト（チェックリスト）ボタンがツールバーから非表示になる |
 | `disableCodeBlock` | `false` | `true`にすると、コードブロックボタンがツールバーから非表示になる |

@@ -68,6 +68,11 @@ export type WysimarkEditor = {
     disableHighlight?: boolean
 
     /**
+     * Whether Enter inserts a soft line break instead of a new paragraph.
+     */
+    softBreakOnEnter?: boolean
+
+    /**
      * Whether Obsidian-style internal links are enabled
      */
     enableInternalLinks?: boolean

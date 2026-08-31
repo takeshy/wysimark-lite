@@ -38,6 +38,11 @@ export type UseEditorOptions = {
    */
   disableHighlight?: boolean
   /**
+   * Insert a soft line break with Enter and a new paragraph with Shift+Enter.
+   * Defaults to false, preserving the conventional Enter/Shift+Enter behavior.
+   */
+  softBreakOnEnter?: boolean
+  /**
    * Enable Obsidian-style internal links and embeds.
    * When true, [[Page]] and ![[file.png]] are parsed and serialized as
    * internal links. Defaults to false.
@@ -57,6 +62,7 @@ export function useEditor({
   disableTaskList,
   disableCodeBlock,
   disableHighlight,
+  softBreakOnEnter,
   enableInternalLinks,
   renderInternalLinkPreview,
   renderInternalEmbed,
@@ -73,6 +79,7 @@ export function useEditor({
       disableCodeBlock,
       // Disable highlight (defaults to true)
       disableHighlight: disableHighlight ?? true,
+      softBreakOnEnter: softBreakOnEnter ?? false,
       enableInternalLinks: enableInternalLinks ?? false,
       renderInternalLinkPreview,
       renderInternalEmbed,
