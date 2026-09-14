@@ -1,4 +1,4 @@
-import { Descendant, Editor, NodeEntry } from "slate"
+import { Descendant, Editor, Node, NodeEntry } from "slate"
 
 /**
  * This normalization utility is useful when you need to adjust an Element
@@ -34,7 +34,12 @@ export function normalizeSiblings<T extends Descendant>(
   entry: NodeEntry<T>,
   transform: (a: NodeEntry<T>, b: NodeEntry<T>) => boolean
 ): boolean {
-  const [, path] = entry
+  const [node, path] = entry
+
+  // Mount effects may still hold a path from before another element's
+  // normalization inserted or removed siblings. Never normalize a different
+  // node at that old path; Slate will revisit the current tree itself.
+  if (!Node.has(editor, path) || Node.get(editor, path) !== node) return false
 
   const prevEntry = Editor.previous<T>(editor, { at: path })
   if (prevEntry && transform(prevEntry, entry)) return true

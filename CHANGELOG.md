@@ -1,5 +1,13 @@
 # wysimark-lite
 
+## 0.27.14
+
+### Patch Changes
+
+- Prevent stale table and ordered-list mount normalization from crashing documents with tables, code blocks, and lists.
+- Batch table coordinate updates so normalization cannot shift the table partway through initialization.
+- Preserve formatted callout titles and body content when splitting the marker line.
+
 ## 0.27.9
 
 ### Patch Changes
