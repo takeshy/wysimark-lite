@@ -1,30 +1,6 @@
 import { describe, it } from "node:test"
 import assert from "node:assert"
-import { escapeUrlSlashes, unescapeMarkdown } from "../utils"
-
-describe("escapeUrlSlashes", () => {
-  it("escapes plain text URLs", () => {
-    assert.strictEqual(
-      escapeUrlSlashes("go https://example.com/path"),
-      "go https:\\/\\/example.com\\/path"
-    )
-  })
-
-  it("does not escape markdown links", () => {
-    const input = "[example](https://example.com/path)"
-    assert.strictEqual(escapeUrlSlashes(input), input)
-  })
-
-  it("does not escape URLs inside HTML tags", () => {
-    const input = '<iframe src="https://player.vimeo.com/video/123"></iframe>'
-    assert.strictEqual(escapeUrlSlashes(input), input)
-  })
-
-  it("does not escape URLs inside HTML blocks", () => {
-    const input = "<div>https://example.com/path</div>"
-    assert.strictEqual(escapeUrlSlashes(input), input)
-  })
-})
+import { unescapeMarkdown } from "../utils"
 
 describe("unescapeMarkdown", () => {
   it("unescapes backslash-escaped inline characters", () => {

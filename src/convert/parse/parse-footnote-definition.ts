@@ -4,15 +4,7 @@ import { InternalLinkOptions } from "../obsidian-links"
 import { Element } from "../types"
 import { parseContents } from "./parse-content"
 
-/**
- * GitHub Flavored Markdown does not support footnotes and therefore, at the
- * moment, Wysimark does not support footnotes.
- *
- * However, we do provide some compatibility. Remarks, by default, parses
- * Footnote Definitions and we convert them into a blockquote. We insert an
- * extra paragraph at the top that contains the footnote identifier in square
- * brackets like `[1]`
- */
+/** Preserve the definition as editable blocks with its original identifier. */
 export function parseFootnoteDefinition(
   footnote: FootnoteDefinition,
   options: InternalLinkOptions = {}
@@ -20,18 +12,8 @@ export function parseFootnoteDefinition(
   return [
     {
       type: "block-quote",
-      children: [
-        /**
-         * Insert an initial paragraph with the footnote identifier in square
-         * brackets.
-         */
-        { type: "paragraph", children: [{ text: `[${footnote.identifier}]` }] },
-        /**
-         * The rest of the children are parsed as is and supports the full range
-         * of element types like headings, lists and nested block quotes.
-         */
-        ...parseContents(footnote.children, options),
-      ],
+      footnoteIdentifier: footnote.identifier,
+      children: parseContents(footnote.children, options),
     },
   ]
 }

@@ -13,10 +13,10 @@ export function protectEscapedWikiLinks(markdown: string): string {
     .replace(/\\\]/g, ESCAPED_WIKI_CLOSE)
 }
 
-export function restoreEscapedWikiLinks(text: string): string {
+export function restoreEscapedWikiLinks(text: string, literal = false): string {
   return text
-    .replace(new RegExp(ESCAPED_WIKI_OPEN, "g"), "[[")
-    .replace(new RegExp(ESCAPED_WIKI_CLOSE, "g"), "]")
+    .replace(new RegExp(ESCAPED_WIKI_OPEN, "g"), literal ? "\\[[" : "[[")
+    .replace(new RegExp(ESCAPED_WIKI_CLOSE, "g"), literal ? "\\]" : "]")
 }
 
 export function wikiLinkHref(rawSpec: string): string {

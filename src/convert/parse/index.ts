@@ -1,6 +1,7 @@
 import type { Root, TopLevelContent } from "mdast"
 import remarkParse from "remark-parse"
 import { unified } from "unified"
+import { visit } from "unist-util-visit"
 
 import { Element } from "../types"
 import { customRemarkGfm } from "./custom-gfm"
@@ -18,9 +19,17 @@ export function parseToAst(
   markdown: string,
   options: InternalLinkOptions = {}
 ) {
-  const ast = parser.parse(
-    options.enableInternalLinks ? protectEscapedWikiLinks(markdown) : markdown
-  ) as Root
+  const source = options.enableInternalLinks ? protectEscapedWikiLinks(markdown) : markdown
+  const ast = parser.parse(source) as Root
+  visit(ast, "link", (node) => {
+    const start = node.position?.start.offset
+    const end = node.position?.end.offset
+    if (start === undefined || end === undefined) return
+    const raw = source.slice(start, end)
+    if (!raw.startsWith("[") && node.children.length === 1 && node.children[0].type === "text") {
+      node.data = { ...node.data, markdownSyntax: raw.startsWith("<") ? "autolink" : "literal" }
+    }
+  })
   /**
    * Takes linkReference and imageReference and turns them into link and image.
    */
@@ -44,8 +53,16 @@ export function parse(
    * s he result.
    */
   if (ast.children.length === 0) {
-    return [{ type: "paragraph", children: [{ text: "" }] }] as Element[]
+    return Array.from({ length: (markdown.match(/\n/g)?.length || 0) + 1 }, () => ({
+      type: "paragraph", children: [{ text: "" }],
+    })) as Element[]
   }
 
-  return parseContents(ast.children as TopLevelContent[], options)
+  const elements = parseContents(ast.children as TopLevelContent[], options)
+  const leading = markdown.match(/^\n+/)?.[0].length || 0
+  const trailing = markdown.match(/\n+$/)?.[0].length || 0
+  // Source boundary whitespace is not an additional editable paragraph.
+  if (leading && elements.length) elements[0].__markdownLeadingNewlines = leading
+  if (trailing && elements.length) elements[elements.length - 1].__markdownTrailingNewlines = trailing
+  return elements
 }

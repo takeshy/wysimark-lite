@@ -80,7 +80,7 @@ function serializeTableContent(
   options: InternalLinkOptions
 ): string {
   assertElementType(element, "table-content")
-  const line = serializeLine(element.children as Segment[], [], [], options)
+  const line = serializeLine(element.children as Segment[], [], [], { ...options, inTable: true })
   // GFM splits a row into cells on unescaped pipes before any inline parsing,
   // so every pipe in a cell (even inside code spans or URLs) must be escaped.
   // Pipes outside of tables are literal and `escapeText` leaves them alone.

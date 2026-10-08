@@ -76,7 +76,7 @@ describe("getCalloutInfo", () => {
     })
     assert.equal(serialize([element]).trimEnd(), [
       "> [!tip] Title",
-      "> First body line  ",
+      "> First body line",
       "> Second body line",
     ].join("\n"))
   })

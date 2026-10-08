@@ -1,18 +1,22 @@
 import { AnchorElement } from "../../../../anchor-plugin"
+import { Text } from "slate"
 import { isWikiLinkHref, serializeWikiLinkHref } from "../../../obsidian-links"
 
 import { Segment } from "../../../types"
 import { serializeLine } from "../serialize-line"
+import { serializeLinkDestination, serializeLinkTitle } from "../../serialize-link-destination"
 import { EscapeTextOptions, getCommonAnchorMarks } from "../utils"
-
-function escapeTitle(title: string): string {
-  return title.replace(/"/g, '\\"')
-}
 
 export function serializeAnchor(
   anchor: AnchorElement,
   options?: EscapeTextOptions
 ): string {
+  if (!anchor.title && anchor.markdownSyntax && anchor.children.length === 1 && Text.isText(anchor.children[0])) {
+    const label = anchor.children[0].text
+    if (anchor.href === label || anchor.href === `mailto:${label}` || anchor.href === `http://${label}`) {
+      return anchor.markdownSyntax === "autolink" ? `<${label}>` : label
+    }
+  }
   if (options?.enableInternalLinks && isWikiLinkHref(anchor.href)) {
     const commonAnchorMarks = getCommonAnchorMarks(anchor.children as Segment[])
     const labelOptions: EscapeTextOptions = { ...options, inAnchorLabel: true }
@@ -60,7 +64,7 @@ export function serializeAnchor(
         commonAnchorMarks,
         commonAnchorMarks,
         labelOptions
-      )}](${anchor.href} "${escapeTitle(anchor.title)}")`
+      )}](${serializeLinkDestination(anchor.href)} "${serializeLinkTitle(anchor.title)}")`
     )
   } else {
     return (
@@ -82,7 +86,7 @@ export function serializeAnchor(
         commonAnchorMarks,
         commonAnchorMarks,
         labelOptions
-      )}](${anchor.href})`
+      )}](${serializeLinkDestination(anchor.href)})`
     )
   }
 }

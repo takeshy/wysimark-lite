@@ -65,7 +65,7 @@ export function CodeBlock({
       ) : (
         <>
           <$CodeBlockLanguage contentEditable={false} onClick={onClick} ref={ref}>
-            <span>{element.language}</span>
+            <span>{element.language || "text"}</span>
             <ChevronDownIcon />
           </$CodeBlockLanguage>
           <$CodeBlockScroller>{children}</$CodeBlockScroller>

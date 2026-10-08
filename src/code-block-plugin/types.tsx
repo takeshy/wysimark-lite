@@ -75,6 +75,7 @@ export type CodeBlockElement = {
    * `BuiltInLanguage`
    */
   language: string
+  meta?: string
   children: CodeBlockLineElement[]
 }
 

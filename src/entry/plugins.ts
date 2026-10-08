@@ -51,7 +51,10 @@ export const plugins = [
 export type PluginTypes = ExtractCustomTypes<typeof plugins>
 
 type CustomEditor = PluginTypes["Editor"]
-type CustomElement = PluginTypes["Element"]
+type CustomElement = PluginTypes["Element"] & {
+  __markdownLeadingNewlines?: number
+  __markdownTrailingNewlines?: number
+}
 type CustomText = PluginTypes["Text"]
 
 export type OptionsType = PluginTypes["Options"]

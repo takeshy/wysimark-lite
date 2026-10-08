@@ -107,6 +107,7 @@ function getBracketsThatCanFormLinks(
 }
 
 export type EscapeTextOptions = {
+  inTable?: boolean
   /**
    * Inside a `[label](url)` anchor, an unbalanced bracket in the label text
    * would change where the label ends, so brackets are always escaped there.
@@ -176,9 +177,12 @@ export function escapeText(s: string, options: EscapeTextOptions = {}) {
   }
 
   // Escape characters that only have special meaning at the start of a line
-  result = result.replace(/^(#{1,6})(\s)/m, "\\$1$2") // headings
-  result = result.replace(/^(\d+)([.)]\s)/m, "$1\\$2") // ordered list
-  result = result.replace(/^([-+*>])\s/m, "\\$1 ") // list / blockquote
+  result = result.replace(/^( {0,3})(#{1,6})(?=\s|$)/gm, "$1\\$2")
+  result = result.replace(/^( {0,3})(\d+)([.)])(?=\s|$)/gm, "$1$2\\$3")
+  result = result.replace(/^( {0,3})([-+*>])(?=\s|$)/gm, "$1\\$2")
+  result = result.replace(/^( {0,3})([-_])(?=(?:[ \t]*\2){2,}[ \t]*$)/gm, "$1\\$2")
+  // Setext heading underlines: any run of `=` or `-` alone on a line
+  result = result.replace(/^( {0,3})([=-])(?=\2*[ \t]*$)/gm, "$1\\$2")
 
   return result
 }

@@ -1,4 +1,5 @@
 import { Element } from "../types"
+import { Node } from "slate"
 import { InternalLinkOptions } from "../obsidian-links"
 import { serializeElement } from "./serialize-element"
 
@@ -6,6 +7,9 @@ export function serializeElements(
   elements: Element[],
   options: InternalLinkOptions = {}
 ): string {
+  elements = elements.filter((element) =>
+    !(element.type === "paragraph" && element.__collapsible && Node.string(element) === "")
+  )
   const segments: string[] = []
 
   /**
@@ -23,7 +27,7 @@ export function serializeElements(
        * When we're at an ordered list item, we increment the order at the
        * current depth level and we remove any orders at a deeper depth level.
        */
-      orders[element.depth] = (orders[element.depth] || 0) + 1
+      orders[element.depth] = element.start ?? (orders[element.depth] || 0) + 1
       orders = orders.slice(0, element.depth + 1)
     } else if (
       element.type === "unordered-list-item" ||
@@ -67,19 +71,16 @@ export function serializeElements(
    */
   const joined = segments.join("") //.trim()
 
-  /**
-   * If there is no content return an empty string for the Markdown.
-   * Use a regex that only matches ASCII whitespace (not \u00A0) so that
-   * documents consisting entirely of blank lines (NBSP paragraphs) are
-   * preserved.
-   */
-  if (joined.replace(/[\t\n\r ]/g, "") === "") return ""
+  // Empty documents stay empty; user-created blank paragraphs use newlines.
+  if (joined.replace(/[\t\n\r ]/g, "") === "") return "\n".repeat(Math.max(0, elements.length - 1))
 
-  /**
-   * Remove leading newlines and trim trailing ASCII whitespace only.
-   * We use a regex instead of .trim() because .trim() also removes
-   * non-breaking space (\u00A0) which is used to represent empty
-   * paragraphs (blank lines) in the serialized markdown.
-   */
-  return joined.replace(/^\n+/, "").replace(/[\t\n\r ]+$/, "")
+  // Strip block separators, then restore intentional source boundary newlines.
+  let trailingEmpty = 0
+  for (let i = elements.length - 1; i >= 0; i--) {
+    if (elements[i].type !== "paragraph" || Node.string(elements[i]) !== "") break
+    trailingEmpty++
+  }
+  return "\n".repeat(elements[0]?.__markdownLeadingNewlines || 0) +
+    joined.replace(/[\t\n\r ]+$/, "") +
+    "\n".repeat(trailingEmpty + (elements[elements.length - 1]?.__markdownTrailingNewlines || 0))
 }

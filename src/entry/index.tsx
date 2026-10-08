@@ -3,7 +3,7 @@ import { useCallback, useRef, useState } from "react"
 import { Descendant, Editor, Element } from "slate"
 import { ReactEditor, RenderLeafProps, Slate } from "slate-react"
 
-import { parse, serialize, escapeUrlSlashes, unescapeUrlSlashes } from "../convert"
+import { parse, serialize } from "../convert"
 import { t } from "../utils/translations"
 import { SinkEditable } from "./SinkEditable"
 import { replaceDocument } from "./replace-document"
@@ -108,8 +108,7 @@ export function Editable({
     }
 
     if (editor.wysimark.prevValue == null || initialValueRef.current == null) {
-      const valueToProcess = escapeUrlSlashes(markdownToUse);
-      const children = parse(valueToProcess, {
+      const children = parse(markdownToUse, {
         enableInternalLinks: editor.wysimark.enableInternalLinks,
       })
       editor.children = children
@@ -121,8 +120,7 @@ export function Editable({
     } else {
       if (markdownToUse !== editor.wysimark.prevValue.markdown) {
         ignoreNextChangeRef.current = true
-        const valueToProcess = escapeUrlSlashes(markdownToUse);
-        const documentValue = parse(valueToProcess, {
+        const documentValue = parse(markdownToUse, {
           enableInternalLinks: editor.wysimark.enableInternalLinks,
         })
         replaceDocument(editor, documentValue)
@@ -253,7 +251,7 @@ export function Editable({
       {/* Raw mode textarea - always in DOM but hidden when not in raw mode */}
       <div style={{ display: isRawMode ? 'block' : 'none', textAlign: 'center' }}>
         <textarea
-          value={unescapeUrlSlashes(rawText)}
+          value={rawText}
           onChange={handleRawTextChange}
           placeholder={placeholder}
           className={className}

@@ -12,6 +12,7 @@ export function parseList(
   // console.log(JSON.stringify(list, null, 2))
   const elements: Element[] = []
   for (const listItem of list.children) {
+    const firstIndex = elements.length
     elements.push(
       ...parseListItem(
         listItem,
@@ -19,6 +20,10 @@ export function parseList(
         internalLinkOptions
       )
     )
+    if (firstIndex === 0 && list.ordered && list.start != null && list.start !== 1) {
+      const first = elements[firstIndex]
+      if (first.type === "ordered-list-item") first.start = list.start
+    }
   }
   return elements
 }

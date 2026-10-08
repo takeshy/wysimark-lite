@@ -16,7 +16,10 @@ function wrapHandler(originalHandler: Function | undefined) {
   if (!originalHandler) return undefined;
   return function(this: any, token: any) {
     if (!this.data) {
-      this.data = {};
+      // remark-parse 10 creates a fresh handler context for every token.
+      // Its getData/setData store is shared across those contexts.
+      this.data = this.getData?.("wysimarkGfmData") || {};
+      this.setData?.("wysimarkGfmData", this.data);
     }
     return originalHandler.call(this, token);
   };

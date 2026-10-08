@@ -6,6 +6,7 @@ import {
 } from "../../obsidian-links"
 
 import { serializeGenericImageUrl } from "./serialize-generic-image-url"
+import { serializeLinkDestination, serializeLinkTitle } from "../serialize-link-destination"
 import { serializePortiveImageUrl } from "./serialize-portive-image-url"
 import { serializeUncommonmarkImageUrl } from "./serialize-uncommonmark-image-url"
 
@@ -33,8 +34,8 @@ export function serializeImageShared(
        * invalid. This happens when the image is uploading.
        */
       if (url === "") return ""
-      return `![${image.alt}](${url}${
-        typeof image.title === "string" ? ` "${image.title}"` : ""
+      return `![${(image.alt || "").replace(/[\\[\]]/g, "\\$&")}](${serializeLinkDestination(url)}${
+        typeof image.title === "string" ? ` "${serializeLinkTitle(image.title)}"` : ""
       })`
     }
   }
