@@ -117,6 +117,8 @@ export function serializeElement(
       )
     case "html-block":
       return `${element.html}\n\n`
+    case "link-definition":
+      return `${element.markdown}\n\n`
   }
   assertUnreachable(element)
 }

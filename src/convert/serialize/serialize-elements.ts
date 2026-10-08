@@ -61,6 +61,9 @@ export function serializeElements(
       serialized = serialized.replace(/\n$/, "\n\n");
     }
 
+    if (nextElement && element.__markdownCompactAfter) {
+      serialized = serialized.replace(/\n\n$/, "\n")
+    }
     segments.push(serialized);
   }
   /**

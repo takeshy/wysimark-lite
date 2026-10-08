@@ -43,6 +43,8 @@ export type MenuItemData =
        * `Component` prop; however, we allow it to be set manually.
        */
       more?: boolean
+      /** Show the active, visible child items inside a collapsed toolbar button. */
+      showActiveChildren?: boolean
       children?: MenuItemData[]
       Component?: FunctionComponent<{ dest: HTMLElement; close: () => void }>
     }

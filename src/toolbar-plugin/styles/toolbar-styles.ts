@@ -83,14 +83,34 @@ export const $ToolbarButton = styled("div")`
     pointer-events: none;
   }
   &.--active {
-    color: var(--shade-700);
-    background: rgba(0, 0, 0, 0.05);
+    color: var(--blue-700);
+    background: var(--blue-100);
+    border-color: var(--blue-300);
     svg {
       /* stroke-width: 2px; */
     }
   }
   svg {
     stroke-width: 1.5px;
+  }
+  .--active-icons {
+    display: inline-grid;
+    width: 1.25em;
+    height: 1.25em;
+    gap: 1px;
+    vertical-align: top;
+    > span {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 0;
+      min-height: 0;
+    }
+    svg {
+      width: 100%;
+      height: 100%;
+      stroke-width: 2px;
+    }
   }
   @media (hover: hover) {
     &:not(.--disabled):hover {

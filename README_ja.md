@@ -130,6 +130,9 @@ pin 'wysimark-lite', to: 'https://esm.sh/wysimark-lite@latest?deps=react@19.2.0,
 
 ## 機能
 
+- **原文の保持**: 初期読み込み、カーソル移動、未編集でのVisual／Raw切り替えでは `onChange` を発火しません。元のNBSPとリンク参照定義を保持し、定義は読み取り専用のソースブロックとして表示します。統一されたLF・CRLF・CRを維持し、混在した改行は編集時に最初の形式へ統一します。
+- **折りたたみ時の書式表示**: 有効な修飾のアイコンをボタン内に表示し、ツールチップにも名称を表示します。
+
 - **モダンなデザイン**: Reactアプリケーションにシームレスに統合できる、クリーンでモダンなインターフェース
 - **Markdownモード**: WYSIWYGモードと生のMarkdown編集モードを切り替え可能（`disableRawMode: false`で有効化）
 - **ハイライト機能**: テキストを`<mark>`タグでハイライト（`disableHighlight: false`で有効化）

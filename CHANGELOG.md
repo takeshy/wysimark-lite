@@ -1,5 +1,14 @@
 # wysimark-lite
 
+## 1.0.2
+
+### Patch Changes
+
+- Avoid emitting `onChange` for initial loading, cursor movement, or visual/raw mode changes without edits.
+- Preserve non-breaking spaces, link reference definitions, and source line endings; display definitions as read-only source blocks.
+- Show active formatting icons and names in collapsed toolbar buttons and improve active button styling.
+- Correct modifier shortcuts on Mac after server-side rendering.
+
 ## 1.0.0
 
 ### Major Changes

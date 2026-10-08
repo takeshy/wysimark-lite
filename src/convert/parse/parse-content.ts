@@ -12,6 +12,7 @@ import { parseList } from "./parse-list"
 import { parseParagraph } from "./parse-paragraph"
 import { parseTable } from "./parse-table"
 import { parseThematicBreak } from "./parse-thematic-break"
+import { serializeLinkDestination, serializeLinkTitle } from "../serialize/serialize-link-destination"
 
 export function parseContents(
   contents: TopLevelContent[],
@@ -31,6 +32,9 @@ export function parseContents(
       const curr = contents[i]
       if (prev.position && curr.position) {
         const gap = curr.position.start.line - prev.position.end.line - 1
+        if (gap === 0 && (prev.type === "definition" || curr.type === "definition") && elements.length) {
+          elements[elements.length - 1].__markdownCompactAfter = true
+        }
         for (let b = 1; b < gap; b++) {
           elements.push({
             type: "paragraph",
@@ -54,11 +58,12 @@ export function parseContent(
     case "code":
       return parseCodeBlock(content)
     case "definition":
-      /**
-       * A `definition` is used by a `linkRef` or `imageRef`; however, we inline
-       * these with our `./remark-inline-links`
-       */
-      throw new Error(`The type "definition" should not exist. See comments`)
+      return [{
+        type: "link-definition",
+        markdown: typeof content.data?.rawMarkdown === "string" ? content.data.rawMarkdown :
+          `[${content.label || content.identifier}]: ${serializeLinkDestination(content.url)}${content.title ? ` "${serializeLinkTitle(content.title)}"` : ""}`,
+        children: [{ text: "" }],
+      }]
     case "footnoteDefinition":
       return parseFootnoteDefinition(content, options)
     case "heading":

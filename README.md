@@ -136,6 +136,9 @@ pin 'wysimark-lite', to: 'https://esm.sh/wysimark-lite@latest?deps=react@19.2.0,
 
 ## Features
 
+- **Source preservation**: Initial loading, cursor movement, and visual/raw mode changes without edits do not trigger `onChange`. Existing non-breaking spaces and link reference definitions are retained; definitions appear as read-only source blocks. Consistent LF, CRLF, and CR line endings are preserved. Mixed endings are normalized to the first detected format when edited.
+- **Compact formatting state**: Collapsed formatting buttons show the active formatting icons and their names in the tooltip.
+
 - **Modern Design**: Clean and contemporary interface that integrates seamlessly with React applications
 - **Raw Markdown Mode**: Switch between WYSIWYG and raw Markdown editing modes (enable with `disableRawMode: false`)
 - **Highlight Support**: Highlight text with `<mark>` tags (enable with `disableHighlight: false`)

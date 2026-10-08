@@ -1,4 +1,5 @@
 import { Descendant } from "slate"
+import type { MarkdownChangeTracker } from "./markdown-change-tracker"
 import type { ReactNode } from "react"
 
 export type OnImageChangeHandler = (file: File) => Promise<string>
@@ -21,6 +22,7 @@ export type WysimarkEditor = {
    * Private state for the wysimark editor.
    */
   wysimark: {
+    markdownSource?: MarkdownChangeTracker
     prevValue?: {
       markdown: string
       children: Descendant[]

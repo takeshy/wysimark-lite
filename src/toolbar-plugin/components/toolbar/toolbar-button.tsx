@@ -17,10 +17,19 @@ export function ToolbarButton({
 }) {
   const staticEditor = useSlateStatic()
   const editor = useSlate()  // エディタの状態変更を検知
-  const isActive = item.active ? item.active(editor) : false
+  const activeChildren = item.showActiveChildren
+    ? (item.children || []).filter((child): child is Exclude<MenuItemData, "divider"> =>
+      child !== "divider" && (!child.show || child.show(editor)) && !!child.active?.(editor)
+    )
+    : []
+  const isActive = item.active ? item.active(editor) : activeChildren.length > 0
+  const ActiveIcon = activeChildren.length === 1 ? activeChildren[0].icon : item.icon
+  const title = activeChildren.length
+    ? `${item.title}: ${activeChildren.map((child) => child.title).join(", ")}`
+    : item.title
   const ref = useRef<HTMLDivElement>(null)
   const tooltip = useTooltip({
-    title: item.title,
+    title,
     hotkey: () => (item.hotkey ? formatHotkey(item.hotkey) : undefined),
   })
   const menuLayer = useLayer("menu")
@@ -71,6 +80,9 @@ export function ToolbarButton({
   return (
     <$ToolbarButton
       data-item-type="button"
+      role="button"
+      aria-label={title}
+      aria-pressed={item.active || item.showActiveChildren ? !!isActive : undefined}
       ref={ref}
       onMouseEnter={onMouseEnter}
       onMouseLeave={tooltip.onMouseLeave}
@@ -81,7 +93,19 @@ export function ToolbarButton({
         "--disabled": !isActive && r(item?.title)?.includes('Depth')
       })}
     >
-      <item.icon />
+      {activeChildren.length > 1 ? (
+        <span className="--active-icons" aria-hidden="true" style={{
+          gridTemplateColumns: `repeat(${Math.min(3, activeChildren.length)}, 1fr)`,
+        }}>
+          {activeChildren.map((child) => (
+            <span key={child.title} data-active-format={child.title}><child.icon /></span>
+          ))}
+        </span>
+      ) : activeChildren.length === 1 ? (
+        <span data-active-format={activeChildren[0].title} aria-hidden="true">
+          <ActiveIcon />
+        </span>
+      ) : <item.icon />}
       {item.more ? <Icon.More /> : null}
     </$ToolbarButton>
   )

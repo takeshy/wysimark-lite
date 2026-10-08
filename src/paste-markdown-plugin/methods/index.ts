@@ -13,6 +13,7 @@ function pasteMarkdown(editor: Editor, markdown: string) {
   for (const element of fragment) {
     delete element.__markdownLeadingNewlines
     delete element.__markdownTrailingNewlines
+    delete element.__markdownLineEnding
   }
   Transforms.insertNodes(editor, fragment)
 }

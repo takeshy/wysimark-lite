@@ -11,6 +11,7 @@ import {
 } from "../obsidian-links"
 import { parseContents } from "./parse-content"
 import { transformInlineLinks } from "./transform-inline-links"
+import { getLineEnding, withLineEnding } from "../line-endings"
 
 // @ts-expect-error - Ignore TypeScript errors for the unified plugin system
 const parser = unified().use(remarkParse).use(customRemarkGfm())
@@ -21,6 +22,13 @@ export function parseToAst(
 ) {
   const source = options.enableInternalLinks ? protectEscapedWikiLinks(markdown) : markdown
   const ast = parser.parse(source) as Root
+  visit(ast, "definition", (node) => {
+    const start = node.position?.start.offset
+    const end = node.position?.end.offset
+    if (start !== undefined && end !== undefined) {
+      node.data = { ...node.data, rawMarkdown: source.slice(start, end) }
+    }
+  })
   visit(ast, "link", (node) => {
     const start = node.position?.start.offset
     const end = node.position?.end.offset
@@ -44,6 +52,8 @@ export function parse(
   markdown: string,
   options: InternalLinkOptions = {}
 ): Element[] {
+  const lineEnding = getLineEnding(markdown)
+  markdown = withLineEnding(markdown, "\n")
   const ast = parseToAst(markdown, options)
   /**
    * If there is no content, remark returns a root ast with no children (i.e.
@@ -53,12 +63,15 @@ export function parse(
    * s he result.
    */
   if (ast.children.length === 0) {
-    return Array.from({ length: (markdown.match(/\n/g)?.length || 0) + 1 }, () => ({
+    const empty = Array.from({ length: (markdown.match(/\n/g)?.length || 0) + 1 }, () => ({
       type: "paragraph", children: [{ text: "" }],
     })) as Element[]
+    if (lineEnding !== "\n") empty[0].__markdownLineEnding = lineEnding
+    return empty
   }
 
   const elements = parseContents(ast.children as TopLevelContent[], options)
+  if (lineEnding !== "\n" && elements.length) elements[0].__markdownLineEnding = lineEnding
   const leading = markdown.match(/^\n+/)?.[0].length || 0
   const trailing = markdown.match(/\n+$/)?.[0].length || 0
   // Source boundary whitespace is not an additional editable paragraph.

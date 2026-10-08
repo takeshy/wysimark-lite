@@ -7,6 +7,7 @@ import { parse, serialize } from "../convert"
 import { Element } from "./plugins"
 import { withSink } from "./SinkEditable"
 import { replaceDocument } from "./replace-document"
+import { MarkdownChangeTracker } from "./markdown-change-tracker"
 import { WysimarkEditor } from "./types"
 import type { RenderInternalLinkPreview, RenderInternalEmbed } from "./types"
 
@@ -92,15 +93,18 @@ export function useEditor({
     })
     nextEditor.convertElement.addConvertElementType("paragraph")
     editor.getMarkdown = () => {
-      return serialize(editor.children as Element[], {
+      const markdown = serialize(editor.children as Element[], {
         enableInternalLinks: editor.wysimark.enableInternalLinks,
       })
+      return editor.wysimark.markdownSource?.current(markdown) ?? markdown
     }
     editor.setMarkdown = (markdown: string) => {
       const documentValue = parse(markdown, {
         enableInternalLinks: editor.wysimark.enableInternalLinks,
       })
       replaceDocument(editor, documentValue)
+      editor.wysimark.markdownSource = new MarkdownChangeTracker(markdown,
+        serialize(editor.children as Element[], { enableInternalLinks: editor.wysimark.enableInternalLinks }), true)
     }
     return nextEditor
   })

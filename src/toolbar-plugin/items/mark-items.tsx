@@ -68,6 +68,7 @@ export const compactMarkItems: MenuItemData[] = [
     icon: Icon.Bold,
     title: t("format"),
     more: true,
+    showActiveChildren: true,
     children: primaryMarkItems,
   },
 ]

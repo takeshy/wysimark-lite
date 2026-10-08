@@ -8,6 +8,7 @@ import { t } from "../utils/translations"
 import { SinkEditable } from "./SinkEditable"
 import { replaceDocument } from "./replace-document"
 import { useEditor } from "./useEditor"
+import { MarkdownChangeTracker } from "./markdown-change-tracker"
 
 export type { Element, Text } from "./plugins"
 
@@ -56,7 +57,7 @@ export function Editable({
 }: EditableProps) {
   const [isRawMode, setIsRawMode] = useState(false)
   const [rawText, setRawText] = useState(value)
-  const ignoreNextChangeRef = useRef<boolean>(false)
+  const lastEmittedValueRef = useRef<string | undefined>(undefined)
   const initialValueRef = useRef<Descendant[] | undefined>(undefined)
   const prevValueRef = useRef<Descendant[] | undefined>(undefined)
   // Store rawText to use when switching back to visual mode
@@ -72,11 +73,14 @@ export function Editable({
         const markdown = serialize(editor.children as Element[], {
           enableInternalLinks: editor.wysimark.enableInternalLinks,
         })
+        const changed = editor.wysimark.markdownSource?.next(markdown)
+        if (changed === undefined) return
         editor.wysimark.prevValue = {
-          markdown,
+          markdown: changed,
           children: editor.children,
         }
-        onChangeRef.current(markdown)
+        lastEmittedValueRef.current = changed
+        onChangeRef.current(changed)
       },
       throttleInMs,
       { leading: false, trailing: true }
@@ -86,11 +90,6 @@ export function Editable({
 
   /* eslint-disable react-hooks/exhaustive-deps */
   const onSlateChange = useCallback(() => {
-    if (ignoreNextChangeRef.current) {
-      ignoreNextChangeRef.current = false
-      prevValueRef.current = editor.children
-      return
-    }
     if (prevValueRef.current === editor.children) {
       return
     }
@@ -111,20 +110,30 @@ export function Editable({
       const children = parse(markdownToUse, {
         enableInternalLinks: editor.wysimark.enableInternalLinks,
       })
-      editor.children = children
-      prevValueRef.current = initialValueRef.current = children
+      if (editor.children.length) replaceDocument(editor, children)
+      else {
+        editor.children = children
+        Editor.normalize(editor, { force: true })
+      }
+      prevValueRef.current = initialValueRef.current = editor.children
+      editor.wysimark.markdownSource = new MarkdownChangeTracker(markdownToUse,
+        serialize(editor.children as Element[], { enableInternalLinks: editor.wysimark.enableInternalLinks }))
+      lastEmittedValueRef.current = markdownToUse
       editor.wysimark.prevValue = {
         markdown: markdownToUse,
-        children,
+        children: editor.children,
       }
     } else {
-      if (markdownToUse !== editor.wysimark.prevValue.markdown) {
-        ignoreNextChangeRef.current = true
+      if (markdownToUse !== editor.wysimark.prevValue.markdown && markdownToUse !== lastEmittedValueRef.current) {
+        onThrottledSlateChange.cancel()
         const documentValue = parse(markdownToUse, {
           enableInternalLinks: editor.wysimark.enableInternalLinks,
         })
         replaceDocument(editor, documentValue)
         prevValueRef.current = editor.children
+        editor.wysimark.markdownSource = new MarkdownChangeTracker(markdownToUse,
+          serialize(editor.children as Element[], { enableInternalLinks: editor.wysimark.enableInternalLinks }))
+        lastEmittedValueRef.current = markdownToUse
         editor.wysimark.prevValue = {
           markdown: markdownToUse,
           children: editor.children,
@@ -147,7 +156,8 @@ export function Editable({
   const handleRawTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newText = e.target.value;
     setRawText(newText);
-    onChange(newText);
+    lastEmittedValueRef.current = newText;
+    onChangeRef.current(newText);
   }
 
   // When switching from visual mode to raw mode
@@ -167,7 +177,8 @@ export function Editable({
       initialValueRef.current = undefined
       prevValueRef.current = undefined
     } else {
-      // Switching from visual mode to raw mode
+      // Flush genuine edits before reading source-aware Markdown for raw mode.
+      onThrottledSlateChange.flush();
       updateRawTextFromEditor();
     }
     setIsRawMode(!isRawMode);
