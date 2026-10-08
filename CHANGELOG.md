@@ -1,5 +1,16 @@
 # wysimark-lite
 
+## 1.0.0
+
+### Major Changes
+
+- Preserve Markdown content across repeated saves, including URLs in code, table pipes, inline code whitespace, link destinations, and internal links.
+- Save blank lines as ordinary newlines and omit editor-only spacer paragraphs instead of adding non-breaking spaces.
+- Preserve paragraphs and code blocks within list items, ordered-list starting numbers, footnotes, and supported inline HTML formatting.
+- Keep newly typed text separate from structural leaves, preserve nested inline formatting, and prevent pasted boundary whitespace from leaking into saved documents.
+- Fix normal-paragraph shortcuts, toggle code blocks off with repeated shortcuts, and document keyboard shortcuts.
+- Point package `types` and export type conditions at the emitted `dist/index.d.mts` declaration file.
+
 ## 0.27.14
 
 ### Patch Changes
