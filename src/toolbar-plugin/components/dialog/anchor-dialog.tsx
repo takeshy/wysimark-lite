@@ -26,7 +26,11 @@ import {
   $AnchorDialogInput,
   $AnchorDialogInputLine,
 } from "../../styles"
-import { $DialogButton, $DialogHint } from "../../styles/dialog-shared-styles"
+import {
+  $DialogButton,
+  $DialogHint,
+  $DialogSelectButton,
+} from "../../styles/dialog-shared-styles"
 import { DraggableHeader } from "./DraggableHeader"
 
 const isEnter = isHotkey("enter")
@@ -247,14 +251,14 @@ export function AnchorDialog({
                   onKeyDown={onKeyDown}
                 />
                 {editor.wysimark.onLinkSelect ? (
-                  <$DialogButton
+                  <$DialogSelectButton
                     type="button"
                     disabled={selectingTarget}
                     onClick={() => void selectInternalTarget()}
                     style={{ marginLeft: "0.25em" }}
                   >
                     {t("imageSourceSelect")}
-                  </$DialogButton>
+                  </$DialogSelectButton>
                 ) : null}
               </>
             ) : (

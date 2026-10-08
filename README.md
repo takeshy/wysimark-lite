@@ -159,6 +159,45 @@ pin 'wysimark-lite', to: 'https://esm.sh/wysimark-lite@latest?deps=react@19.2.0,
 - **Smart Block Splitting**: When applying heading/paragraph styles to multi-line blocks, only the selected lines are converted
 - **Cursor Position Preservation**: Cursor position is maintained after element type conversion (e.g., paragraph to heading)
 
+## Keyboard shortcuts
+
+These shortcuts work while the editor has focus. Toolbar buttons and menus also show shortcut labels.
+Press the same shortcut again to toggle headings, marks, lists, or code blocks off.
+
+| Action | Mac | Windows / Linux |
+| --- | --- | --- |
+| Restore normal paragraph and clear marks | Cmd+Option+0 | Ctrl+Shift+0 |
+| Heading levels 1–6 | Cmd+Option+1–6 | Ctrl+Shift+1–6 |
+| Bold / italic / underline | Cmd+B / I / U | Ctrl+B / I / U |
+| Strikethrough | Cmd+Option+K | Ctrl+Shift+K |
+| Inline code | Cmd+J | Ctrl+J |
+| Highlight (when enabled) | Cmd+H | Ctrl+H |
+| Edit link | Cmd+K | Ctrl+K |
+| Ordered / unordered / task list | Cmd+Option+7 / 8 / 9 | Ctrl+Shift+7 / 8 / 9 |
+| Indent / outdent list | Tab / Shift+Tab | Tab / Shift+Tab |
+| Indent / outdent quote | Cmd+Option+. / , | Ctrl+Shift+. / , |
+| Toggle code block | Cmd+Shift+N | Ctrl+Shift+N |
+| Toggle code block (existing shortcut) | Cmd+Option+backtick (`) | Ctrl+Shift+backtick (`) |
+| Insert horizontal rule | Cmd+Option+- | Ctrl+Shift+- |
+| Insert table (3 columns, 2 rows) | Cmd+Option+T | Ctrl+Shift+T |
+| Line break within a paragraph | Shift+Enter | Shift+Enter |
+
+Additional shortcuts inside a table:
+
+| Action | Mac | Windows / Linux |
+| --- | --- | --- |
+| Next / previous cell | Tab / Shift+Tab | Tab / Shift+Tab |
+| Next cell (add a row at the end) | Shift+Enter | Shift+Enter |
+| Line break within a cell | Enter | Enter |
+| Select cell contents (select the block inside a code block) | Cmd+A | Ctrl+A |
+| Insert row below / above | Cmd+Enter / Cmd+Shift+Enter | Ctrl+Enter / Ctrl+Shift+Enter |
+| Insert column left / right | Cmd+Option+[ / ] | Ctrl+Shift+[ / ] |
+| Delete row | Cmd+Backspace | Ctrl+Backspace |
+| Delete column | Cmd+Shift+Backspace | — |
+| Delete table | Cmd+Option+Backspace | Ctrl+Shift+Backspace |
+
+Disabling task lists, code blocks, or highlighting also disables their shortcuts.
+
 ## Browser Support
 
 - Google Chrome

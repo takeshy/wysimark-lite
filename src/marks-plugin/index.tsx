@@ -49,7 +49,6 @@ export const MarksPlugin = createPlugin<MarksPluginCustomTypes>((editor) => {
     "mod+b": editor.marksPlugin.toggleBold,
     "mod+i": editor.marksPlugin.toggleItalic,
     "mod+u": editor.marksPlugin.toggleUnderline,
-    "super+0": editor.marksPlugin.removeMarks,
     "super+k": editor.marksPlugin.toggleStrike,
     ...(!editor.wysimark.disableHighlight && {
       "mod+h": editor.marksPlugin.toggleHighlight,

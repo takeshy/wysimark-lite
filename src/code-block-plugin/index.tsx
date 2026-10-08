@@ -37,8 +37,8 @@ export const CodeBlockPlugin = createPlugin<CodeBlockPluginCustomTypes>(
     }
     const hotkeys = {
       ...(!editor.wysimark.disableCodeBlock && {
-        "super+`": () =>
-          editor.codeBlock.createCodeBlock({ language: "text" }),
+        "super+`": () => editor.codeBlock.toggleCodeBlock(),
+        "mod+shift+n": () => editor.codeBlock.toggleCodeBlock(),
       }),
       "mod+a": () => {
         /**

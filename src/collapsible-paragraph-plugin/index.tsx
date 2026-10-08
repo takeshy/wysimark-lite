@@ -47,6 +47,8 @@ export const CollapsibleParagraphPlugin =
     editor.convertElement.addConvertElementType("paragraph")
     editor.collapsibleParagraph = {
       convertParagraph: () => {
+        editor.marksPlugin?.removeMarks()
+        if (editor.codeBlock?.convertCodeBlockToParagraph()) return
         editor.convertElement.convertElements<ParagraphElement>(
           () => false,
           {

@@ -26,6 +26,15 @@ export const $DialogButton = styled("div")`
   }
 `
 
+export const $DialogSelectButton = styled($DialogButton.withComponent("button"))`
+  border: 0;
+  font: inherit;
+  &:disabled {
+    cursor: default;
+    opacity: 0.5;
+  }
+`
+
 export const $DialogHint = styled("div")`
   font-size: 0.875em;
   margin-top: 0.5em;

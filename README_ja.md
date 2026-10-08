@@ -153,6 +153,45 @@ pin 'wysimark-lite', to: 'https://esm.sh/wysimark-lite@latest?deps=react@19.2.0,
 - **スマートブロック分割**: 複数行のブロックに見出し/段落スタイルを適用する際、選択された行のみが変換される
 - **カーソル位置の保持**: 要素タイプの変換後（例: 段落から見出しへ）もカーソル位置が維持される
 
+## キーボードショートカット
+
+エディターにフォーカスがあるときに使えます。ツールバーやメニューにもキーを表示します。
+見出し、文字装飾、リスト、コードブロックは同じキーで適用・解除できます。
+
+| 操作 | Mac | Windows / Linux |
+| --- | --- | --- |
+| 標準段落に戻す・文字装飾を解除 | Cmd+Option+0 | Ctrl+Shift+0 |
+| 見出し1〜6 | Cmd+Option+1〜6 | Ctrl+Shift+1〜6 |
+| 太字 / 斜体 / 下線 | Cmd+B / I / U | Ctrl+B / I / U |
+| 取り消し線 | Cmd+Option+K | Ctrl+Shift+K |
+| インラインコード | Cmd+J | Ctrl+J |
+| ハイライト（有効時） | Cmd+H | Ctrl+H |
+| リンク編集 | Cmd+K | Ctrl+K |
+| 番号付き / 箇条書き / タスクリスト | Cmd+Option+7 / 8 / 9 | Ctrl+Shift+7 / 8 / 9 |
+| リストのインデント / 解除 | Tab / Shift+Tab | Tab / Shift+Tab |
+| 引用のインデント / 解除 | Cmd+Option+. / , | Ctrl+Shift+. / , |
+| コードブロックの適用・解除 | Cmd+Shift+N | Ctrl+Shift+N |
+| コードブロックの適用・解除（従来のキー） | Cmd+Option+バッククォート（`） | Ctrl+Shift+バッククォート（`） |
+| 水平線を挿入 | Cmd+Option+- | Ctrl+Shift+- |
+| 表を挿入（3列×2行） | Cmd+Option+T | Ctrl+Shift+T |
+| 段落内で改行 | Shift+Enter | Shift+Enter |
+
+表内では以下も使えます。
+
+| 操作 | Mac | Windows / Linux |
+| --- | --- | --- |
+| 次 / 前のセル | Tab / Shift+Tab | Tab / Shift+Tab |
+| 次のセル（末尾では行を追加） | Shift+Enter | Shift+Enter |
+| セル内で改行 | Enter | Enter |
+| セルの内容を選択（コードブロック内ではブロックを選択） | Cmd+A | Ctrl+A |
+| 行を下 / 上に挿入 | Cmd+Enter / Cmd+Shift+Enter | Ctrl+Enter / Ctrl+Shift+Enter |
+| 列を左 / 右に挿入 | Cmd+Option+[ / ] | Ctrl+Shift+[ / ] |
+| 行を削除 | Cmd+Backspace | Ctrl+Backspace |
+| 列を削除 | Cmd+Shift+Backspace | — |
+| 表を削除 | Cmd+Option+Backspace | Ctrl+Shift+Backspace |
+
+タスクリスト、コードブロック、ハイライトを無効にしている場合、それぞれのショートカットも無効です。
+
 ## ブラウザサポート
 
 - Google Chrome
