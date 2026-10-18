@@ -138,6 +138,7 @@ pin 'wysimark-lite', to: 'https://esm.sh/wysimark-lite@latest?deps=react@19.2.0,
 - **ハイライト機能**: テキストを`<mark>`タグでハイライト（`disableHighlight: false`で有効化）
 - **画像アップロード対応**: `onImageChange` コールバックを指定すると、ファイル選択やドラッグ＆ドロップで画像をアップロード可能
 - **コードブロックの言語指定**: 言語ラベルをクリックして任意の言語名を入力可能
+- **Mermaid 図**: `mermaid` コードブロックを [Pele](https://github.com/obsidianmd/pele) で描画します。図をクリックするとソースを編集できます。レイアウトと配色は Pele に準拠します。
 - **使いやすいインターフェース**:
   - シンプルなツールバー（トグルボタンでクリックして書式を適用/解除）
   - Markdownショートカット（例: `**` で**太字**、`#` で見出し）

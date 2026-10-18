@@ -144,6 +144,7 @@ pin 'wysimark-lite', to: 'https://esm.sh/wysimark-lite@latest?deps=react@19.2.0,
 - **Highlight Support**: Highlight text with `<mark>` tags (enable with `disableHighlight: false`)
 - **Image Upload Support**: Upload images via file picker or drag and drop when `onImageChange` callback is provided
 - **Code Block with Custom Language**: Click on the language label to enter any language name
+- **Mermaid Diagrams**: `mermaid` code blocks render with [Pele](https://github.com/obsidianmd/pele). Click a diagram to edit its source. Layout and styling follow Pele.
 - **User-Friendly Interface**:
   - Simplified toolbar with toggle buttons (click to activate/deactivate formatting)
   - Markdown shortcuts (e.g., `**` for **bold**, `#` for heading)

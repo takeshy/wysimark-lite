@@ -1,6 +1,6 @@
 import type { MouseEvent } from "react"
-import { useEffect, useMemo, useState } from "react"
-import mermaid from "mermaid"
+import { useId, useMemo } from "react"
+import { render } from "pele"
 import { Editor, Node, Transforms } from "slate"
 import { ReactEditor, useFocused, useSelected, useSlateStatic } from "slate-react"
 
@@ -14,14 +14,6 @@ import {
 import { CodeBlockElement } from "../types"
 import { CodeBlockActions } from "./CodeBlockActions"
 
-mermaid.initialize({
-  startOnLoad: false,
-  securityLevel: "strict",
-  theme: "default",
-})
-
-let renderIndex = 0
-
 export function MermaidBlock({
   element,
   attributes,
@@ -33,32 +25,24 @@ export function MermaidBlock({
   const code = useMemo(() => {
     return element.children.map((line) => Node.string(line)).join("\n")
   }, [element.children])
-  const [svg, setSvg] = useState("")
-  const [error, setError] = useState("")
-
-  useEffect(() => {
-    let cancelled = false
-    const id = `wysimark-mermaid-${++renderIndex}`
-
-    setError("")
-    setSvg("")
-
-    async function render() {
-      try {
-        const result = await mermaid.render(id, code)
-        if (!cancelled) setSvg(result.svg)
-      } catch (err) {
-        if (!cancelled) {
-          setError(err instanceof Error ? err.message : "Invalid Mermaid diagram")
-        }
+  const id = useId()
+  const { svg, error } = useMemo(() => {
+    try {
+      return {
+        svg: render(code, {
+          idPrefix: `wysimark-mermaid-${id}`,
+          links: false,
+          images: false,
+        }).svg,
+        error: "",
+      }
+    } catch (err) {
+      return {
+        svg: "",
+        error: err instanceof Error ? err.message : "Invalid Mermaid diagram",
       }
     }
-
-    render()
-    return () => {
-      cancelled = true
-    }
-  }, [code])
+  }, [code, id])
 
   function editBlock(event: MouseEvent) {
     event.preventDefault()
@@ -74,10 +58,8 @@ export function MermaidBlock({
       <$MermaidPreviewContent contentEditable={false} onMouseDown={editBlock}>
         {error ? (
           <$MermaidError>{error}</$MermaidError>
-        ) : svg ? (
-          <div dangerouslySetInnerHTML={{ __html: svg }} />
         ) : (
-          <span>Rendering diagram...</span>
+          <div dangerouslySetInnerHTML={{ __html: svg }} />
         )}
       </$MermaidPreviewContent>
       <$MermaidSource aria-hidden="true">{children}</$MermaidSource>

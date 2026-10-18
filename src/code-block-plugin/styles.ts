@@ -132,6 +132,13 @@ export const $MermaidPreview = styled($CodeBlock)`
 `
 
 export const $MermaidPreviewContent = styled("div")`
+  --pele-bg: var(--code-block-bgcolor);
+  --pele-fg: var(--shade-900);
+  --pele-muted: var(--shade-600);
+  --pele-line: var(--shade-700);
+  --pele-surface: var(--shade-100);
+  --pele-surface-alt: var(--shade-200);
+  --pele-border: var(--shade-400);
   box-sizing: border-box;
   min-height: 8em;
   padding: 1.5em 1em;

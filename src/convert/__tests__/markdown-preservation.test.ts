@@ -148,6 +148,42 @@ describe("Markdown preservation through editor normalization and repeated saves"
     assert.match(html, /Second paragraph/)
   })
 
+  for (const input of [
+    "```mermaid\nflowchart LR\n  A[Start] --> B[Finish]\n```",
+    "```mermaid\nsequenceDiagram\n  Alice->>Bob: Hello\n```",
+    "> [!note] Diagram\n> ```mermaid\n> flowchart TD\n>   A --> B\n> ```",
+  ]) {
+    it(`renders a Mermaid preview with Pele and preserves its source: ${JSON.stringify(input)}`, () => {
+      const editor = withReact(makeEditor(input))
+      const html = renderToStaticMarkup(createElement(Slate, {
+        editor, initialValue: editor.children,
+        children: createElement(SinkEditable, {
+          readOnly: true,
+          renderLeaf: ({ attributes, children }: RenderLeafProps) => createElement("span", attributes, children),
+        }),
+      }))
+      assert.match(html, /<svg[^>]*class="pele/)
+      assert.doesNotMatch(html, /Rendering diagram\.\.\./)
+      assert.equal(serialize(editor.children as Element[], options), input)
+    })
+  }
+
+  it("shows invalid Mermaid source as an escaped error and preserves it for editing", () => {
+    const input = "```mermaid\n<script>alert(1)</script>\n```"
+    const editor = withReact(makeEditor(input))
+    const html = renderToStaticMarkup(createElement(Slate, {
+      editor, initialValue: editor.children,
+      children: createElement(SinkEditable, {
+        readOnly: true,
+        renderLeaf: ({ attributes, children }: RenderLeafProps) => createElement("span", attributes, children),
+      }),
+    }))
+    assert.doesNotMatch(html, /<svg[^>]*class="pele|<script>/)
+    assert.match(html, /<pre[^>]*>/)
+    assert.match(html, /&lt;script&gt;/)
+    assert.equal(serialize(editor.children as Element[], options), input)
+  })
+
   it("continues numbering when inserting an item in a list starting at three", () => {
     const editor = makeEditor("3. first\n4. next")
     Transforms.select(editor, Editor.end(editor, [0]))

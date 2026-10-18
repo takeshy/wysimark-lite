@@ -1,5 +1,13 @@
 # wysimark-lite
 
+## 1.0.3
+
+### Patch Changes
+
+- Replace the Mermaid renderer with Pele while preserving Mermaid code blocks and click-to-edit behavior.
+- Match diagram colors to the editor theme and render previews synchronously.
+- Remove the Mermaid dependency; diagram layout and styling now follow Pele.
+
 ## 1.0.2
 
 ### Patch Changes
